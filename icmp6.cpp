@@ -38,18 +38,19 @@ chksum(uint16_t sum, const uint8_t *data, uint16_t len)
 uint16_t
 EtherSia::icmp6_chksum()
 {
-    struct icmp6_header *icmp6 = (struct icmp6_header *)(buffer + 14);
+    struct ip6_header *ip6 = (struct ip6_header *)(buffer + 14);
+    struct icmp6_header *icmp6 = (struct icmp6_header *)(buffer + 14 + 40);
 
     /* First sum pseudoheader. */
     /* IP protocol and length fields. This addition cannot carry. */
-    volatile uint16_t newsum = ntohs(icmp6->length) + icmp6->proto;
+    volatile uint16_t newsum = ntohs(ip6->length) + ip6->proto;
 
     /* Sum IP source and destination addresses. */
-    newsum = chksum(newsum, (uint8_t *)(&icmp6->src[0]), 32);
+    newsum = chksum(newsum, (uint8_t *)(&ip6->src[0]), 32);
 
     /* Sum ICMP6 header and data. */
     icmp6->checksum = 0;
-    newsum = chksum(newsum, (uint8_t *)(&icmp6->type), ntohs(icmp6->length));
+    newsum = chksum(newsum, (uint8_t *)icmp6, ntohs(ip6->length));
 
     return ~newsum;
 }
@@ -74,7 +75,8 @@ set_linklocal_addr(uint8_t ipaddr[16], const uint8_t macaddr[6])
 void EtherSia::icmp6_ns_reply()
 {
     struct ether_header *eth = (struct ether_header*)buffer;
-    struct icmp6_header *icmp6 = (struct icmp6_header *)(buffer + 14);
+    struct ip6_header *ip6 = (struct ip6_header *)(buffer + 14);
+    struct icmp6_header *icmp6 = (struct icmp6_header *)(buffer + 14 + 40);
 
     uint8_t myaddr[16];
     set_linklocal_addr(myaddr, enc_mac_addr);
@@ -87,8 +89,8 @@ void EtherSia::icmp6_ns_reply()
 
     icmp6->reserved1 = icmp6->reserved2 = icmp6->reserved3 = 0;
 
-    memcpy(&icmp6->dest, &icmp6->src, 16);
-    memcpy(&icmp6->src, &myaddr, 16);
+    memcpy(&ip6->dest, &ip6->src, 16);
+    memcpy(&ip6->src, &myaddr, 16);
 
     icmp6->option_type = ICMP6_OPTION_TARGET_LINK_ADDRESS;
     icmp6->option_len = 1;  // Options length, 1 = 8 bytes.
@@ -100,15 +102,12 @@ void EtherSia::icmp6_ns_reply()
     memcpy(eth->dest, eth->src, 6);
     memcpy(eth->src, &enc_mac_addr, 6);
 
-    enc28j60_send(buffer, sizeof(struct icmp6_header) + 14);
+    enc28j60_send(buffer, 14 + 40 + sizeof(struct icmp6_header));
 }
 
 void EtherSia::process_icmp6(uint16_t len)
 {
-    struct icmp6_header *icmp6 = (struct icmp6_header *)(buffer + 14);
-
-    Serial.print(F("sizeof(struct ether_header)="));
-    Serial.println(sizeof(struct ether_header), DEC);
+    struct icmp6_header *icmp6 = (struct icmp6_header *)(buffer + 14 + 40);
 
     Serial.print(F("sizeof(struct icmp6_header)="));
     Serial.println(sizeof(struct icmp6_header), DEC);

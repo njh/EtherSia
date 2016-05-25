@@ -43,16 +43,6 @@ struct ip6_header {
 
 
 struct icmp6_header {
-    uint8_t v_tc;
-    uint8_t tc_fl;
-    uint16_t flow_label;
-    uint16_t length;
-    uint8_t proto;
-    uint8_t hop_limit;
-    uint8_t src[16];
-    uint8_t dest[16];
-
-    /* ICMP header. */
     uint8_t type;
     uint8_t code;
     uint16_t checksum;
