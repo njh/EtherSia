@@ -105,6 +105,32 @@ void EtherSia::icmp6_ns_reply()
     enc28j60_send(buffer, 14 + 40 + sizeof(struct icmp6_header));
 }
 
+void EtherSia::icmp6_echo_reply()
+{
+    struct ether_header *eth = (struct ether_header*)buffer;
+    struct ip6_header *ip6 = (struct ip6_header *)(buffer + 14);
+    struct icmp6_header *icmp6 = (struct icmp6_header *)(buffer + 14 + 40);
+
+    uint8_t myaddr[16];
+
+    // FIXME: check it was really intended for us with dest addr
+
+    icmp6->type = ICMP6_TYPE_ECHO_REPLY;
+    icmp6->code = 0;
+
+    memcpy(&myaddr, &ip6->dest, 16);
+    memcpy(&ip6->dest, &ip6->src, 16);
+    memcpy(&ip6->src, &myaddr, 16);
+    icmp6->checksum = 0;
+    icmp6->checksum = htons(icmp6_chksum());
+
+    // Set the MAC address
+    memcpy(eth->dest, eth->src, 6);
+    memcpy(eth->src, &enc_mac_addr, 6);
+
+    enc28j60_send(buffer, 14 + 40 + ntohs(ip6->length));
+}
+
 void EtherSia::process_icmp6(uint16_t len)
 {
     struct icmp6_header *icmp6 = (struct icmp6_header *)(buffer + 14 + 40);
@@ -128,6 +154,10 @@ void EtherSia::process_icmp6(uint16_t len)
     switch(icmp6->type) {
     case ICMP6_TYPE_NS:
         icmp6_ns_reply();
+        break;
+
+    case ICMP6_TYPE_ECHO:
+        icmp6_echo_reply();
         break;
 
     default:
