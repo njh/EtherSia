@@ -32,20 +32,53 @@
 #ifndef ENC28J60_H
 #define ENC28J60_H
 
-void enc28j60_init(uint8_t *mac_addr);
+class ENC28J60 {
 
-int enc28j60_send(uint8_t *data, uint16_t datalen);
+public:
+    ENC28J60(int8_t cs);
+    ENC28J60(int8_t clk, int8_t miso, int8_t mosi, int8_t cs);
 
-int enc28j60_read(uint8_t *buffer, uint16_t bufsize);
+protected:
+    uint8_t enc_mac_addr[6];
 
-/* ENC28J60 architecture-specific SPI functions that are called by the
-   enc28j60 driver and must be implemented by the platform code */
+    void enc28j60_init(const uint8_t *mac_addr);
+    int enc28j60_send(const uint8_t *data, uint16_t datalen);
+    int enc28j60_read(uint8_t *buffer, uint16_t bufsize);
 
-void enc28j60_arch_spi_init(void);
-uint8_t enc28j60_arch_spi_write(uint8_t data);
-uint8_t enc28j60_arch_spi_read(void);
-void enc28j60_arch_spi_select(void);
-void enc28j60_arch_spi_deselect(void);
+private:
 
+    uint8_t is_mac_mii_reg(uint8_t reg);
+    uint8_t readreg(uint8_t reg);
+    void writereg(uint8_t reg, uint8_t data);
+    void setregbitfield(uint8_t reg, uint8_t mask);
+    void clearregbitfield(uint8_t reg, uint8_t mask);
+    void setregbank(uint8_t new_bank);
+    void writedata(const uint8_t *data, int datalen);
+    void writedatabyte(uint8_t byte);
+    int readdata(uint8_t *buf, int len);
+    uint8_t readdatabyte(void);
+    void softreset(void);
+    uint8_t readrev(void);
+    void reset(void);
+    void init(const uint8_t *mac_addr);
+    int send(const uint8_t *data, uint16_t datalen);
+    int read(uint8_t *buffer, uint16_t bufsize);
+
+    void enc28j60_arch_spi_init(void);
+    uint8_t enc28j60_arch_spi_write(uint8_t data);
+    uint8_t enc28j60_arch_spi_read(void);
+    void enc28j60_arch_spi_select(void);
+    void enc28j60_arch_spi_deselect(void);
+
+    // Previously defined in contiki/core/sys/clock.h
+    void clock_delay_usec(uint16_t dt);
+
+
+    uint8_t initialized;
+    uint8_t bank;
+
+    int8_t _cs, _clk, _mosi, _miso;
+
+};
 
 #endif /* ENC28J60_H */
