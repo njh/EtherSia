@@ -30,12 +30,14 @@ struct ether_header {
  */
 
 struct ip6_header {
-    uint8_t header[4];
-    uint16_t length;
-    uint8_t  proto;
-    uint8_t  ttl;
-    uint8_t src[16];
-    uint8_t dest[16];
+    uint8_t  ver_tc;     // 4-bits of version, 4-bits of traffic class
+    uint8_t  tc_fl;      // 4-bits of traffic class, 4-bits of flow label
+    uint16_t flow_label; // Remaining 16-bits of 20-bit flow label
+    uint16_t length;     // Payload length (not including this header)
+    uint8_t  proto;      // Identifies the type of header immediately following
+    uint8_t  hop_limit;  // Decremented by 1 by each node that forwards the packet
+    uint8_t  src[16];
+    uint8_t  dest[16];
 } __attribute__((__packed__));
 
 

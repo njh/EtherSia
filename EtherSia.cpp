@@ -83,8 +83,9 @@ void EtherSia::process_packet(uint16_t len)
     printMac(header->src);
 
 #ifdef DEBUG
-    if ((ip6->header[0] >> 4) & 0xF != 6) {
+    if ((ip6->ver_tc[0] >> 4) & 0xF != 6) {
         Serial.println("NOT 6");
+        return;
     }
 #endif
 
