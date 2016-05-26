@@ -39,9 +39,8 @@ static void printHex(byte byte)
     Serial.print(str);
 }
 
-static void printMac(const uint8_t *mac)
+void EtherSia::print_mac(const uint8_t mac[6])
 {
-    Serial.print("MAC=");
     for (byte i = 0; i < 6; ++i) {
         printHex(mac[i]);
         if (i < 5)
@@ -50,9 +49,8 @@ static void printMac(const uint8_t *mac)
     Serial.println();
 }
 
-static void printIpv6(const uint8_t *addr)
+void EtherSia::print_address(const uint8_t addr[16])
 {
-    Serial.print("ADDR=");
     for (byte i = 0; i < 16; ++i) {
         printHex(addr[i]);
         if (i % 2 == 1 && i < 15)
@@ -76,11 +74,11 @@ void EtherSia::process_packet(uint16_t len)
     Serial.print(len, DEC);
     Serial.println();
 
-    Serial.print("DST_");
-    printMac(header->dest);
+    Serial.print("DST=");
+    print_mac(header->dest);
 
-    Serial.print("SRC_");
-    printMac(header->src);
+    Serial.print("SRC=");
+    print_mac(header->src);
 
 #ifdef DEBUG
     if ((ip6->ver_tc[0] >> 4) & 0xF != 6) {
@@ -97,11 +95,11 @@ void EtherSia::process_packet(uint16_t len)
     Serial.print(ip6->proto, DEC);
     Serial.println();
 
-    Serial.print("SRC_");
-    printIpv6(ip6->src);
+    Serial.print("src=");
+    print_address(ip6->src);
 
-    Serial.print("DST_");
-    printIpv6(ip6->dest);
+    Serial.print("dst=");
+    print_address(ip6->dest);
 
     switch(ip6->proto) {
     case IP6_PROTO_ICMP6:

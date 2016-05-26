@@ -19,12 +19,7 @@ void setup() {
     else Serial.println("failure");
 
     Serial.print("mymac=");
-    for (byte i = 0; i < 6; ++i) {
-        Serial.print(macaddr[i], HEX);
-        if (i < 5)
-            Serial.print(':');
-    }
-    Serial.println();
+    ether.print_mac(macaddr);
 
     // start the Ethernet connection:
     if (ether.begin(macaddr) == false) {

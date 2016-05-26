@@ -23,6 +23,9 @@ public:
 
     void loop();
 
+
+    void print_mac(const uint8_t mac[6]);
+    void print_address(const uint8_t addr[16]);
 protected:
     uint8_t *buffer;
     uint16_t buffer_len;
