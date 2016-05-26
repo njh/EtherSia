@@ -23,9 +23,12 @@ public:
 
     void loop();
 
+    boolean is_multicast_address(uint8_t addr[16]);
+    uint8_t is_our_address(uint8_t addr[16]);
 
     void print_mac(const uint8_t mac[6]);
     void print_address(const uint8_t addr[16]);
+
 protected:
     uint8_t link_local_addr[16];
 

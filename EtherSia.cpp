@@ -75,6 +75,15 @@ void EtherSia::print_address(const uint8_t addr[16])
     Serial.println();
 }
 
+boolean EtherSia::is_multicast_address(uint8_t addr[16])
+{
+    return addr[0] == 0xFF;
+}
+
+uint8_t EtherSia::is_our_address(uint8_t addr[16])
+{
+    return memcmp(&addr, &link_local_addr, 16) == 0;
+}
 
 void EtherSia::process_packet(uint16_t len)
 {

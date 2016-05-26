@@ -60,6 +60,10 @@ void EtherSia::icmp6_ns_reply()
     struct ip6_header *ip6 = (struct ip6_header *)(buffer + 14);
     struct icmp6_header *icmp6 = (struct icmp6_header *)(buffer + 14 + 40);
 
+    // Is the Neighbour Solicitation addressed to us?
+    if (!is_our_address(icmp6->target)) {
+        return;
+    }
 
     convert_buffer_to_reply();
 
