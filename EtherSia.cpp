@@ -5,6 +5,20 @@
 #include "enc28j60.h"
 
 
+static void
+set_linklocal_addr(uint8_t ipaddr[16], const uint8_t macaddr[6])
+{
+    memset(ipaddr, 0, 16);
+
+    ipaddr[0] = 0xfe;
+    ipaddr[1] = 0x80;
+
+    memcpy(ipaddr + 8, macaddr, 3);
+    ipaddr[8] ^= 0x02;
+    ipaddr[11] = 0xff;
+    ipaddr[12] = 0xfe;
+    memcpy(ipaddr + 13, macaddr + 3, 3);
+}
 
 EtherSia::EtherSia(int8_t cs) : ENC28J60(cs)
 {
@@ -15,6 +29,8 @@ boolean EtherSia::begin(const uint8_t* macaddr)
 {
     enc28j60_init(macaddr);
 
+    set_linklocal_addr(link_local_addr, macaddr);
+    
     // FIXME: make this configurable
     buffer_len = 800;
     buffer = (uint8_t*)malloc(buffer_len);
@@ -128,4 +144,16 @@ void EtherSia::loop()
     if (len) {
         process_packet(len);
     }
+}
+
+void EtherSia::convert_buffer_to_reply()
+{
+    struct ether_header *eth = (struct ether_header*)buffer;
+    struct ip6_header *ip6 = (struct ip6_header *)(buffer + 14);
+
+    memcpy(ip6->dest, &ip6->src, 16);
+    memcpy(ip6->src, &link_local_addr, 16);
+
+    memcpy(eth->dest, eth->src, 6);
+    memcpy(eth->src, &enc_mac_addr, 6);
 }
