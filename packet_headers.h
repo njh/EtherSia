@@ -12,16 +12,16 @@ struct ether_header {
 
 #define ETHER_TYPE_IPV6           0x86dd
 
-#define IP6_PROTO_TCP   6
-#define IP6_PROTO_UDP   17
-#define IP6_PROTO_ICMP6 58
+#define IP6_PROTO_TCP             6
+#define IP6_PROTO_UDP             17
+#define IP6_PROTO_ICMP6           58
 
 #define ICMP6_TYPE_ECHO           128
 #define ICMP6_TYPE_ECHO_REPLY     129
 #define ICMP6_TYPE_NS             135
 #define ICMP6_TYPE_NA             136
 
-#define ICMP6_FLAG_S (1 << 6)
+#define ICMP6_FLAG_S              (1 << 6)
 
 #define ICMP6_OPTION_SOURCE_LINK_ADDRESS 1
 #define ICMP6_OPTION_TARGET_LINK_ADDRESS 2
