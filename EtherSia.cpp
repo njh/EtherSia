@@ -30,7 +30,7 @@ boolean EtherSia::begin(const uint8_t* macaddr)
     enc28j60_init(macaddr);
 
     set_linklocal_addr(link_local_addr, macaddr);
-    
+
     // FIXME: make this configurable
     buffer_len = 800;
     buffer = (uint8_t*)malloc(buffer_len);
@@ -82,14 +82,12 @@ boolean EtherSia::is_multicast_address(uint8_t addr[16])
 
 uint8_t EtherSia::is_our_address(uint8_t addr[16])
 {
-    return memcmp(&addr, &link_local_addr, 16) == 0;
+    return memcmp(addr, link_local_addr, 16) == 0;
 }
 
 void EtherSia::process_packet(uint16_t len)
 {
-    struct ether_header *header = (struct ether_header*)buffer;
-    struct ip6_header *ip6 = (struct ip6_header *)(buffer + sizeof(struct ether_header));
-    if (header->type != htons(ETHERTYPE_IPV6)) {
+    if (ETHER_HEADER->type != htons(ETHER_TYPE_IPV6)) {
         return;
     }
 
@@ -100,33 +98,33 @@ void EtherSia::process_packet(uint16_t len)
     Serial.println();
 
     Serial.print("DST=");
-    print_mac(header->dest);
+    print_mac(ETHER_HEADER->dest);
 
     Serial.print("SRC=");
-    print_mac(header->src);
+    print_mac(ETHER_HEADER->src);
 
 #ifdef DEBUG
-    if ((ip6->ver_tc[0] >> 4) & 0xF != 6) {
+    if ((IP6_HEADER->ver_tc[0] >> 4) & 0xF != 6) {
         Serial.println("NOT 6");
         return;
     }
 #endif
 
     Serial.print("length=");
-    Serial.print(ntohs(ip6->length), DEC);
+    Serial.print(ntohs(IP6_HEADER->length), DEC);
     Serial.println();
 
     Serial.print("proto=");
-    Serial.print(ip6->proto, DEC);
+    Serial.print(IP6_HEADER->proto, DEC);
     Serial.println();
 
     Serial.print("src=");
-    print_address(ip6->src);
+    print_address(IP6_HEADER->src);
 
     Serial.print("dst=");
-    print_address(ip6->dest);
+    print_address(IP6_HEADER->dest);
 
-    switch(ip6->proto) {
+    switch(IP6_HEADER->proto) {
     case IP6_PROTO_ICMP6:
         process_icmp6(len);
         break;
@@ -141,7 +139,7 @@ void EtherSia::process_packet(uint16_t len)
 
     default:
         Serial.print(F("Unknown next header type: "));
-        Serial.println(ip6->proto, DEC);
+        Serial.println(IP6_HEADER->proto, DEC);
         break;
     }
 }
@@ -157,12 +155,15 @@ void EtherSia::loop()
 
 void EtherSia::convert_buffer_to_reply()
 {
-    struct ether_header *eth = (struct ether_header*)buffer;
-    struct ip6_header *ip6 = (struct ip6_header *)(buffer + 14);
+    memcpy(IP6_HEADER->dest, IP6_HEADER->src, 16);
+    memcpy(IP6_HEADER->src, link_local_addr, 16);
 
-    memcpy(ip6->dest, &ip6->src, 16);
-    memcpy(ip6->src, &link_local_addr, 16);
+    memcpy(ETHER_HEADER->dest, ETHER_HEADER->src, 6);
+    memcpy(ETHER_HEADER->src, enc_mac_addr, 6);
+}
 
-    memcpy(eth->dest, eth->src, 6);
-    memcpy(eth->src, &enc_mac_addr, 6);
+void EtherSia::ip6_packet_send()
+{
+    uint16_t len = ETHER_HEADER_LEN + IP6_HEADER_LEN + ntohs(IP6_HEADER->length);
+    enc28j60_send(buffer, len);
 }

@@ -6,8 +6,11 @@ struct ether_header {
     uint8_t src[6];
     uint16_t type;
 } __attribute__((__packed__));
+#define ETHER_HEADER_LEN          (14)
+#define ETHER_HEADER_OFFSET       (0)
+#define ETHER_HEADER              ((struct ether_header*)(buffer + ETHER_HEADER_OFFSET))
 
-#define ETHERTYPE_IPV6		0x86dd
+#define ETHER_TYPE_IPV6           0x86dd
 
 #define IP6_PROTO_TCP   6
 #define IP6_PROTO_UDP   17
@@ -39,23 +42,35 @@ struct ip6_header {
     uint8_t  src[16];
     uint8_t  dest[16];
 } __attribute__((__packed__));
-
+#define IP6_HEADER_LEN            (40)
+#define IP6_HEADER_OFFSET         (ETHER_HEADER_OFFSET + ETHER_HEADER_LEN)
+#define IP6_HEADER                ((struct ip6_header*)(buffer + IP6_HEADER_OFFSET))
 
 
 struct icmp6_header {
     uint8_t type;
     uint8_t code;
     uint16_t checksum;
-    uint8_t flags;
+} __attribute__((__packed__));
+#define ICMP6_HEADER_LEN          (4)
+#define ICMP6_HEADER_OFFSET       (IP6_HEADER_OFFSET + IP6_HEADER_LEN)
+#define ICMP6_HEADER              ((struct icmp6_header*)(buffer + ICMP6_HEADER_OFFSET))
 
-    uint8_t reserved1;
-    uint8_t reserved2;
-    uint8_t reserved3;
 
-    uint8_t target[16];
     uint8_t option_type;
     uint8_t option_len;
     uint8_t option_mac[6];
 
 
+struct icmp6_na_header {
+    uint8_t flags;
+    uint8_t reserved[3];
+    uint8_t target[16];
+
+    uint8_t option_type;
+    uint8_t option_len;
+    uint8_t option_mac[6];
 } __attribute__((__packed__));
+#define ICMP6_NA_HEADER_LEN       (28)
+#define ICMP6_NA_HEADER_OFFSET    (ICMP6_HEADER_OFFSET + ICMP6_HEADER_LEN)
+#define ICMP6_NA_HEADER           ((struct icmp6_na_header*)(buffer + ICMP6_NA_HEADER_OFFSET))

@@ -29,6 +29,7 @@ public:
     void print_mac(const uint8_t mac[6]);
     void print_address(const uint8_t addr[16]);
 
+    void ip6_packet_send();
 protected:
     uint8_t link_local_addr[16];
 

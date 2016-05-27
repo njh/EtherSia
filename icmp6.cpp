@@ -38,85 +38,71 @@ chksum(uint16_t sum, const uint8_t *data, uint16_t len)
 uint16_t
 EtherSia::icmp6_chksum()
 {
-    struct ip6_header *ip6 = (struct ip6_header *)(buffer + 14);
-    struct icmp6_header *icmp6 = (struct icmp6_header *)(buffer + 14 + 40);
-
     /* First sum pseudoheader. */
     /* IP protocol and length fields. This addition cannot carry. */
-    volatile uint16_t newsum = ntohs(ip6->length) + ip6->proto;
+    volatile uint16_t newsum = ntohs(IP6_HEADER->length) + IP6_HEADER->proto;
 
     /* Sum IP source and destination addresses. */
-    newsum = chksum(newsum, (uint8_t *)(&ip6->src[0]), 32);
+    newsum = chksum(newsum, (uint8_t *)(IP6_HEADER->src), 32);
 
     /* Sum ICMP6 header and data. */
-    icmp6->checksum = 0;
-    newsum = chksum(newsum, (uint8_t *)icmp6, ntohs(ip6->length));
+    ICMP6_HEADER->checksum = 0;
+    newsum = chksum(newsum, (uint8_t *)ICMP6_HEADER, ntohs(IP6_HEADER->length));
 
     return ~newsum;
 }
 
 void EtherSia::icmp6_ns_reply()
 {
-    struct ip6_header *ip6 = (struct ip6_header *)(buffer + 14);
-    struct icmp6_header *icmp6 = (struct icmp6_header *)(buffer + 14 + 40);
-
     // Is the Neighbour Solicitation addressed to us?
-    if (!is_our_address(icmp6->target)) {
+    if (!is_our_address(ICMP6_NA_HEADER->target)) {
         return;
     }
 
     convert_buffer_to_reply();
 
     // We should now send a neighbor advertisement back to where the neighbor solicication came from.
-    ip6->length = ntohs(sizeof(struct icmp6_header));
-    icmp6->type = ICMP6_TYPE_NA;
-    icmp6->flags = ICMP6_FLAG_S; // Solicited flag.
-    icmp6->reserved1 = icmp6->reserved2 = icmp6->reserved3 = 0;
-    icmp6->option_type = ICMP6_OPTION_TARGET_LINK_ADDRESS;
-    icmp6->option_len = 1;  // Options length, 1 = 8 bytes.
-    memcpy(&icmp6->option_mac, &enc_mac_addr, sizeof(enc_mac_addr));
-    icmp6->checksum = 0;
-    icmp6->checksum = htons(icmp6_chksum());
+    IP6_HEADER->length = ntohs(ICMP6_HEADER_LEN + ICMP6_NA_HEADER_LEN);
+    ICMP6_HEADER->type = ICMP6_TYPE_NA;
+    ICMP6_NA_HEADER->flags = ICMP6_FLAG_S; // Solicited flag.
+    ICMP6_NA_HEADER->reserved[0] = ICMP6_NA_HEADER->reserved[1] = ICMP6_NA_HEADER->reserved[2] = 0;
+    ICMP6_NA_HEADER->option_type = ICMP6_OPTION_TARGET_LINK_ADDRESS;
+    ICMP6_NA_HEADER->option_len = 1;  // Options length, 1 = 8 bytes.
+    memcpy(ICMP6_NA_HEADER->option_mac, enc_mac_addr, sizeof(enc_mac_addr));
+    ICMP6_HEADER->checksum = 0;
+    ICMP6_HEADER->checksum = htons(icmp6_chksum());
 
-    enc28j60_send(buffer, 14 + 40 + sizeof(struct icmp6_header));
+    ip6_packet_send();
 }
 
 void EtherSia::icmp6_echo_reply()
 {
-    struct ip6_header *ip6 = (struct ip6_header *)(buffer + 14);
-    struct icmp6_header *icmp6 = (struct icmp6_header *)(buffer + 14 + 40);
-
     convert_buffer_to_reply();
 
-    icmp6->type = ICMP6_TYPE_ECHO_REPLY;
-    icmp6->code = 0;
-    icmp6->checksum = 0;
-    icmp6->checksum = htons(icmp6_chksum());
+    ICMP6_HEADER->type = ICMP6_TYPE_ECHO_REPLY;
+    ICMP6_HEADER->code = 0;
+    ICMP6_HEADER->checksum = 0;
+    ICMP6_HEADER->checksum = htons(icmp6_chksum());
 
-    enc28j60_send(buffer, 14 + 40 + ntohs(ip6->length));
+    ip6_packet_send();
 }
 
 void EtherSia::process_icmp6(uint16_t len)
 {
-    struct icmp6_header *icmp6 = (struct icmp6_header *)(buffer + 14 + 40);
-
-    Serial.print(F("sizeof(struct icmp6_header)="));
-    Serial.println(sizeof(struct icmp6_header), DEC);
-
     Serial.print(F("icmp6 type="));
-    Serial.println(icmp6->type, DEC);
+    Serial.println(ICMP6_HEADER->type, DEC);
 
     Serial.print(F("icmp6 code="));
-    Serial.println(icmp6->code, DEC);
+    Serial.println(ICMP6_HEADER->code, DEC);
 
     Serial.print(F("packet checksum=0x"));
-    Serial.println(ntohs(icmp6->checksum), HEX);
+    Serial.println(ntohs(ICMP6_HEADER->checksum), HEX);
 
     Serial.print(F("calculated checksum=0x"));
     Serial.println(icmp6_chksum(), HEX);
 
 
-    switch(icmp6->type) {
+    switch(ICMP6_HEADER->type) {
     case ICMP6_TYPE_NS:
         icmp6_ns_reply();
         break;
@@ -127,7 +113,7 @@ void EtherSia::process_icmp6(uint16_t len)
 
     default:
         Serial.print(F("Unknown ICMP6 type="));
-        Serial.println(icmp6->type, DEC);
+        Serial.println(ICMP6_HEADER->type, DEC);
         break;
     }
 }
