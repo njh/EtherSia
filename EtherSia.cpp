@@ -35,6 +35,9 @@ boolean EtherSia::begin(const uint8_t* macaddr)
     buffer_len = 800;
     buffer = (uint8_t*)malloc(buffer_len);
 
+    // Delay a 'random' amount to stop multiple nodes acting at the same time
+    delay(macaddr[5] ^ 0x55);
+
     return true;
 }
 
