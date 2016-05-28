@@ -5,21 +5,6 @@
 #include "enc28j60.h"
 
 
-static void
-set_linklocal_addr(uint8_t ipaddr[16], const uint8_t macaddr[6])
-{
-    memset(ipaddr, 0, 16);
-
-    ipaddr[0] = 0xfe;
-    ipaddr[1] = 0x80;
-
-    memcpy(ipaddr + 8, macaddr, 3);
-    ipaddr[8] ^= 0x02;
-    ipaddr[11] = 0xff;
-    ipaddr[12] = 0xfe;
-    memcpy(ipaddr + 13, macaddr + 3, 3);
-}
-
 EtherSia::EtherSia(int8_t cs) : ENC28J60(cs)
 {
 }
@@ -29,7 +14,11 @@ boolean EtherSia::begin(const uint8_t* macaddr)
 {
     enc28j60_init(macaddr);
 
-    set_linklocal_addr(link_local_addr, macaddr);
+    // Calculate our link local address
+    memset(link_local_addr, 0, 16);
+    link_local_addr[0] = 0xfe;
+    link_local_addr[1] = 0x80;
+    set_eui_64(link_local_addr, macaddr);
 
     // FIXME: make this configurable
     buffer_len = 800;
@@ -76,6 +65,18 @@ void EtherSia::print_address(const uint8_t addr[16])
             Serial.print(':');
     }
     Serial.println();
+}
+
+void EtherSia::set_eui_64(uint8_t ipaddr[16], const uint8_t macaddr[6])
+{
+    ipaddr[8] = macaddr[0] ^ 0x02;
+    ipaddr[9] = macaddr[1];
+    ipaddr[10] = macaddr[2];
+    ipaddr[11] = 0xff;
+    ipaddr[12] = 0xfe;
+    ipaddr[13] = macaddr[3];
+    ipaddr[14] = macaddr[4];
+    ipaddr[15] = macaddr[5];
 }
 
 boolean EtherSia::is_multicast_address(uint8_t addr[16])

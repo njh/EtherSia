@@ -23,6 +23,7 @@ public:
 
     void loop();
 
+    void set_eui_64(uint8_t ipaddr[16], const uint8_t macaddr[6]);
     boolean is_multicast_address(uint8_t addr[16]);
     uint8_t is_our_address(uint8_t addr[16]);
 
