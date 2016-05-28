@@ -89,18 +89,6 @@ void EtherSia::icmp6_echo_reply()
 
 void EtherSia::process_icmp6(uint16_t len)
 {
-    Serial.print(F("icmp6 type="));
-    Serial.println(ICMP6_HEADER->type, DEC);
-
-    Serial.print(F("icmp6 code="));
-    Serial.println(ICMP6_HEADER->code, DEC);
-
-    Serial.print(F("packet checksum=0x"));
-    Serial.println(ntohs(ICMP6_HEADER->checksum), HEX);
-
-    Serial.print(F("calculated checksum=0x"));
-    Serial.println(icmp6_chksum(), HEX);
-
 
     switch(ICMP6_HEADER->type) {
     case ICMP6_TYPE_NS:
