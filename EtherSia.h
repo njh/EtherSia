@@ -14,6 +14,12 @@
 #endif
 
 
+enum {
+    ADDRESS_TYPE_LINK_LOCAL = 1,
+    ADDRESS_TYPE_GLOBAL,
+    ADDRESS_TYPE_MULTICAST
+};
+
 class EtherSia : public ENC28J60 {
 public:
     EtherSia(int8_t cs);
@@ -32,6 +38,8 @@ public:
 
 protected:
     uint8_t link_local_addr[16];
+    uint8_t global_addr[16];
+    uint8_t router_mac[6];
 
     uint8_t *buffer;
     uint16_t buffer_len;
@@ -45,6 +53,9 @@ protected:
     void icmp6_process_packet(uint16_t len);
     void icmp6_ns_reply();
     void icmp6_echo_reply();
+    void icmp6_send_rs();
+    void icmp6_process_ra();
+    void icmp6_process_prefix(struct icmp6_prefix_information *pi, uint8_t *router_mac_ptr);
 
 };
 

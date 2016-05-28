@@ -24,6 +24,10 @@ boolean EtherSia::begin(const uint8_t* macaddr)
     buffer_len = 800;
     buffer = (uint8_t*)malloc(buffer_len);
 
+    // Set router MAC and global address to nulls
+    memset(router_mac, 0, 6);
+    memset(global_addr, 0, 16);
+
     // Delay a 'random' amount to stop multiple nodes acting at the same time
     delay(macaddr[5] ^ 0x55);
 
@@ -86,7 +90,13 @@ boolean EtherSia::is_multicast_address(uint8_t addr[16])
 
 uint8_t EtherSia::is_our_address(uint8_t addr[16])
 {
-    return memcmp(addr, link_local_addr, 16) == 0;
+    if (memcmp(addr, link_local_addr, 16) == 0) {
+        return 1;
+    } else if (memcmp(addr, global_addr, 16) == 0) {
+        return 2;
+    } else {
+        return 0;
+    }
 }
 
 void EtherSia::process_packet(uint16_t len)
@@ -154,13 +164,27 @@ void EtherSia::loop()
 
     if (len) {
         process_packet(len);
+    } else if (global_addr[0] == 0x00) {
+        static unsigned long nextRouterSolicitation = millis();
+        if ((long)(millis() - nextRouterSolicitation) >= 0) {
+            icmp6_send_rs();
+            nextRouterSolicitation = millis() + 4000;
+        }
     }
 }
 
 void EtherSia::convert_buffer_to_reply()
 {
+    uint8_t *reply_src_addr = NULL;
+
+    if (is_our_address(IP6_HEADER->dest) == ADDRESS_TYPE_GLOBAL) {
+        reply_src_addr = global_addr;
+    } else {
+        reply_src_addr = link_local_addr;
+    }
+
     memcpy(IP6_HEADER->dest, IP6_HEADER->src, 16);
-    memcpy(IP6_HEADER->src, link_local_addr, 16);
+    memcpy(IP6_HEADER->src, reply_src_addr, 16);
 
     memcpy(ETHER_HEADER->dest, ETHER_HEADER->src, 6);
     memcpy(ETHER_HEADER->src, enc_mac_addr, 6);
