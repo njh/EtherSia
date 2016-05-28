@@ -87,7 +87,7 @@ void EtherSia::icmp6_echo_reply()
     ip6_packet_send();
 }
 
-void EtherSia::process_icmp6(uint16_t len)
+void EtherSia::icmp6_process_packet(uint16_t len)
 {
 
     switch(ICMP6_HEADER->type) {

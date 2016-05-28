@@ -42,7 +42,7 @@ protected:
     void ip6_packet_send();
 
     uint16_t icmp6_chksum();
-    void process_icmp6(uint16_t len);
+    void icmp6_process_packet(uint16_t len);
     void icmp6_ns_reply();
     void icmp6_echo_reply();
 

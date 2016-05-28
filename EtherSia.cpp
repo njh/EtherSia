@@ -130,7 +130,7 @@ void EtherSia::process_packet(uint16_t len)
 
     switch(IP6_HEADER->proto) {
     case IP6_PROTO_ICMP6:
-        process_icmp6(len);
+        icmp6_process_packet(len);
         break;
 
     case IP6_PROTO_TCP:
