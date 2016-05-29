@@ -1,3 +1,18 @@
+EtherSia on Nanode
+==================
+
+A minimal example of using EtherSia with a [Nanode].
+
+Allows you to control the Nanode LED by sending UDP packets:
+
+```
+echo -n "on" > /dev/udp/<ip of nanode>/1234
+echo -n "off" > /dev/udp/<ip of nanode>/1234
+```
+
+(This syntax only works in Bash)
+
+
 Nanode Hardware
 ---------------
 
