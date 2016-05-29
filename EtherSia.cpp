@@ -20,6 +20,9 @@ boolean EtherSia::begin(const uint8_t* macaddr)
     buffer_len = 800;
     buffer = (uint8_t*)malloc(buffer_len);
 
+    udp_port = 0;
+    udp_callback = NULL;
+
     // Set router MAC and global address to nulls
     memset(router_mac, 0, 6);
     memset(global_addr, 0, 16);
@@ -144,7 +147,7 @@ void EtherSia::process_packet(uint16_t len)
         break;
 
     case IP6_PROTO_UDP:
-        Serial.println(F("Got UDP packet"));
+        udp_process_packet(len);
         break;
 
     default:

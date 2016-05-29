@@ -115,4 +115,15 @@ struct icmp6_na_header {
 #define ICMP6_NA_HEADER           ((struct icmp6_na_header*)(buffer + ICMP6_NA_HEADER_OFFSET))
 
 
+struct udp_header {
+    uint16_t src_port;
+    uint16_t dest_port;
+    uint16_t length;
+    uint16_t checksum;
+} __attribute__((__packed__));
+#define UDP_HEADER_LEN            (8)
+#define UDP_HEADER_OFFSET         (IP6_HEADER_OFFSET + IP6_HEADER_LEN)
+#define UDP_HEADER                ((struct udp_header*)(buffer + UDP_HEADER_OFFSET))
+
+
 #endif

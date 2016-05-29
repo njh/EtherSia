@@ -22,6 +22,15 @@ enum {
     ADDRESS_TYPE_MULTICAST
 };
 
+
+/** This type definition defines the structure of a UDP server event handler callback funtion */
+typedef void (*UdpServerCallback)(
+    uint16_t dest_port,    ///< Port the packet was sent to
+    const uint8_t *src_ip, ///< IP address of the sender
+    const char *data,      ///< UDP payload data
+    uint16_t len);         ///< Length of the payload data
+
+
 class EtherSia : public ENC28J60 {
 public:
     EtherSia(int8_t cs);
@@ -38,6 +47,8 @@ public:
     void print_mac(const uint8_t mac[6]);
     void print_address(const uint8_t addr[16]);
 
+    void udp_listen(UdpServerCallback callback, uint16_t port);
+
 protected:
     uint8_t link_local_addr[16];
     uint8_t global_addr[16];
@@ -45,6 +56,9 @@ protected:
 
     uint8_t *buffer;
     uint16_t buffer_len;
+    
+    uint16_t udp_port;
+    UdpServerCallback udp_callback;
 
     void process_packet(uint16_t len);
 
@@ -59,6 +73,7 @@ protected:
     void icmp6_process_ra();
     void icmp6_process_prefix(struct icmp6_prefix_information *pi, uint8_t *router_mac_ptr);
 
+    void udp_process_packet(uint16_t len);
 };
 
 #endif
