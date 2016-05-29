@@ -1,3 +1,6 @@
+#ifndef ETHERSIA_PACKET_HEADERS_H
+#define ETHERSIA_PACKET_HEADERS_H
+
 /*
  * Structure of a 10Mb/s Ethernet header.
  */
@@ -110,3 +113,6 @@ struct icmp6_na_header {
 #define ICMP6_NA_HEADER_LEN       (28)
 #define ICMP6_NA_HEADER_OFFSET    (ICMP6_HEADER_OFFSET + ICMP6_HEADER_LEN)
 #define ICMP6_NA_HEADER           ((struct icmp6_na_header*)(buffer + ICMP6_NA_HEADER_OFFSET))
+
+
+#endif

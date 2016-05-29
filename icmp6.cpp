@@ -1,7 +1,5 @@
-#include <stdint.h>
 
 #include "EtherSia.h"
-#include "packet_headers.h"
 
 
 static uint16_t

@@ -1,8 +1,4 @@
-#include <stdint.h>
-
 #include "EtherSia.h"
-#include "packet_headers.h"
-#include "enc28j60.h"
 
 
 EtherSia::EtherSia(int8_t cs) : ENC28J60(cs)

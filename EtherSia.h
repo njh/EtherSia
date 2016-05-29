@@ -2,8 +2,10 @@
 #define EtherSia_H
 
 #include <Arduino.h>
+#include <stdint.h>
 
 #include "enc28j60.h"
+#include "packet_headers.h"
 
 #ifndef htons
 #define htons(x) ( ((x)<<8) | (((x)>>8)&0xFF) )
