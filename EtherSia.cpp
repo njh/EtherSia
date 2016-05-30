@@ -152,38 +152,12 @@ void EtherSia::process_packet(uint16_t len)
         return;
     }
 
-    Serial.println();
-
-    Serial.print("LEN=");
-    Serial.print(len, DEC);
-    Serial.println();
-
-    Serial.print("DST=");
-    print_mac(ETHER_HEADER->dest);
-
-    Serial.print("SRC=");
-    print_mac(ETHER_HEADER->src);
-
 #ifdef DEBUG
     if ((IP6_HEADER->ver_tc[0] >> 4) & 0xF != 6) {
         Serial.println("NOT 6");
         return;
     }
 #endif
-
-    Serial.print("length=");
-    Serial.print(ntohs(IP6_HEADER->length), DEC);
-    Serial.println();
-
-    Serial.print("proto=");
-    Serial.print(IP6_HEADER->proto, DEC);
-    Serial.println();
-
-    Serial.print("src=");
-    print_address(IP6_HEADER->src);
-
-    Serial.print("dst=");
-    print_address(IP6_HEADER->dest);
 
     switch(IP6_HEADER->proto) {
     case IP6_PROTO_ICMP6:
