@@ -31,10 +31,6 @@ void setup() {
     Serial.begin(38400);
     Serial.println("[EtherSia]");
 
-    // Turn off the Red LED (it is connected to +5v)
-    pinMode(NANODE_LED_PIN, OUTPUT);
-    digitalWrite(NANODE_LED_PIN, HIGH);
-
     Serial.print("Reading MAC address... ");
     r = unio.read(macaddr, NANODE_MAC_ADDRESS, 6);
     if (r) Serial.println("success");
@@ -45,6 +41,10 @@ void setup() {
     if (ether.begin(macaddr) == false) {
         Serial.println("Failed to configure Ethernet");
     }
+
+    // Turn off the Red LED (it is connected to +5v)
+    pinMode(NANODE_LED_PIN, OUTPUT);
+    digitalWrite(NANODE_LED_PIN, HIGH);
 
     ether.udp_listen(&udp_callback, 1234);
 
