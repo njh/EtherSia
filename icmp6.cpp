@@ -29,6 +29,9 @@ void EtherSia::icmp6_echo_reply()
 {
     convert_buffer_to_reply();
 
+    Serial.print(F("Ping from "));
+    print_address(IP6_HEADER->src);
+
     ICMP6_HEADER->type = ICMP6_TYPE_ECHO_REPLY;
     ICMP6_HEADER->code = 0;
     ICMP6_HEADER->checksum = 0;
