@@ -1,11 +1,12 @@
 Modified BSD License
 ====================
 
-EtherSia contains code from the [Contiki] project, which is distributed under 
+EtherSia contains code from the [Contiki] project, which is distributed under
 the same license as this project.
 
-_Copyright (c) `2016`, `Nicholas Humfrey`_
-_Copyright (c) `2012-2013`, `Thingsquare`_
+_Copyright (c) 2016, Nicholas Humfrey_
+_Copyright (c) 2012-2013, Thingsquare_
+_Copyright (c) 2001-2003, Adam Dunkels_
 _All rights reserved._
 
 Redistribution and use in source and binary forms, with or without
