@@ -6,9 +6,12 @@ void EtherSia::udp_process_packet(uint16_t len)
 {
     uint16_t dest_port = ntohs(UDP_HEADER->dest_port);
 
-    // FIXME: verify the checksum
-
     if (!is_our_address(IP6_HEADER->dest)) {
+        return;
+    }
+
+    if (!udp_verify_checksum()) {
+        Serial.println(F("UDP checksum error."));
         return;
     }
 
@@ -20,6 +23,18 @@ void EtherSia::udp_process_packet(uint16_t len)
             ntohs(UDP_HEADER->length) - UDP_HEADER_LEN
         );
     }
+}
+
+uint8_t EtherSia::udp_verify_checksum()
+{
+    uint16_t packet_checksum = ntohs(UDP_HEADER->checksum);
+    uint16_t calculated_checksum;
+
+    // Set field in packet to 0 before calculating the checksum
+    UDP_HEADER->checksum = 0;
+
+    // Does the calculated checksum equal the checksum in the packet?    
+    return ip6_calculate_checksum() == packet_checksum;
 }
 
 void EtherSia::udp_listen(UdpServerCallback callback, uint16_t port)

@@ -76,6 +76,7 @@ protected:
     void icmp6_process_prefix(struct icmp6_prefix_information *pi, uint8_t *router_mac_ptr);
 
     void udp_process_packet(uint16_t len);
+    uint8_t udp_verify_checksum();
 };
 
 #endif
