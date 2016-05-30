@@ -2,54 +2,6 @@
 #include "EtherSia.h"
 
 
-static uint16_t
-chksum(uint16_t sum, const uint8_t *data, uint16_t len)
-{
-    uint16_t t;
-    const uint8_t *dataptr;
-    const uint8_t *last_byte;
-
-    dataptr = data;
-    last_byte = data + len - 1;
-
-    while(dataptr < last_byte) {   /* At least two more bytes */
-        t = (dataptr[0] << 8) + dataptr[1];
-        sum += t;
-        if(sum < t) {
-            sum++;      /* carry */
-        }
-        dataptr += 2;
-    }
-
-    if(dataptr == last_byte) {
-        t = (dataptr[0] << 8) + 0;
-        sum += t;
-        if(sum < t) {
-            sum++;      /* carry */
-        }
-    }
-
-    /* Return sum in host byte order. */
-    return sum;
-}
-
-uint16_t
-EtherSia::icmp6_chksum()
-{
-    /* First sum pseudoheader. */
-    /* IP protocol and length fields. This addition cannot carry. */
-    volatile uint16_t newsum = ntohs(IP6_HEADER->length) + IP6_HEADER->proto;
-
-    /* Sum IP source and destination addresses. */
-    newsum = chksum(newsum, (uint8_t *)(IP6_HEADER->src), 32);
-
-    /* Sum ICMP6 header and data. */
-    ICMP6_HEADER->checksum = 0;
-    newsum = chksum(newsum, (uint8_t *)ICMP6_HEADER, ntohs(IP6_HEADER->length));
-
-    return ~newsum;
-}
-
 void EtherSia::icmp6_ns_reply()
 {
     // Is the Neighbour Solicitation addressed to us?
@@ -68,7 +20,7 @@ void EtherSia::icmp6_ns_reply()
     ICMP6_NA_HEADER->option_len = 1;  // Options length, 1 = 8 bytes.
     memcpy(ICMP6_NA_HEADER->option_mac, enc_mac_addr, sizeof(enc_mac_addr));
     ICMP6_HEADER->checksum = 0;
-    ICMP6_HEADER->checksum = htons(icmp6_chksum());
+    ICMP6_HEADER->checksum = htons(ip6_calculate_checksum());
 
     ip6_packet_send();
 }
@@ -80,7 +32,7 @@ void EtherSia::icmp6_echo_reply()
     ICMP6_HEADER->type = ICMP6_TYPE_ECHO_REPLY;
     ICMP6_HEADER->code = 0;
     ICMP6_HEADER->checksum = 0;
-    ICMP6_HEADER->checksum = htons(icmp6_chksum());
+    ICMP6_HEADER->checksum = htons(ip6_calculate_checksum());
 
     ip6_packet_send();
 }
@@ -111,7 +63,7 @@ void EtherSia::icmp6_send_rs()
     memcpy(ICMP6_RS_HEADER->option_mac, enc_mac_addr, sizeof(enc_mac_addr));
 
     ICMP6_HEADER->checksum = 0;
-    ICMP6_HEADER->checksum = htons(icmp6_chksum());
+    ICMP6_HEADER->checksum = htons(ip6_calculate_checksum());
 
     ip6_packet_send();
 }

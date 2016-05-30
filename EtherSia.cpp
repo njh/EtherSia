@@ -98,6 +98,54 @@ uint8_t EtherSia::is_our_address(uint8_t addr[16])
     }
 }
 
+// This function comes from Contiki's uip6.c
+static uint16_t chksum(uint16_t sum, const uint8_t *data, uint16_t len)
+{
+    uint16_t t;
+    const uint8_t *dataptr;
+    const uint8_t *last_byte;
+
+    dataptr = data;
+    last_byte = data + len - 1;
+
+    while(dataptr < last_byte) {   /* At least two more bytes */
+        t = (dataptr[0] << 8) + dataptr[1];
+        sum += t;
+        if(sum < t) {
+            sum++;      /* carry */
+        }
+        dataptr += 2;
+    }
+
+    if(dataptr == last_byte) {
+        t = (dataptr[0] << 8) + 0;
+        sum += t;
+        if(sum < t) {
+            sum++;      /* carry */
+        }
+    }
+
+    /* Return sum in host byte order. */
+    return sum;
+}
+
+// This function is derived from Contiki's uip6.c / upper_layer_chksum()
+uint16_t EtherSia::ip6_calculate_checksum()
+{
+    /* First sum pseudoheader. */
+    /* IP protocol and length fields. This addition cannot carry. */
+    volatile uint16_t newsum = ntohs(IP6_HEADER->length) + IP6_HEADER->proto;
+
+    /* Sum IP source and destination addresses. */
+    newsum = chksum(newsum, (uint8_t *)(IP6_HEADER->src), 32);
+
+    /* Sum the payload header and data */
+    uint8_t *payload = (uint8_t *)(this->buffer + IP6_HEADER_OFFSET + IP6_HEADER_LEN);
+    newsum = chksum(newsum, payload, ntohs(IP6_HEADER->length));
+
+    return ~newsum;
+}
+
 void EtherSia::process_packet(uint16_t len)
 {
     if (ETHER_HEADER->type != htons(ETHER_TYPE_IPV6)) {

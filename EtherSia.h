@@ -62,6 +62,8 @@ protected:
 
     void process_packet(uint16_t len);
 
+    uint16_t ip6_calculate_checksum();
+
     void convert_buffer_to_reply();
     void ip6_packet_send();
 
