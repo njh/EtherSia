@@ -124,6 +124,10 @@ void EtherSia::icmp6_process_ra()
 
 void EtherSia::icmp6_process_packet(uint16_t len)
 {
+    if (!icmp6_verify_checksum()) {
+        Serial.println(F("ICMP6 checksum error."));
+        return;
+    }
 
     switch(ICMP6_HEADER->type) {
     case ICMP6_TYPE_NS:
@@ -147,4 +151,15 @@ void EtherSia::icmp6_process_packet(uint16_t len)
         Serial.println(ICMP6_HEADER->type, DEC);
         break;
     }
+}
+
+uint8_t EtherSia::icmp6_verify_checksum()
+{
+    uint16_t packet_checksum = ntohs(ICMP6_HEADER->checksum);
+
+    // Set field in packet to 0 before calculating the checksum
+    ICMP6_HEADER->checksum = 0;
+
+    // Does the calculated checksum equal the checksum in the packet?    
+    return ip6_calculate_checksum() == packet_checksum;
 }
