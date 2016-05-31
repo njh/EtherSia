@@ -21,6 +21,9 @@ Limitations
 
 If you need a more fully functional IPv6 stack, then take a look at [Contiki].
 
+EtherSia is an IPv6 only library. If you are looking for an IPv4 library for ENC28J60,
+then take a look at [EtherCard].
+
 
 License: [3-clause BSD license]
 
@@ -28,4 +31,5 @@ License: [3-clause BSD license]
 [Arduino]:               http://www.arduino.cc/
 [Contiki]:               http://www.contiki-os.org/
 [ENC28J60]:              http://www.microchip.com/ENC28J60
+[EtherCard]:             http://github.com/jcw/ethercard
 [3-clause BSD license]:  http://opensource.org/licenses/BSD-3-Clause
