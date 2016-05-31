@@ -28,7 +28,6 @@ void EtherSia::udp_process_packet(uint16_t len)
 uint8_t EtherSia::udp_verify_checksum()
 {
     uint16_t packet_checksum = ntohs(UDP_HEADER->checksum);
-    uint16_t calculated_checksum;
 
     // Set field in packet to 0 before calculating the checksum
     UDP_HEADER->checksum = 0;
