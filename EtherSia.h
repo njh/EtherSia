@@ -27,7 +27,7 @@ enum {
 typedef void (*UdpServerCallback)(
     uint16_t dest_port,    ///< Port the packet was sent to
     const uint8_t *src_ip, ///< IP address of the sender
-    const char *data,      ///< UDP payload data
+    char *data,            ///< UDP payload data
     uint16_t len);         ///< Length of the payload data
 
 
@@ -48,6 +48,8 @@ public:
     void print_address(const uint8_t addr[16]);
 
     void udp_listen(UdpServerCallback callback, uint16_t port);
+    void udp_send_reply(const char *data);
+    void udp_send_reply(const char *data, uint16_t len);
 
 protected:
     uint8_t link_local_addr[16];

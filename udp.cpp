@@ -25,6 +25,32 @@ void EtherSia::udp_process_packet(uint16_t len)
     }
 }
 
+void EtherSia::udp_send_reply(const char *data)
+{
+    udp_send_reply(data, strlen(data));
+}
+
+void EtherSia::udp_send_reply(const char *data, uint16_t len)
+{
+    uint16_t dest_port = UDP_HEADER->dest_port;
+    uint16_t src_port = UDP_HEADER->src_port;
+    
+    if (data) {
+        memcpy(UDP_PAYLOAD_PTR, data, len);
+    }
+
+    convert_buffer_to_reply();
+
+    UDP_HEADER->length = htons(UDP_HEADER_LEN + len);
+    IP6_HEADER->length = UDP_HEADER->length;
+    UDP_HEADER->dest_port = src_port;
+    UDP_HEADER->src_port = dest_port;
+    UDP_HEADER->checksum = 0;
+    UDP_HEADER->checksum = htons(ip6_calculate_checksum());
+
+    ip6_packet_send();
+}
+
 uint8_t EtherSia::udp_verify_checksum()
 {
     uint16_t packet_checksum = ntohs(UDP_HEADER->checksum);

@@ -6,19 +6,27 @@ EtherSia ether(8);
 const int NANODE_LED_PIN = 6;
 
 
-void udp_callback(uint16_t port, const uint8_t *address, const char *data, uint16_t len) {
+void udp_callback(uint16_t port, const uint8_t *address, char *data, uint16_t len) {
+    boolean success = false;
+
     Serial.println("Received UDP packet from: ");
     ether.print_address(address);
 
     if (strncmp("on", data, len) == 0) {
         Serial.println("** LED On **");
         digitalWrite(NANODE_LED_PIN, LOW);
+        success = true;
     } else if (strncmp("off", data, len) == 0) {
         Serial.println("** LED Off **");
         digitalWrite(NANODE_LED_PIN, HIGH);
-    } else {
-        Serial.println("** Unknown **");
+        success = true;
     }
+
+    if (success) {
+        ether.udp_send_reply("ok");
+    } else {
+        ether.udp_send_reply("err");
+    } 
 }
 
 
