@@ -124,6 +124,7 @@ struct udp_header {
 #define UDP_HEADER_LEN            (8)
 #define UDP_HEADER_OFFSET         (IP6_HEADER_OFFSET + IP6_HEADER_LEN)
 #define UDP_HEADER                ((struct udp_header*)(buffer + UDP_HEADER_OFFSET))
+#define UDP_PAYLOAD_PTR           (char*)(buffer + UDP_HEADER_OFFSET + UDP_HEADER_LEN)
 
 
 #endif

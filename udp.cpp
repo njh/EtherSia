@@ -19,7 +19,7 @@ void EtherSia::udp_process_packet(uint16_t len)
         this->udp_callback(
             dest_port,
             IP6_HEADER->src,
-            (char*)(this->buffer + UDP_HEADER_OFFSET + UDP_HEADER_LEN),
+            UDP_PAYLOAD_PTR,
             ntohs(UDP_HEADER->length) - UDP_HEADER_LEN
         );
     }
