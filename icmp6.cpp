@@ -19,25 +19,21 @@ void EtherSia::icmp6_ns_reply()
     ICMP6_NA_HEADER->option_type = ICMP6_OPTION_TARGET_LINK_ADDRESS;
     ICMP6_NA_HEADER->option_len = 1;  // Options length, 1 = 8 bytes.
     memcpy(ICMP6_NA_HEADER->option_mac, enc_mac_addr, sizeof(enc_mac_addr));
-    ICMP6_HEADER->checksum = 0;
-    ICMP6_HEADER->checksum = htons(ip6_calculate_checksum());
 
-    ip6_packet_send();
+    icmp6_packet_send();
 }
 
 void EtherSia::icmp6_echo_reply()
 {
-    convert_buffer_to_reply();
-
     Serial.print(F("Ping from "));
     print_address(IP6_HEADER->src);
 
+    convert_buffer_to_reply();
+
     ICMP6_HEADER->type = ICMP6_TYPE_ECHO_REPLY;
     ICMP6_HEADER->code = 0;
-    ICMP6_HEADER->checksum = 0;
-    ICMP6_HEADER->checksum = htons(ip6_calculate_checksum());
 
-    ip6_packet_send();
+    icmp6_packet_send();
 }
 
 void EtherSia::icmp6_send_rs()
@@ -65,6 +61,11 @@ void EtherSia::icmp6_send_rs()
     ICMP6_RS_HEADER->option_len = 1;
     memcpy(ICMP6_RS_HEADER->option_mac, enc_mac_addr, sizeof(enc_mac_addr));
 
+    icmp6_packet_send();
+}
+
+void EtherSia::icmp6_packet_send()
+{
     ICMP6_HEADER->checksum = 0;
     ICMP6_HEADER->checksum = htons(ip6_calculate_checksum());
 
