@@ -90,9 +90,9 @@ boolean EtherSia::is_multicast_address(uint8_t addr[16])
 uint8_t EtherSia::is_our_address(uint8_t addr[16])
 {
     if (memcmp(addr, link_local_addr, 16) == 0) {
-        return 1;
+        return ADDRESS_TYPE_LINK_LOCAL;
     } else if (memcmp(addr, global_addr, 16) == 0) {
-        return 2;
+        return ADDRESS_TYPE_GLOBAL;
     } else {
         return 0;
     }
