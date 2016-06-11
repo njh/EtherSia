@@ -35,7 +35,7 @@ Compatibility
 | [Nanode RF] / Classic           | -       | 8               | MCP79411             |
 | [Nano Shield]                   | -       | 10              | None                 |
 | Velleman [KA04]/[VMA04]         | -       | 10              | None                 |
-| [Ciseco Ethernet Shield] (K016) | -       | 10 / Custom     | None                 |
+| [Ciseco Ethernet Shield] K016   | -       | 10 / Custom     | None                 |
 | [Snootlab Gate 0.5]             | -       | 10              | None                 |
 
 
