@@ -32,7 +32,7 @@ void udp_callback(uint16_t port, const uint8_t *address, char *data, uint16_t le
 
 void setup() {
     NanodeUNIO unio(NANODE_MAC_DEVICE);
-    byte macaddr[6];
+    MACAddress macaddr;
     boolean r;
 
     // Setup serial port
@@ -43,7 +43,8 @@ void setup() {
     r = unio.read(macaddr, NANODE_MAC_ADDRESS, 6);
     if (r) Serial.println("success");
     else Serial.println("failure");
-    ether.print_mac(macaddr);
+
+    Serial.println(macaddr);
 
     // Start Ethernet
     if (ether.begin(macaddr) == false) {
