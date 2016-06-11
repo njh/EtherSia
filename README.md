@@ -18,6 +18,7 @@ Limitations
 - No fragmentation support
 - A single network interface is assumed
 - A single local router on the network is assumed
+- The network prefix length is assumed to be /64
 
 If you need a more fully functional IPv6 stack, then take a look at [Contiki].
 
