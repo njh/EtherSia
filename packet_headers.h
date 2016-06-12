@@ -13,6 +13,8 @@ struct ether_header {
 #define ETHER_HEADER_OFFSET       (0)
 #define ETHER_HEADER              ((struct ether_header*)(buffer + ETHER_HEADER_OFFSET))
 
+static_assert(sizeof(struct ether_header) == ETHER_HEADER_LEN, "Size is not correct");
+
 #define ETHER_TYPE_IPV6           0x86dd
 
 #define IP6_PROTO_TCP             6
@@ -54,6 +56,8 @@ struct ip6_header {
 #define IP6_HEADER_OFFSET         (ETHER_HEADER_OFFSET + ETHER_HEADER_LEN)
 #define IP6_HEADER                ((struct ip6_header*)(buffer + IP6_HEADER_OFFSET))
 
+static_assert(sizeof(struct ip6_header) == IP6_HEADER_LEN, "Size is not correct");
+
 
 struct icmp6_header {
     uint8_t type;
@@ -63,6 +67,8 @@ struct icmp6_header {
 #define ICMP6_HEADER_LEN          (4)
 #define ICMP6_HEADER_OFFSET       (IP6_HEADER_OFFSET + IP6_HEADER_LEN)
 #define ICMP6_HEADER              ((struct icmp6_header*)(buffer + ICMP6_HEADER_OFFSET))
+
+static_assert(sizeof(struct icmp6_header) == ICMP6_HEADER_LEN, "Size is not correct");
 
 
 struct icmp6_rs_header {
@@ -76,6 +82,8 @@ struct icmp6_rs_header {
 #define ICMP6_RS_HEADER_OFFSET    (ICMP6_HEADER_OFFSET + ICMP6_HEADER_LEN)
 #define ICMP6_RS_HEADER           ((struct icmp6_rs_header*)(buffer + ICMP6_RS_HEADER_OFFSET))
 
+static_assert(sizeof(struct icmp6_rs_header) == ICMP6_RS_HEADER_LEN, "Size is not correct");
+
 struct icmp6_ra_header {
     uint8_t current_hop_limit;
     uint8_t flags;
@@ -87,6 +95,8 @@ struct icmp6_ra_header {
 #define ICMP6_RA_HEADER_LEN       (12)
 #define ICMP6_RA_HEADER_OFFSET    (ICMP6_HEADER_OFFSET + ICMP6_HEADER_LEN)
 #define ICMP6_RA_HEADER           ((struct icmp6_ra_header*)(buffer + ICMP6_RA_HEADER_OFFSET))
+
+static_assert(sizeof(struct icmp6_ra_header) == ICMP6_RA_HEADER_LEN, "Size is not correct");
 
 
 struct icmp6_prefix_information {
@@ -114,6 +124,8 @@ struct icmp6_na_header {
 #define ICMP6_NA_HEADER_OFFSET    (ICMP6_HEADER_OFFSET + ICMP6_HEADER_LEN)
 #define ICMP6_NA_HEADER           ((struct icmp6_na_header*)(buffer + ICMP6_NA_HEADER_OFFSET))
 
+static_assert(sizeof(struct icmp6_na_header) == ICMP6_NA_HEADER_LEN, "Size is not correct");
+
 
 struct udp_header {
     uint16_t src_port;
@@ -125,6 +137,8 @@ struct udp_header {
 #define UDP_HEADER_OFFSET         (IP6_HEADER_OFFSET + IP6_HEADER_LEN)
 #define UDP_HEADER                ((struct udp_header*)(buffer + UDP_HEADER_OFFSET))
 #define UDP_PAYLOAD_PTR           (char*)(buffer + UDP_HEADER_OFFSET + UDP_HEADER_LEN)
+
+static_assert(sizeof(struct udp_header) == UDP_HEADER_LEN, "Size is not correct");
 
 
 #endif
