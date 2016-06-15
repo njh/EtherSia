@@ -11,10 +11,8 @@ boolean EtherSia::begin(const MACAddress *macaddr)
     enc28j60_init(macaddr);
 
     // Calculate our link local address
-    memset(link_local_addr, 0, 16);
-    link_local_addr[0] = 0xfe;
-    link_local_addr[1] = 0x80;
-    set_eui_64(link_local_addr, (const uint8_t*)macaddr);
+    link_local_addr.setLinkLocalPrefix();
+    link_local_addr.setEui64(macaddr);
 
     // FIXME: make this configurable
     buffer_len = 800;
@@ -23,65 +21,17 @@ boolean EtherSia::begin(const MACAddress *macaddr)
     udp_port = 0;
     udp_callback = NULL;
 
-    // Set router MAC and global address to nulls
-    memset(router_mac, 0, 6);
-    memset(global_addr, 0, 16);
-
     // Delay a 'random' amount to stop multiple nodes acting at the same time
     delay((*macaddr)[5] ^ 0x55);
 
     return true;
 }
 
-
-static void printHex(byte byte)
+uint8_t EtherSia::is_our_address(const IPv6Address *addr)
 {
-    char str[3];
-    str[0] = (byte >> 4) & 0x0f;
-    str[1] = byte & 0x0f;
-    str[2] = '\0';
-
-    for (int i=0; i<2; i++) {
-        // base for converting single digit numbers to ASCII is 48
-        // base for 10-16 to become lower-case characters a-f is 87
-        if (str[i] > 9) str[i] += 39;
-        str[i] += 48;
-    }
-    Serial.print(str);
-}
-
-void EtherSia::print_address(const uint8_t addr[16])
-{
-    for (byte i = 0; i < 16; ++i) {
-        printHex(addr[i]);
-        if (i % 2 == 1 && i < 15)
-            Serial.print(':');
-    }
-    Serial.println();
-}
-
-void EtherSia::set_eui_64(uint8_t ipaddr[16], const uint8_t macaddr[6])
-{
-    ipaddr[8] = macaddr[0] ^ 0x02;
-    ipaddr[9] = macaddr[1];
-    ipaddr[10] = macaddr[2];
-    ipaddr[11] = 0xff;
-    ipaddr[12] = 0xfe;
-    ipaddr[13] = macaddr[3];
-    ipaddr[14] = macaddr[4];
-    ipaddr[15] = macaddr[5];
-}
-
-boolean EtherSia::is_multicast_address(uint8_t addr[16])
-{
-    return addr[0] == 0xFF;
-}
-
-uint8_t EtherSia::is_our_address(uint8_t addr[16])
-{
-    if (memcmp(addr, link_local_addr, 16) == 0) {
+    if (*addr == link_local_addr) {
         return ADDRESS_TYPE_LINK_LOCAL;
-    } else if (memcmp(addr, global_addr, 16) == 0) {
+    } else if (*addr == global_addr) {
         return ADDRESS_TYPE_GLOBAL;
     } else {
         return 0;
@@ -186,16 +136,16 @@ void EtherSia::loop()
 
 void EtherSia::convert_buffer_to_reply()
 {
-    uint8_t *reply_src_addr = NULL;
+    IPv6Address *reply_src_addr;
 
-    if (is_our_address(IP6_HEADER->dest) == ADDRESS_TYPE_GLOBAL) {
-        reply_src_addr = global_addr;
+    if (is_our_address(&IP6_HEADER->dest) == ADDRESS_TYPE_GLOBAL) {
+        reply_src_addr = &global_addr;
     } else {
-        reply_src_addr = link_local_addr;
+        reply_src_addr = &link_local_addr;
     }
 
-    memcpy(IP6_HEADER->dest, IP6_HEADER->src, 16);
-    memcpy(IP6_HEADER->src, reply_src_addr, 16);
+    IP6_HEADER->dest = IP6_HEADER->src;
+    IP6_HEADER->src = *reply_src_addr;
 
     ETHER_HEADER->dest = ETHER_HEADER->src;
     ETHER_HEADER->src = enc_mac_addr;

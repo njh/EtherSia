@@ -49,8 +49,8 @@ struct ip6_header {
     uint16_t length;     // Payload length (not including this header)
     uint8_t  proto;      // Identifies the type of header immediately following
     uint8_t  hop_limit;  // Decremented by 1 by each node that forwards the packet
-    uint8_t  src[16];
-    uint8_t  dest[16];
+    IPv6Address src;
+    IPv6Address dest;
 } __attribute__((__packed__));
 #define IP6_HEADER_LEN            (40)
 #define IP6_HEADER_OFFSET         (ETHER_HEADER_OFFSET + ETHER_HEADER_LEN)
@@ -107,14 +107,14 @@ struct icmp6_prefix_information {
     uint32_t preffered_lifetime;
     uint32_t reserved;
 
-    uint8_t prefix[16];
+    IPv6Address prefix;
 } __attribute__((__packed__));
 
 
 struct icmp6_na_header {
     uint8_t flags;
     uint8_t reserved[3];
-    uint8_t target[16];
+    IPv6Address target;
 
     uint8_t option_type;
     uint8_t option_len;

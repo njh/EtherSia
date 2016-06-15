@@ -4,9 +4,10 @@
 #include <Arduino.h>
 #include <stdint.h>
 
+#include "MACAddress.h"
+#include "IPv6Address.h"
 #include "enc28j60.h"
 #include "packet_headers.h"
-#include "MACAddress.h"
 
 #ifndef htons
 #define htons(x) ( ((x)<<8) | (((x)>>8)&0xFF) )
@@ -26,10 +27,10 @@ enum {
 
 /** This type definition defines the structure of a UDP server event handler callback funtion */
 typedef void (*UdpServerCallback)(
-    uint16_t dest_port,    ///< Port the packet was sent to
-    const uint8_t *src_ip, ///< IP address of the sender
-    char *data,            ///< UDP payload data
-    uint16_t len);         ///< Length of the payload data
+    uint16_t dest_port,        ///< Port the packet was sent to
+    const IPv6Address *src_ip, ///< IP address of the sender
+    char *data,                ///< UDP payload data
+    uint16_t len);             ///< Length of the payload data
 
 
 class EtherSia : public ENC28J60 {
@@ -41,19 +42,15 @@ public:
 
     void loop();
 
-    void set_eui_64(uint8_t ipaddr[16], const uint8_t macaddr[6]);
-    boolean is_multicast_address(uint8_t addr[16]);
-    uint8_t is_our_address(uint8_t addr[16]);
-
-    void print_address(const uint8_t addr[16]);
+    uint8_t is_our_address(const IPv6Address *addr);
 
     void udp_listen(UdpServerCallback callback, uint16_t port);
     void udp_send_reply(const char *data);
     void udp_send_reply(const char *data, uint16_t len);
 
 protected:
-    uint8_t link_local_addr[16];
-    uint8_t global_addr[16];
+    IPv6Address link_local_addr;
+    IPv6Address global_addr;
 
     MACAddress router_mac;
 
@@ -76,7 +73,7 @@ protected:
     void icmp6_echo_reply();
     void icmp6_send_rs();
     void icmp6_process_ra();
-    void icmp6_process_prefix(struct icmp6_prefix_information *pi, uint8_t *router_mac_ptr);
+    void icmp6_process_prefix(struct icmp6_prefix_information *pi, MACAddress *router_mac_ptr);
     void icmp6_packet_send();
     uint8_t icmp6_verify_checksum();
 

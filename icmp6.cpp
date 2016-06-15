@@ -5,7 +5,7 @@
 void EtherSia::icmp6_ns_reply()
 {
     // Is the Neighbour Solicitation addressed to us?
-    if (!is_our_address(ICMP6_NA_HEADER->target)) {
+    if (!is_our_address(&ICMP6_NA_HEADER->target)) {
         return;
     }
 
@@ -18,7 +18,7 @@ void EtherSia::icmp6_ns_reply()
     ICMP6_NA_HEADER->reserved[0] = ICMP6_NA_HEADER->reserved[1] = ICMP6_NA_HEADER->reserved[2] = 0;
     ICMP6_NA_HEADER->option_type = ICMP6_OPTION_TARGET_LINK_ADDRESS;
     ICMP6_NA_HEADER->option_len = 1;  // Options length, 1 = 8 bytes.
-    memcpy(ICMP6_NA_HEADER->option_mac, enc_mac_addr, sizeof(enc_mac_addr));
+    ICMP6_NA_HEADER->option_mac = enc_mac_addr;
 
     icmp6_packet_send();
 }
@@ -26,7 +26,7 @@ void EtherSia::icmp6_ns_reply()
 void EtherSia::icmp6_echo_reply()
 {
     Serial.print(F("Ping from "));
-    print_address(IP6_HEADER->src);
+    IP6_HEADER->src.println();
 
     convert_buffer_to_reply();
 
@@ -39,7 +39,7 @@ void EtherSia::icmp6_echo_reply()
 void EtherSia::icmp6_send_rs()
 {
     memset(ETHER_HEADER, 0, ETHER_HEADER_LEN);
-    memcpy(ETHER_HEADER->src, enc_mac_addr, 6);
+    ETHER_HEADER->src = enc_mac_addr;
     ETHER_HEADER->dest[0] = 0x33;
     ETHER_HEADER->dest[1] = 0x33;
     ETHER_HEADER->dest[5] = 0x02;
@@ -50,7 +50,7 @@ void EtherSia::icmp6_send_rs()
     IP6_HEADER->length = ntohs(ICMP6_HEADER_LEN + ICMP6_RS_HEADER_LEN);
     IP6_HEADER->proto = IP6_PROTO_ICMP6;
     IP6_HEADER->hop_limit = 255;
-    memcpy(IP6_HEADER->src, link_local_addr, 16);
+    IP6_HEADER->src = link_local_addr;
     IP6_HEADER->dest[0] = 0xFF;
     IP6_HEADER->dest[1] = 0x02;
     IP6_HEADER->dest[15] = 0x02;
@@ -72,18 +72,18 @@ void EtherSia::icmp6_packet_send()
     ip6_packet_send();
 }
 
-void EtherSia::icmp6_process_prefix(struct icmp6_prefix_information *pi, uint8_t *router_mac_ptr)
+void EtherSia::icmp6_process_prefix(struct icmp6_prefix_information *pi, MACAddress *router_mac_ptr)
 {
     // FIXME: Only if On-link AND stateless address configuration flags set
 
     // FIXME: Only if prefix-length is 64?
 
-    memcpy(this->global_addr, pi->prefix, 16);
-    set_eui_64(this->global_addr, enc_mac_addr);
+    this->global_addr = pi->prefix;
+    this->global_addr.setEui64(&enc_mac_addr);
     Serial.print(F("Global IP="));
-    print_address(this->global_addr);
+    this->global_addr.println();
 
-    memcpy(this->router_mac, router_mac_ptr, 6);
+    this->router_mac = *router_mac_ptr;
     Serial.print(F("Router MAC="));
     this->router_mac.println();
 }
@@ -117,7 +117,7 @@ void EtherSia::icmp6_process_ra()
     if (pi_ptr && router_mac_ptr) {
         icmp6_process_prefix(
             (struct icmp6_prefix_information*)pi_ptr,
-            router_mac_ptr
+            (MACAddress *)router_mac_ptr
         );
     }
 }

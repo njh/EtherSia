@@ -6,7 +6,7 @@ void EtherSia::udp_process_packet(uint16_t len)
 {
     uint16_t dest_port = ntohs(UDP_HEADER->dest_port);
 
-    if (!is_our_address(IP6_HEADER->dest)) {
+    if (!is_our_address(&IP6_HEADER->dest)) {
         return;
     }
 
@@ -18,7 +18,7 @@ void EtherSia::udp_process_packet(uint16_t len)
     if (this->udp_callback && dest_port == this->udp_port) {
         this->udp_callback(
             dest_port,
-            IP6_HEADER->src,
+            &IP6_HEADER->src,
             UDP_PAYLOAD_PTR,
             ntohs(UDP_HEADER->length) - UDP_HEADER_LEN
         );
