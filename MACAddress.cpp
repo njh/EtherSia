@@ -70,12 +70,12 @@ bool MACAddress::fromString(const char *macstr)
     return 1;
 }
 
-void MACAddress::printPaddedHex(Print& p, uint8_t byte)
+void MACAddress::printPaddedHex(uint8_t byte, Print &p)
 {
     char str[2];
     str[0] = (byte >> 4) & 0x0f;
     str[1] = byte & 0x0f;
- 
+
     for (int i=0; i<2; i++) {
         // base for converting single digit numbers to ASCII is 48
         // base for 10-16 to become lower-case characters a-f is 87
@@ -85,12 +85,17 @@ void MACAddress::printPaddedHex(Print& p, uint8_t byte)
     }
 }
 
-size_t MACAddress::printTo(Print& p) const
+void MACAddress::print(Print &p)
 {
     for (uint8_t i = 0; i < 6; ++i) {
-        printPaddedHex(p, _address[i]);
+        printPaddedHex(_address[i]);
         if (i < 5)
             p.print(':');
     }
-    return 17;
+}
+
+void MACAddress::println(Print &p)
+{
+    this->print(p);
+    p.println();
 }

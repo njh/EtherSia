@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 
-class MACAddress : public Printable {
+class MACAddress {
 private:
     uint8_t _address[6];
 
@@ -22,9 +22,11 @@ public:
     uint8_t operator[](int index) const { return _address[index]; };
     uint8_t& operator[](int index) { return _address[index]; };
 
-    virtual size_t printTo(Print& p) const;
+    MACAddress& operator=(const MACAddress *address) { memcpy(_address, address, sizeof(_address)); }
 
-    static void printPaddedHex(Print& p, uint8_t byte);
+    void print(Print &print=Serial);
+    void println(Print &print=Serial);
+    static void printPaddedHex(uint8_t byte, Print &print=Serial);
 
 } __attribute__((__packed__));
 

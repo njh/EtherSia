@@ -44,7 +44,7 @@ void setup() {
     if (r) Serial.println("success");
     else Serial.println("failure");
 
-    Serial.println(macaddr);
+    macaddr.println();
 
     // Start Ethernet
     if (ether.begin(macaddr) == false) {
