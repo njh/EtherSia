@@ -21,8 +21,6 @@ public:
     uint8_t operator[](int index) const { return _address[index]; };
     uint8_t& operator[](int index) { return _address[index]; };
 
-    MACAddress& operator=(const MACAddress *address) { memcpy(_address, address, sizeof(_address)); }
-
     void print(Print &print=Serial);
     void println(Print &print=Serial);
 
