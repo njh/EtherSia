@@ -21,8 +21,8 @@ public:
     uint8_t operator[](int index) const { return _address[index]; };
     uint8_t& operator[](int index) { return _address[index]; };
 
-    void print(Print &print=Serial);
-    void println(Print &print=Serial);
+    void print(Print &print=Serial) const;
+    void println(Print &print=Serial) const;
 
 } __attribute__((__packed__));
 

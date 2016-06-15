@@ -58,7 +58,7 @@ bool MACAddress::fromString(const char *macstr)
     return 1;
 }
 
-void MACAddress::print(Print &p)
+void MACAddress::print(Print &p) const
 {
     for (uint8_t i = 0; i < 6; ++i) {
         printPaddedHex(_address[i], p);
@@ -67,7 +67,7 @@ void MACAddress::print(Print &p)
     }
 }
 
-void MACAddress::println(Print &p)
+void MACAddress::println(Print &p) const
 {
     this->print(p);
     p.println();
