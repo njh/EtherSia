@@ -111,6 +111,17 @@ struct icmp6_prefix_information {
 } __attribute__((__packed__));
 
 
+struct icmp6_ns_header {
+    uint8_t reserved[4];
+    IPv6Address target;
+} __attribute__((__packed__));
+#define ICMP6_NS_HEADER_LEN       (20)
+#define ICMP6_NS_HEADER_OFFSET    (ICMP6_HEADER_OFFSET + ICMP6_HEADER_LEN)
+#define ICMP6_NS_HEADER           ((struct icmp6_ns_header*)(buffer + ICMP6_NS_HEADER_OFFSET))
+
+static_assert(sizeof(struct icmp6_ns_header) == ICMP6_NS_HEADER_LEN, "Size is not correct");
+
+
 struct icmp6_na_header {
     uint8_t flags;
     uint8_t reserved[3];

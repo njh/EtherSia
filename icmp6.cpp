@@ -5,7 +5,7 @@
 void EtherSia::icmp6_ns_reply()
 {
     // Is the Neighbour Solicitation addressed to us?
-    if (!is_our_address(&ICMP6_NA_HEADER->target)) {
+    if (!is_our_address(&ICMP6_NS_HEADER->target)) {
         return;
     }
 
