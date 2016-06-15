@@ -34,7 +34,7 @@ void EtherSia::udp_send_reply(const char *data, uint16_t len)
 {
     uint16_t dest_port = UDP_HEADER->dest_port;
     uint16_t src_port = UDP_HEADER->src_port;
-    
+
     if (data) {
         memcpy(UDP_PAYLOAD_PTR, data, len);
     }
@@ -58,7 +58,7 @@ uint8_t EtherSia::udp_verify_checksum()
     // Set field in packet to 0 before calculating the checksum
     UDP_HEADER->checksum = 0;
 
-    // Does the calculated checksum equal the checksum in the packet?    
+    // Does the calculated checksum equal the checksum in the packet?
     return ip6_calculate_checksum() == packet_checksum;
 }
 

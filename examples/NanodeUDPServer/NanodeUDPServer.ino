@@ -26,7 +26,7 @@ void udp_callback(uint16_t port, const IPv6Address *address, char *data, uint16_
         ether.udp_send_reply("ok");
     } else {
         ether.udp_send_reply("err");
-    } 
+    }
 }
 
 
