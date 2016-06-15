@@ -5,8 +5,8 @@
  * Structure of a 10Mb/s Ethernet header.
  */
 struct ether_header {
-    uint8_t dest[6];
-    uint8_t src[6];
+    MACAddress dest;
+    MACAddress src;
     uint16_t type;
 } __attribute__((__packed__));
 #define ETHER_HEADER_LEN          (14)
@@ -76,7 +76,7 @@ struct icmp6_rs_header {
 
     uint8_t option_type;
     uint8_t option_len;
-    uint8_t option_mac[6];
+    MACAddress option_mac;
 } __attribute__((__packed__));
 #define ICMP6_RS_HEADER_LEN       (12)
 #define ICMP6_RS_HEADER_OFFSET    (ICMP6_HEADER_OFFSET + ICMP6_HEADER_LEN)
@@ -118,7 +118,7 @@ struct icmp6_na_header {
 
     uint8_t option_type;
     uint8_t option_len;
-    uint8_t option_mac[6];
+    MACAddress option_mac;
 } __attribute__((__packed__));
 #define ICMP6_NA_HEADER_LEN       (28)
 #define ICMP6_NA_HEADER_OFFSET    (ICMP6_HEADER_OFFSET + ICMP6_HEADER_LEN)

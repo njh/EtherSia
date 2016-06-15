@@ -47,7 +47,7 @@ void setup() {
     macaddr.println();
 
     // Start Ethernet
-    if (ether.begin(macaddr) == false) {
+    if (ether.begin(&macaddr) == false) {
         Serial.println("Failed to configure Ethernet");
     }
 

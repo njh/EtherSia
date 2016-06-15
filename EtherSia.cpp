@@ -6,7 +6,7 @@ EtherSia::EtherSia(int8_t cs) : ENC28J60(cs)
 }
 
 
-boolean EtherSia::begin(const uint8_t* macaddr)
+boolean EtherSia::begin(const MACAddress *macaddr)
 {
     enc28j60_init(macaddr);
 
@@ -14,7 +14,7 @@ boolean EtherSia::begin(const uint8_t* macaddr)
     memset(link_local_addr, 0, 16);
     link_local_addr[0] = 0xfe;
     link_local_addr[1] = 0x80;
-    set_eui_64(link_local_addr, macaddr);
+    set_eui_64(link_local_addr, (const uint8_t*)macaddr);
 
     // FIXME: make this configurable
     buffer_len = 800;
@@ -28,7 +28,7 @@ boolean EtherSia::begin(const uint8_t* macaddr)
     memset(global_addr, 0, 16);
 
     // Delay a 'random' amount to stop multiple nodes acting at the same time
-    delay(macaddr[5] ^ 0x55);
+    delay((*macaddr)[5] ^ 0x55);
 
     return true;
 }
@@ -48,16 +48,6 @@ static void printHex(byte byte)
         str[i] += 48;
     }
     Serial.print(str);
-}
-
-void EtherSia::print_mac(const uint8_t mac[6])
-{
-    for (byte i = 0; i < 6; ++i) {
-        printHex(mac[i]);
-        if (i < 5)
-            Serial.print(':');
-    }
-    Serial.println();
 }
 
 void EtherSia::print_address(const uint8_t addr[16])

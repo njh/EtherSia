@@ -85,7 +85,7 @@ void EtherSia::icmp6_process_prefix(struct icmp6_prefix_information *pi, uint8_t
 
     memcpy(this->router_mac, router_mac_ptr, 6);
     Serial.print(F("Router MAC="));
-    print_mac(this->router_mac);
+    this->router_mac.println();
 }
 
 void EtherSia::icmp6_process_ra()
@@ -160,6 +160,6 @@ uint8_t EtherSia::icmp6_verify_checksum()
     // Set field in packet to 0 before calculating the checksum
     ICMP6_HEADER->checksum = 0;
 
-    // Does the calculated checksum equal the checksum in the packet?    
+    // Does the calculated checksum equal the checksum in the packet?
     return ip6_calculate_checksum() == packet_checksum;
 }

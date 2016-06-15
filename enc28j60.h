@@ -29,6 +29,8 @@
  *
  */
 
+#include <MACAddress.h>
+
 #ifndef ENC28J60_H
 #define ENC28J60_H
 
@@ -39,9 +41,9 @@ public:
     ENC28J60(int8_t clk, int8_t miso, int8_t mosi, int8_t cs);
 
 protected:
-    uint8_t enc_mac_addr[6];
+    MACAddress enc_mac_addr;
 
-    void enc28j60_init(const uint8_t *mac_addr);
+    void enc28j60_init(const MACAddress *enc_mac_addr);
     int enc28j60_send(const uint8_t *data, uint16_t datalen);
     int enc28j60_read(uint8_t *buffer, uint16_t bufsize);
 

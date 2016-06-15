@@ -6,6 +6,7 @@
 
 #include "enc28j60.h"
 #include "packet_headers.h"
+#include "MACAddress.h"
 
 #ifndef htons
 #define htons(x) ( ((x)<<8) | (((x)>>8)&0xFF) )
@@ -36,7 +37,7 @@ public:
     EtherSia(int8_t cs);
     EtherSia(int8_t clk, int8_t miso, int8_t mosi, int8_t cs);
 
-    boolean begin(const uint8_t* macaddr);
+    boolean begin(const MACAddress *addr);
 
     void loop();
 
@@ -44,7 +45,6 @@ public:
     boolean is_multicast_address(uint8_t addr[16]);
     uint8_t is_our_address(uint8_t addr[16]);
 
-    void print_mac(const uint8_t mac[6]);
     void print_address(const uint8_t addr[16]);
 
     void udp_listen(UdpServerCallback callback, uint16_t port);
@@ -54,11 +54,12 @@ public:
 protected:
     uint8_t link_local_addr[16];
     uint8_t global_addr[16];
-    uint8_t router_mac[6];
+
+    MACAddress router_mac;
 
     uint8_t *buffer;
     uint16_t buffer_len;
-    
+
     uint16_t udp_port;
     UdpServerCallback udp_callback;
 

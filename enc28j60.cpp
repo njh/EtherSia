@@ -492,13 +492,13 @@ ENC28J60::reset(void)
 }
 /*---------------------------------------------------------------------------*/
 void
-ENC28J60::enc28j60_init(const uint8_t *mac_addr)
+ENC28J60::enc28j60_init(const MACAddress *addr)
 {
     if(initialized) {
         return;
     }
 
-    memcpy(enc_mac_addr, mac_addr, 6);
+    this->enc_mac_addr = *addr;
 
     reset();
 
