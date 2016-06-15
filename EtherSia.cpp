@@ -197,8 +197,8 @@ void EtherSia::convert_buffer_to_reply()
     memcpy(IP6_HEADER->dest, IP6_HEADER->src, 16);
     memcpy(IP6_HEADER->src, reply_src_addr, 16);
 
-    memcpy(ETHER_HEADER->dest, ETHER_HEADER->src, 6);
-    memcpy(ETHER_HEADER->src, enc_mac_addr, 6);
+    ETHER_HEADER->dest = ETHER_HEADER->src;
+    ETHER_HEADER->src = enc_mac_addr;
 }
 
 void EtherSia::ip6_packet_send()

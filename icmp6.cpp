@@ -59,7 +59,7 @@ void EtherSia::icmp6_send_rs()
     ICMP6_HEADER->type = ICMP6_TYPE_RS;
     ICMP6_RS_HEADER->option_type = ICMP6_OPTION_SOURCE_LINK_ADDRESS;
     ICMP6_RS_HEADER->option_len = 1;
-    memcpy(ICMP6_RS_HEADER->option_mac, enc_mac_addr, sizeof(enc_mac_addr));
+    ICMP6_RS_HEADER->option_mac = enc_mac_addr;
 
     icmp6_packet_send();
 }
