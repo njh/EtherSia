@@ -1,7 +1,6 @@
 #ifndef MACAddress_H
 #define MACAddress_H
 
-#include <Printable.h>
 #include <stdint.h>
 
 
@@ -26,7 +25,6 @@ public:
 
     void print(Print &print=Serial);
     void println(Print &print=Serial);
-    static void printPaddedHex(uint8_t byte, Print &print=Serial);
 
 } __attribute__((__packed__));
 
