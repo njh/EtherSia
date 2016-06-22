@@ -20,6 +20,7 @@ public:
     void setLinkLocalAllNodes();
     void setLinkLocalAllRouters();
     void setEui64(const MACAddress *macaddr);
+    void setSolicitedNodeMulticastAddress(const IPv6Address *addr);
 
     bool isMulticast() const;
 

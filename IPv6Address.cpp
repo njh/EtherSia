@@ -45,6 +45,19 @@ void IPv6Address::setLinkLocalAllRouters()
     _address[15] = 0x02;
 }
 
+// See RFC4291 section 2.7.1.
+void IPv6Address::setSolicitedNodeMulticastAddress(const IPv6Address *addr)
+{
+    memset(_address, 0, sizeof(_address));
+    _address[0] = 0xFF;
+    _address[1] = 0x02;
+    _address[11] = 0x01;
+    _address[12] = 0xFF;
+    _address[13] = addr->_address[13];
+    _address[14] = addr->_address[14];
+    _address[15] = addr->_address[15];
+}
+
 uint8_t* IPv6Address::getPtr()
 {
     return _address;

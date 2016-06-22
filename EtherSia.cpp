@@ -24,6 +24,9 @@ boolean EtherSia::begin(const MACAddress *macaddr)
     // Delay a 'random' amount to stop multiple nodes acting at the same time
     delay((*macaddr)[5] ^ 0x55);
 
+    // Send link local Neighbour Solicitation for Duplicate Address Detection
+    icmp6_send_ns(&link_local_addr);
+
     return true;
 }
 

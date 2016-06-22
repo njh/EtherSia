@@ -69,6 +69,7 @@ protected:
 
     uint16_t icmp6_chksum();
     void icmp6_process_packet(uint16_t len);
+    void icmp6_send_ns(IPv6Address *target_addr);
     void icmp6_ns_reply();
     void icmp6_echo_reply();
     void icmp6_send_rs();
