@@ -17,6 +17,8 @@ public:
 
     uint8_t* getPtr();
     operator uint8_t*() { return getPtr(); };
+    
+    void setIPv6Multicast(const uint8_t* addr);
 
     uint8_t operator[](int index) const { return _address[index]; };
     uint8_t& operator[](int index) { return _address[index]; };

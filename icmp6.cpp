@@ -38,22 +38,18 @@ void EtherSia::icmp6_echo_reply()
 
 void EtherSia::icmp6_send_rs()
 {
-    memset(ETHER_HEADER, 0, ETHER_HEADER_LEN);
-    ETHER_HEADER->src = enc_mac_addr;
-    ETHER_HEADER->dest[0] = 0x33;
-    ETHER_HEADER->dest[1] = 0x33;
-    ETHER_HEADER->dest[5] = 0x02;
-    ETHER_HEADER->type = ntohs(ETHER_TYPE_IPV6);
-
     memset(IP6_HEADER, 0, IP6_HEADER_LEN);
     IP6_HEADER->ver_tc = 0x60;
     IP6_HEADER->length = ntohs(ICMP6_HEADER_LEN + ICMP6_RS_HEADER_LEN);
     IP6_HEADER->proto = IP6_PROTO_ICMP6;
     IP6_HEADER->hop_limit = 255;
     IP6_HEADER->src = link_local_addr;
-    IP6_HEADER->dest[0] = 0xFF;
-    IP6_HEADER->dest[1] = 0x02;
-    IP6_HEADER->dest[15] = 0x02;
+    IP6_HEADER->dest.setLinkLocalAllRouters();
+
+    memset(ETHER_HEADER, 0, ETHER_HEADER_LEN);
+    ETHER_HEADER->src = enc_mac_addr;
+    ETHER_HEADER->dest.setIPv6Multicast(IP6_HEADER->dest);
+    ETHER_HEADER->type = ntohs(ETHER_TYPE_IPV6);
 
     memset(ICMP6_RS_HEADER, 0, ICMP6_RS_HEADER_LEN);
     ICMP6_HEADER->type = ICMP6_TYPE_RS;

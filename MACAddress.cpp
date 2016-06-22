@@ -27,6 +27,17 @@ uint8_t* MACAddress::getPtr()
     return _address;
 }
 
+// See RFC2464 section 7
+void MACAddress::setIPv6Multicast(const uint8_t *addr)
+{
+    _address[0] = 0x33;
+    _address[1] = 0x33;
+    _address[2] = addr[12];
+    _address[3] = addr[13];
+    _address[4] = addr[14];
+    _address[5] = addr[15];
+}
+
 bool MACAddress::fromString(const char *macstr)
 {
     uint8_t pos=0;

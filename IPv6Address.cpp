@@ -31,6 +31,20 @@ void IPv6Address::setEui64(const MACAddress *macaddr)
     _address[15] = (*macaddr)[5];
 }
 
+void IPv6Address::setLinkLocalAllNodes()
+{
+    _address[0] = 0xFF;
+    _address[1] = 0x02;
+    _address[15] = 0x01;
+}
+
+void IPv6Address::setLinkLocalAllRouters()
+{
+    _address[0] = 0xFF;
+    _address[1] = 0x02;
+    _address[15] = 0x02;
+}
+
 uint8_t* IPv6Address::getPtr()
 {
     return _address;

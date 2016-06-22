@@ -17,6 +17,8 @@ public:
     bool operator==(const IPv6Address& addr) const;
 
     void setLinkLocalPrefix();
+    void setLinkLocalAllNodes();
+    void setLinkLocalAllRouters();
     void setEui64(const MACAddress *macaddr);
 
     bool isMulticast() const;
