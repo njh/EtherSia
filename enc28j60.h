@@ -34,17 +34,58 @@
 #ifndef ENC28J60_H
 #define ENC28J60_H
 
+
+/**
+ * Send and receive Ethernet packets directly using a ENC28J60 controller.
+ */
 class ENC28J60 {
 
 public:
+    /**
+     * Constructor that uses the default hardware SPI pins
+     * @param cs the Arduino Chip Select / Slave Select pin
+     */
     ENC28J60(int8_t cs);
+
+    /**
+     * Constructor for using software SPI, with custom set of pins
+     * @param clk the SPI Clock pin
+     * @param miso the SPI Master In / Slave Out pin
+     * @param mosi the SPI Master Out / Slave In pin
+     * @param cs the Arduino Chip Select / Slave Select pin
+     */
     ENC28J60(int8_t clk, int8_t miso, int8_t mosi, int8_t cs);
 
+    /**
+     * Initialise the Ethernet controller
+     * Must be called before sending or receiving Ethernet packets
+     * @param enc_mac_addr the local MAC address
+     */
     void init(const MACAddress *enc_mac_addr);
+
+    /**
+     * Send an Ethernet packet
+     * @param data a pointer to the data to send
+     * @param datalen the length of the data in the packet
+     * @return 
+     */
     int send(const uint8_t *data, uint16_t datalen);
+
+    /**
+     * Read an Ethernet packet
+     * @param buffer a pointer to a buffer to write the packet to
+     * @param bufsize the available space in the buffer
+     * @return the length of the received packet
+     *         or 0 if no packet was received
+     */
     int read(uint8_t *buffer, uint16_t bufsize);
 
 protected:
+
+    /**
+     * The MAC address of this Ethernet controller
+     * @private
+     */
     MACAddress enc_mac_addr;
 
 private:
