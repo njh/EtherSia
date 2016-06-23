@@ -492,7 +492,7 @@ ENC28J60::reset(void)
 }
 /*---------------------------------------------------------------------------*/
 void
-ENC28J60::enc28j60_init(const MACAddress *addr)
+ENC28J60::init(const MACAddress *addr)
 {
     if(initialized) {
         return;
@@ -508,7 +508,7 @@ ENC28J60::enc28j60_init(const MACAddress *addr)
 }
 /*---------------------------------------------------------------------------*/
 int
-ENC28J60::enc28j60_send(const uint8_t *data, uint16_t datalen)
+ENC28J60::send(const uint8_t *data, uint16_t datalen)
 {
     uint16_t dataend;
 
@@ -593,7 +593,7 @@ ENC28J60::enc28j60_send(const uint8_t *data, uint16_t datalen)
 }
 /*---------------------------------------------------------------------------*/
 int
-ENC28J60::enc28j60_read(uint8_t *buffer, uint16_t bufsize)
+ENC28J60::read(uint8_t *buffer, uint16_t bufsize)
 {
     int n, len, next, err;
 

@@ -8,7 +8,7 @@ EtherSia::EtherSia(int8_t cs) : ENC28J60(cs)
 
 boolean EtherSia::begin(const MACAddress *macaddr)
 {
-    enc28j60_init(macaddr);
+    init(macaddr);
 
     // Calculate our link local address
     link_local_addr.setLinkLocalPrefix();
@@ -124,7 +124,7 @@ void EtherSia::process_packet(uint16_t len)
 
 void EtherSia::loop()
 {
-    int len = enc28j60_read(buffer, buffer_len);
+    int len = read(buffer, buffer_len);
 
     if (len) {
         process_packet(len);
@@ -157,5 +157,5 @@ void EtherSia::convert_buffer_to_reply()
 void EtherSia::ip6_packet_send()
 {
     uint16_t len = ETHER_HEADER_LEN + IP6_HEADER_LEN + ntohs(IP6_HEADER->length);
-    enc28j60_send(buffer, len);
+    send(buffer, len);
 }

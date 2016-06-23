@@ -40,12 +40,12 @@ public:
     ENC28J60(int8_t cs);
     ENC28J60(int8_t clk, int8_t miso, int8_t mosi, int8_t cs);
 
+    void init(const MACAddress *enc_mac_addr);
+    int send(const uint8_t *data, uint16_t datalen);
+    int read(uint8_t *buffer, uint16_t bufsize);
+
 protected:
     MACAddress enc_mac_addr;
-
-    void enc28j60_init(const MACAddress *enc_mac_addr);
-    int enc28j60_send(const uint8_t *data, uint16_t datalen);
-    int enc28j60_read(uint8_t *buffer, uint16_t bufsize);
 
 private:
 
@@ -62,9 +62,6 @@ private:
     void softreset(void);
     uint8_t readrev(void);
     void reset(void);
-    void init(const uint8_t *mac_addr);
-    int send(const uint8_t *data, uint16_t datalen);
-    int read(uint8_t *buffer, uint16_t bufsize);
 
     void enc28j60_arch_spi_init(void);
     uint8_t enc28j60_arch_spi_write(uint8_t data);
