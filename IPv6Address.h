@@ -24,6 +24,8 @@ public:
 
     bool isMulticast() const;
 
+    bool isLinkLocal() const;
+
     void print(Print &print=Serial) const;
     void println(Print &print=Serial) const;
 

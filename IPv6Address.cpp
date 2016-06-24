@@ -19,6 +19,11 @@ bool IPv6Address::isMulticast() const
     return _address[0] == 0xFF;
 }
 
+bool IPv6Address::isLinkLocal() const
+{
+    return _address[0] == 0xfe && _address[1] == 0x80;
+}
+
 void IPv6Address::setEui64(const MACAddress *macaddr)
 {
     _address[8] = (*macaddr)[0] ^ 0x02;
