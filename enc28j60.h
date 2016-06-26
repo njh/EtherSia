@@ -67,7 +67,7 @@ public:
      * Send an Ethernet packet
      * @param data a pointer to the data to send
      * @param datalen the length of the data in the packet
-     * @return 
+     * @return the number of bytes transmitted
      */
     int send(const uint8_t *data, uint16_t datalen);
 
