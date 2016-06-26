@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <Wire.h>
 #include "MACAddress.h"
 #include "util.h"
 
@@ -67,6 +68,20 @@ bool MACAddress::fromString(const char *macstr)
 
     // Success
     return 1;
+}
+
+void MACAddress::readI2C(uint8_t address, uint8_t location)
+{
+    // Tell the EEPROM where we would like to read from
+    Wire.beginTransmission(address);
+    Wire.write(location); // Location of the EUI-48
+    Wire.endTransmission();
+
+    // Now read 6 bytes from that memory address
+    Wire.requestFrom(address, 6U);
+    for(byte i=0; i<6 && Wire.available(); i++) {
+        _address[i] = Wire.read();
+    }
 }
 
 void MACAddress::print(Print &p) const
