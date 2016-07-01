@@ -4,6 +4,9 @@
 #include <stdint.h>
 
 
+#define MAX_IPV6_ADDRESS_STR_LEN  39
+
+
 /**
  * Class for the storage and manipulation of IPv6 addresses.
  */
@@ -22,6 +25,9 @@ public:
      * @param addr an array of bytes
      */
     IPv6Address(const uint8_t *addr);
+    IPv6Address(const char *addrstr);
+
+    bool fromString(const char *addrstr);
 
     /**
      * Get a pointer to a 16-byte array of octets.
