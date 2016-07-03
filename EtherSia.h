@@ -44,15 +44,24 @@ public:
 
     uint8_t is_our_address(const IPv6Address *addr);
 
+    bool setDestinationAddress(const char *addr);
+    IPv6Address* getDestinationAddress();
+
     void udp_listen(UdpServerCallback callback, uint16_t port);
     void udp_send_reply(const char *data);
     void udp_send_reply(const char *data, uint16_t len);
+
+    void udpSend(uint16_t port, const char *data);
+    void udpSend(uint16_t port, const uint8_t *data, uint16_t len);
 
 protected:
     IPv6Address link_local_addr;
     IPv6Address global_addr;
 
     MACAddress router_mac;
+
+    IPv6Address dest_addr;
+    MACAddress dest_mac;
 
     uint8_t *buffer;
     uint16_t buffer_len;

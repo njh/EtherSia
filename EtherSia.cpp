@@ -41,6 +41,23 @@ uint8_t EtherSia::is_our_address(const IPv6Address *addr)
     }
 }
 
+bool EtherSia::setDestinationAddress(const char *addr)
+{
+    return dest_addr.fromString(addr);
+
+//     if (dest_addr.isLinkLocal()) {
+//         // FIXME: implement MAC address lookup
+//     } else {
+//         dest_mac = router_mac;
+//     }
+}
+
+IPv6Address* EtherSia::getDestinationAddress()
+{
+    return &dest_addr;
+}
+
+
 // This function comes from Contiki's uip6.c
 static uint16_t chksum(uint16_t sum, const uint8_t *data, uint16_t len)
 {

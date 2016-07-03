@@ -6,7 +6,7 @@ A minimal IPv6 library for an [Arduino] with an [ENC28J60] Ethernet controller.
 Features
 --------
 - Neighbour Discovery Protocol / Stateless Autoconfiguration
-- UDP Server
+- UDP Client and Server
 
 
 Limitations

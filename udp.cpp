@@ -25,6 +25,46 @@ void EtherSia::udp_process_packet(uint16_t len)
     }
 }
 
+void EtherSia::udpSend(uint16_t port, const char *data)
+{
+    udpSend(port, (const uint8_t *)data, strlen(data));
+}
+
+void EtherSia::udpSend(uint16_t port, const uint8_t *data, uint16_t len)
+{
+    if (data) {
+        // FIXME: check it isn't too big
+        memcpy(UDP_PAYLOAD_PTR, data, len);
+    }
+
+    // Setup the Ethernet Header
+    ETHER_HEADER->src = enc_mac_addr;
+    ETHER_HEADER->dest = router_mac;
+    ETHER_HEADER->type = htons(ETHER_TYPE_IPV6);
+
+    // Setup the IPv6 packet header
+    memset(IP6_HEADER, 0, IP6_HEADER_LEN);
+    IP6_HEADER->ver_tc = 0x60;
+    IP6_HEADER->length = htons(UDP_HEADER_LEN + len);
+    IP6_HEADER->proto = IP6_PROTO_UDP;
+    IP6_HEADER->hop_limit = DEFAULT_HOP_LIMIT;
+    IP6_HEADER->dest = dest_addr;
+    if (dest_addr.isLinkLocal()) {
+        IP6_HEADER->src = link_local_addr;
+    } else {
+        IP6_HEADER->src = global_addr;
+    }
+
+    // Set the UDP header
+    UDP_HEADER->length = IP6_HEADER->length;
+    UDP_HEADER->dest_port = htons(port);
+    UDP_HEADER->src_port = UDP_HEADER->dest_port;
+    UDP_HEADER->checksum = 0;
+    UDP_HEADER->checksum = htons(ip6_calculate_checksum());
+
+    ip6_packet_send();
+}
+
 void EtherSia::udp_send_reply(const char *data)
 {
     udp_send_reply(data, strlen(data));
