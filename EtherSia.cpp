@@ -124,6 +124,40 @@ void EtherSia::loop()
     }
 }
 
+IPv6Packet* EtherSia::receivePacket()
+{
+    int len = read(buffer, buffer_len);
+
+    if (len) {
+        IPv6Packet *packet = (IPv6Packet*)buffer;
+
+        if (packet->etherType != htons(ETHER_TYPE_IPV6)) {
+            return NULL;
+        }
+
+// #ifdef DEBUG
+//     if ((IP6_HEADER->ver_tc[0] >> 4) & 0xF != 6) {
+//         Serial.println("NOT 6");
+//         return;
+//     }
+// #endif
+
+        if (packet->proto == IP6_PROTO_ICMP6) {
+            icmp6_process_packet(len);
+        }
+
+        return packet;
+    } else if (global_addr[0] == 0x00) {
+        static unsigned long nextRouterSolicitation = millis();
+        if ((long)(millis() - nextRouterSolicitation) >= 0) {
+            icmp6_send_rs();
+            nextRouterSolicitation = millis() + 4000;
+        }
+    }
+
+    return NULL;
+}
+
 void EtherSia::convert_buffer_to_reply()
 {
     IPv6Address *reply_src_addr;

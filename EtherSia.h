@@ -16,6 +16,7 @@
 #ifndef ntohs
 #define ntohs(x) htons(x)
 #endif
+#include "IPv6Packet.h"
 
 
 enum {
@@ -41,6 +42,9 @@ public:
     boolean begin(const MACAddress *addr);
 
     void loop();
+    IPv6Packet* receivePacket();
+
+    UDPPacket* getUDPPacket(uint16_t port);
 
     uint8_t is_our_address(const IPv6Address *addr);
 
