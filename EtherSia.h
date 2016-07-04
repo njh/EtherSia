@@ -52,8 +52,8 @@ public:
     IPv6Address* getDestinationAddress();
 
     void udp_listen(UdpServerCallback callback, uint16_t port);
-    void udp_send_reply(const char *data);
-    void udp_send_reply(const char *data, uint16_t len);
+    void udpSendReply(const char *data);
+    void udpSendReply(const char *data, uint16_t len);
 
     void udpSend(uint16_t port, const char *data);
     void udpSend(uint16_t port, const uint8_t *data, uint16_t len);

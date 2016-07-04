@@ -65,12 +65,12 @@ void EtherSia::udpSend(uint16_t port, const uint8_t *data, uint16_t len)
     ip6_packet_send();
 }
 
-void EtherSia::udp_send_reply(const char *data)
+void EtherSia::udpSendReply(const char *data)
 {
-    udp_send_reply(data, strlen(data));
+    udpSendReply(data, strlen(data));
 }
 
-void EtherSia::udp_send_reply(const char *data, uint16_t len)
+void EtherSia::udpSendReply(const char *data, uint16_t len)
 {
     uint16_t dest_port = UDP_HEADER->dest_port;
     uint16_t src_port = UDP_HEADER->src_port;
