@@ -43,6 +43,7 @@ public:
 
     void loop();
     IPv6Packet* receivePacket();
+    IPv6Packet* getPacket();
 
     UDPPacket* getUDPPacket(uint16_t port);
 

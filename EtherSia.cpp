@@ -42,6 +42,11 @@ uint8_t EtherSia::is_our_address(const IPv6Address *addr)
     }
 }
 
+IPv6Packet* EtherSia::getPacket()
+{
+    return (IPv6Packet*)buffer;
+}
+
 bool EtherSia::setDestinationAddress(const char *addr)
 {
     return dest_addr.fromString(addr);
