@@ -62,7 +62,7 @@ void EtherSia::udpSend(uint16_t port, const uint8_t *data, uint16_t len)
     UDP_HEADER->checksum = 0;
     UDP_HEADER->checksum = htons(ip6_calculate_checksum());
 
-    ip6_packet_send();
+    send();
 }
 
 void EtherSia::udpSendReply(const char *data)
@@ -88,7 +88,7 @@ void EtherSia::udpSendReply(const char *data, uint16_t len)
     UDP_HEADER->checksum = 0;
     UDP_HEADER->checksum = htons(ip6_calculate_checksum());
 
-    ip6_packet_send();
+    send();
 }
 
 uint8_t EtherSia::udp_verify_checksum()

@@ -4,9 +4,9 @@
 #include <Arduino.h>
 #include <stdint.h>
 
+#include "enc28j60.h"
 #include "MACAddress.h"
 #include "IPv6Address.h"
-#include "enc28j60.h"
 #include "packet_headers.h"
 
 #ifndef htons
@@ -48,6 +48,8 @@ public:
 
     uint8_t is_our_address(const IPv6Address *addr);
 
+    void send();
+
     bool setDestinationAddress(const char *addr);
     IPv6Address* getDestinationAddress();
 
@@ -78,7 +80,6 @@ protected:
     uint16_t ip6_calculate_checksum();
 
     void convert_buffer_to_reply();
-    void ip6_packet_send();
 
     uint16_t icmp6_chksum();
     void icmp6_process_packet(uint16_t len);

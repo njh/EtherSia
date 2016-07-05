@@ -175,8 +175,9 @@ void EtherSia::convert_buffer_to_reply()
     ETHER_HEADER->src = enc_mac_addr;
 }
 
-void EtherSia::ip6_packet_send()
+void EtherSia::send()
 {
-    uint16_t len = ETHER_HEADER_LEN + IP6_HEADER_LEN + ntohs(IP6_HEADER->length);
-    send(buffer, len);
+    IPv6Packet *packet = (IPv6Packet*)buffer;
+    uint16_t len = ETHER_HEADER_LEN + IP6_HEADER_LEN + ntohs(packet->length);
+    ENC28J60::send(buffer, len);
 }

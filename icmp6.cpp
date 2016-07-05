@@ -86,7 +86,7 @@ void EtherSia::icmp6_packet_send()
     ICMP6_HEADER->checksum = 0;
     ICMP6_HEADER->checksum = htons(ip6_calculate_checksum());
 
-    ip6_packet_send();
+    send();
 }
 
 void EtherSia::icmp6_process_prefix(struct icmp6_prefix_information *pi, MACAddress *router_mac_ptr)
