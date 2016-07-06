@@ -7,8 +7,15 @@
 IPv6Packet::IPv6Packet()
 {
     memset(this, 0, sizeof(IPv6Packet));
-    this->ver_tc = 0x60;
+    init();
+}
+
+void IPv6Packet::init()
+{
     this->etherType = ntohs(ETHER_TYPE_IPV6);
+    this->ver_tc = 0x60;  // Version and Traffic Class
+    this->tc_fl = 0x00;   // Traffic Class and Flow Label
+    this->flowLabel = 0;  // Flow Label
     this->hopLimit = IP6_DEFAULT_HOP_LIMIT;
 }
 

@@ -21,6 +21,7 @@ public:
     IPv6Packet();
 
     uint8_t* payload();
+    void init();
     uint16_t calculateChecksum();
 
     // Ethernet Header
