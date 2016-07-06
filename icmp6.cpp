@@ -4,6 +4,8 @@
 
 void EtherSia::icmp6_ns_reply()
 {
+    IPv6Packet *packet = getPacket();
+
     // Is the Neighbour Solicitation addressed to us?
     if (!is_our_address(&ICMP6_NS_HEADER->target)) {
         return;
@@ -12,7 +14,7 @@ void EtherSia::icmp6_ns_reply()
     prepareReply();
 
     // We should now send a neighbor advertisement back to where the neighbor solicication came from.
-    IP6_HEADER->length = ntohs(ICMP6_HEADER_LEN + ICMP6_NA_HEADER_LEN);
+    packet->length = ntohs(ICMP6_HEADER_LEN + ICMP6_NA_HEADER_LEN);
     ICMP6_HEADER->type = ICMP6_TYPE_NA;
     ICMP6_NA_HEADER->flags = ICMP6_FLAG_S; // Solicited flag.
     ICMP6_NA_HEADER->reserved[0] = ICMP6_NA_HEADER->reserved[1] = ICMP6_NA_HEADER->reserved[2] = 0;
@@ -25,8 +27,10 @@ void EtherSia::icmp6_ns_reply()
 
 void EtherSia::icmp6_echo_reply()
 {
+    IPv6Packet *packet = getPacket();
+
     Serial.print(F("Ping from "));
-    IP6_HEADER->src.println();
+    packet->src.println();
 
     prepareReply();
 
@@ -38,18 +42,18 @@ void EtherSia::icmp6_echo_reply()
 
 void EtherSia::icmp6_send_ns(IPv6Address *target_addr)
 {
-    memset(IP6_HEADER, 0, IP6_HEADER_LEN);
-    IP6_HEADER->ver_tc = 0x60;
-    IP6_HEADER->length = ntohs(ICMP6_HEADER_LEN + ICMP6_RS_HEADER_LEN);
-    IP6_HEADER->proto = IP6_PROTO_ICMP6;
-    IP6_HEADER->hop_limit = 255;
-    // IP6_HEADER->src = All Zeros
-    IP6_HEADER->dest.setSolicitedNodeMulticastAddress(target_addr);
+    IPv6Packet *packet = getPacket();
+
+    packet->init();
+    packet->length = ntohs(ICMP6_HEADER_LEN + ICMP6_RS_HEADER_LEN);
+    packet->proto = IP6_PROTO_ICMP6;
+    packet->hopLimit = 255;
+    packet->src.setZero();
+    packet->dest.setSolicitedNodeMulticastAddress(target_addr);
 
     memset(ETHER_HEADER, 0, ETHER_HEADER_LEN);
-    ETHER_HEADER->src = enc_mac_addr;
-    ETHER_HEADER->dest.setIPv6Multicast(IP6_HEADER->dest);
-    ETHER_HEADER->type = ntohs(ETHER_TYPE_IPV6);
+    packet->etherSrc = enc_mac_addr;
+    packet->etherDest.setIPv6Multicast(packet->dest);
 
     memset(ICMP6_NS_HEADER, 0, ICMP6_NS_HEADER_LEN);
     ICMP6_NS_HEADER->target = *target_addr;
@@ -59,18 +63,17 @@ void EtherSia::icmp6_send_ns(IPv6Address *target_addr)
 
 void EtherSia::icmp6_send_rs()
 {
-    memset(IP6_HEADER, 0, IP6_HEADER_LEN);
-    IP6_HEADER->ver_tc = 0x60;
-    IP6_HEADER->length = ntohs(ICMP6_HEADER_LEN + ICMP6_RS_HEADER_LEN);
-    IP6_HEADER->proto = IP6_PROTO_ICMP6;
-    IP6_HEADER->hop_limit = 255;
-    IP6_HEADER->src = link_local_addr;
-    IP6_HEADER->dest.setLinkLocalAllRouters();
+    IPv6Packet *packet = getPacket();
 
-    memset(ETHER_HEADER, 0, ETHER_HEADER_LEN);
-    ETHER_HEADER->src = enc_mac_addr;
-    ETHER_HEADER->dest.setIPv6Multicast(IP6_HEADER->dest);
-    ETHER_HEADER->type = ntohs(ETHER_TYPE_IPV6);
+    packet->init();
+    packet->length = ntohs(ICMP6_HEADER_LEN + ICMP6_RS_HEADER_LEN);
+    packet->proto = IP6_PROTO_ICMP6;
+    packet->hopLimit = 255;
+    packet->src = link_local_addr;
+    packet->dest.setLinkLocalAllRouters();
+
+    packet->etherSrc = enc_mac_addr;
+    packet->etherDest.setIPv6Multicast(packet->dest);
 
     memset(ICMP6_RS_HEADER, 0, ICMP6_RS_HEADER_LEN);
     ICMP6_HEADER->type = ICMP6_TYPE_RS;
@@ -109,8 +112,9 @@ void EtherSia::icmp6_process_prefix(struct icmp6_prefix_information *pi, MACAddr
 
 void EtherSia::icmp6_process_ra()
 {
-    int16_t remaining = ntohs(IP6_HEADER->length) - ICMP6_HEADER_LEN - ICMP6_RA_HEADER_LEN;
-    uint8_t *ptr = buffer + ICMP6_RA_HEADER_OFFSET + ICMP6_RA_HEADER_LEN;
+    IPv6Packet *packet = getPacket();
+    int16_t remaining = ntohs(packet->length) - ICMP6_HEADER_LEN - ICMP6_RA_HEADER_LEN;
+    uint8_t *ptr = (uint8_t*)packet + ICMP6_RA_HEADER_OFFSET + ICMP6_RA_HEADER_LEN;
     uint8_t *pi_ptr = NULL;
     uint8_t *router_mac_ptr = NULL;
 
