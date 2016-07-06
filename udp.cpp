@@ -79,7 +79,7 @@ void EtherSia::udpSendReply(const char *data, uint16_t len)
         memcpy(UDP_PAYLOAD_PTR, data, len);
     }
 
-    convert_buffer_to_reply();
+    prepareReply();
 
     UDP_HEADER->length = htons(UDP_HEADER_LEN + len);
     IP6_HEADER->length = UDP_HEADER->length;

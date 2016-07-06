@@ -163,21 +163,22 @@ IPv6Packet* EtherSia::receivePacket()
     return NULL;
 }
 
-void EtherSia::convert_buffer_to_reply()
+void EtherSia::prepareReply()
 {
-    IPv6Address *reply_src_addr;
+    IPv6Packet *packet = (IPv6Packet*)buffer;
+    IPv6Address *replySrcAddr;
 
-    if (is_our_address(&IP6_HEADER->dest) == ADDRESS_TYPE_GLOBAL) {
-        reply_src_addr = &global_addr;
+    if (is_our_address(&packet->dest) == ADDRESS_TYPE_GLOBAL) {
+        replySrcAddr = &global_addr;
     } else {
-        reply_src_addr = &link_local_addr;
+        replySrcAddr = &link_local_addr;
     }
 
-    IP6_HEADER->dest = IP6_HEADER->src;
-    IP6_HEADER->src = *reply_src_addr;
+    packet->dest = packet->src;
+    packet->src = *replySrcAddr;
 
-    ETHER_HEADER->dest = ETHER_HEADER->src;
-    ETHER_HEADER->src = enc_mac_addr;
+    packet->etherDest = packet->etherSrc;
+    packet->etherSrc = enc_mac_addr;
 }
 
 void EtherSia::send()

@@ -9,7 +9,7 @@ void EtherSia::icmp6_ns_reply()
         return;
     }
 
-    convert_buffer_to_reply();
+    prepareReply();
 
     // We should now send a neighbor advertisement back to where the neighbor solicication came from.
     IP6_HEADER->length = ntohs(ICMP6_HEADER_LEN + ICMP6_NA_HEADER_LEN);
@@ -28,7 +28,7 @@ void EtherSia::icmp6_echo_reply()
     Serial.print(F("Ping from "));
     IP6_HEADER->src.println();
 
-    convert_buffer_to_reply();
+    prepareReply();
 
     ICMP6_HEADER->type = ICMP6_TYPE_ECHO_REPLY;
     ICMP6_HEADER->code = 0;

@@ -51,6 +51,8 @@ public:
 
     void send();
 
+    void prepareReply();
+
     bool setDestinationAddress(const char *addr);
     IPv6Address* getDestinationAddress();
 
@@ -79,8 +81,6 @@ protected:
     void process_packet(uint16_t len);
 
     uint16_t ip6_calculate_checksum();
-
-    void convert_buffer_to_reply();
 
     uint16_t icmp6_chksum();
     void icmp6_process_packet(uint16_t len);
