@@ -32,6 +32,8 @@ void EtherSia::udpSend(uint16_t port, const char *data)
 
 void EtherSia::udpSend(uint16_t port, const uint8_t *data, uint16_t len)
 {
+    IPv6Packet *packet = getPacket();
+
     if (data) {
         // FIXME: check it isn't too big
         memcpy(UDP_PAYLOAD_PTR, data, len);
@@ -47,7 +49,7 @@ void EtherSia::udpSend(uint16_t port, const uint8_t *data, uint16_t len)
     IP6_HEADER->ver_tc = 0x60;
     IP6_HEADER->length = htons(UDP_HEADER_LEN + len);
     IP6_HEADER->proto = IP6_PROTO_UDP;
-    IP6_HEADER->hop_limit = DEFAULT_HOP_LIMIT;
+    IP6_HEADER->hop_limit = IP6_DEFAULT_HOP_LIMIT;
     IP6_HEADER->dest = dest_addr;
     if (dest_addr.isLinkLocal()) {
         IP6_HEADER->src = link_local_addr;
@@ -60,7 +62,7 @@ void EtherSia::udpSend(uint16_t port, const uint8_t *data, uint16_t len)
     UDP_HEADER->dest_port = htons(port);
     UDP_HEADER->src_port = UDP_HEADER->dest_port;
     UDP_HEADER->checksum = 0;
-    UDP_HEADER->checksum = htons(ip6_calculate_checksum());
+    UDP_HEADER->checksum = htons(packet->calculateChecksum());
 
     send();
 }
@@ -72,6 +74,7 @@ void EtherSia::udpSendReply(const char *data)
 
 void EtherSia::udpSendReply(const char *data, uint16_t len)
 {
+    IPv6Packet *packet = getPacket();
     uint16_t dest_port = UDP_HEADER->dest_port;
     uint16_t src_port = UDP_HEADER->src_port;
 
@@ -86,20 +89,21 @@ void EtherSia::udpSendReply(const char *data, uint16_t len)
     UDP_HEADER->dest_port = src_port;
     UDP_HEADER->src_port = dest_port;
     UDP_HEADER->checksum = 0;
-    UDP_HEADER->checksum = htons(ip6_calculate_checksum());
+    UDP_HEADER->checksum = htons(packet->calculateChecksum());
 
     send();
 }
 
 uint8_t EtherSia::udp_verify_checksum()
 {
-    uint16_t packet_checksum = ntohs(UDP_HEADER->checksum);
+    IPv6Packet *packet = getPacket();
+    uint16_t packetChecksum = ntohs(UDP_HEADER->checksum);
 
     // Set field in packet to 0 before calculating the checksum
     UDP_HEADER->checksum = 0;
 
     // Does the calculated checksum equal the checksum in the packet?
-    return ip6_calculate_checksum() == packet_checksum;
+    return packet->calculateChecksum() == packetChecksum;
 }
 
 void EtherSia::udp_listen(UdpServerCallback callback, uint16_t port)

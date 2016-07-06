@@ -83,8 +83,10 @@ void EtherSia::icmp6_send_rs()
 
 void EtherSia::icmp6_packet_send()
 {
+    IPv6Packet *packet = getPacket();
+
     ICMP6_HEADER->checksum = 0;
-    ICMP6_HEADER->checksum = htons(ip6_calculate_checksum());
+    ICMP6_HEADER->checksum = htons(packet->calculateChecksum());
 
     send();
 }
@@ -172,11 +174,12 @@ void EtherSia::icmp6_process_packet(uint16_t len)
 
 uint8_t EtherSia::icmp6_verify_checksum()
 {
-    uint16_t packet_checksum = ntohs(ICMP6_HEADER->checksum);
+    IPv6Packet *packet = getPacket();
+    uint16_t packetChecksum = ntohs(ICMP6_HEADER->checksum);
 
     // Set field in packet to 0 before calculating the checksum
     ICMP6_HEADER->checksum = 0;
 
     // Does the calculated checksum equal the checksum in the packet?
-    return ip6_calculate_checksum() == packet_checksum;
+    return packet->calculateChecksum() == packetChecksum;
 }

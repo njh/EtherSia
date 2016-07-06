@@ -64,23 +64,6 @@ IPv6Address* EtherSia::getDestinationAddress()
 }
 
 
-// This function is derived from Contiki's uip6.c / upper_layer_chksum()
-uint16_t EtherSia::ip6_calculate_checksum()
-{
-    /* First sum pseudoheader. */
-    /* IP protocol and length fields. This addition cannot carry. */
-    volatile uint16_t newsum = ntohs(IP6_HEADER->length) + IP6_HEADER->proto;
-
-    /* Sum IP source and destination addresses. */
-    newsum = chksum(newsum, (uint8_t *)(IP6_HEADER->src), 32);
-
-    /* Sum the payload header and data */
-    uint8_t *payload = (uint8_t *)(this->buffer + IP6_HEADER_OFFSET + IP6_HEADER_LEN);
-    newsum = chksum(newsum, payload, ntohs(IP6_HEADER->length));
-
-    return ~newsum;
-}
-
 void EtherSia::process_packet(uint16_t len)
 {
     if (ETHER_HEADER->type != htons(ETHER_TYPE_IPV6)) {

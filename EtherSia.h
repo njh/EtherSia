@@ -81,8 +81,6 @@ protected:
 
     void process_packet(uint16_t len);
 
-    uint16_t ip6_calculate_checksum();
-
     uint16_t icmp6_chksum();
     void icmp6_process_packet(uint16_t len);
     void icmp6_send_ns(IPv6Address *target_addr);
