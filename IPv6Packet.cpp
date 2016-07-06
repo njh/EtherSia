@@ -44,13 +44,14 @@ uint16_t IPv6Packet::calculateChecksum()
 {
     /* First sum pseudoheader. */
     /* IP protocol and length fields. This addition cannot carry. */
-    volatile uint16_t newsum = ntohs(this->length) + this->proto;
+    uint16_t length = ntohs(this->length);
+    volatile uint16_t newsum = length + this->proto;
 
     /* Sum IP source and destination addresses. */
     newsum = chksum(newsum, (uint8_t *)(this->src), 32);
 
     /* Sum the payload header and data */
-    newsum = chksum(newsum, this->payload(), ntohs(this->length));
+    newsum = chksum(newsum, this->payload(), length);
 
     return ~newsum;
 }
