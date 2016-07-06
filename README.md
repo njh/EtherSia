@@ -16,13 +16,12 @@ Limitations
 - No DHCPv6
 - No Routing or RPL
 - No fragmentation support
-- A single network interface is assumed
 - A single local router on the network is assumed
 - The network prefix length is assumed to be /64
 
 If you need a more fully functional IPv6 stack, then take a look at [Contiki].
 
-EtherSia is an IPv6 only library. If you are looking for an IPv4 library for ENC28J60,
+EtherSia is an IPv6 only library. If you are looking for an IPv4 library for [ENC28J60],
 then take a look at [EtherCard].
 
 
