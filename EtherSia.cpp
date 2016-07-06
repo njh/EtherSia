@@ -163,6 +163,23 @@ IPv6Packet* EtherSia::receivePacket()
     return NULL;
 }
 
+void EtherSia::prepareSend()
+{
+    IPv6Packet *packet = (IPv6Packet*)buffer;
+
+    packet->init();
+    if (packet->dest.isLinkLocal()) {
+        packet->src = link_local_addr;
+    } else {
+        packet->src = global_addr;
+    }
+
+    packet->etherSrc = enc_mac_addr;
+
+    // FIXME: this might be a link-local MAC
+    packet->etherDest = router_mac;
+}
+
 void EtherSia::prepareReply()
 {
     IPv6Packet *packet = (IPv6Packet*)buffer;

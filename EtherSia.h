@@ -51,6 +51,7 @@ public:
 
     void send();
 
+    void prepareSend();
     void prepareReply();
 
     bool setDestinationAddress(const char *addr);
