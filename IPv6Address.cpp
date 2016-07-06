@@ -5,12 +5,17 @@
 
 IPv6Address::IPv6Address()
 {
-    memset(_address, 0, sizeof(_address));
+    setZero();
 }
 
 IPv6Address::IPv6Address(const char *addrstr)
 {
     fromString(addrstr);
+}
+
+void IPv6Address::setZero()
+{
+    memset(_address, 0, sizeof(_address));
 }
 
 void IPv6Address::setLinkLocalPrefix()
@@ -27,6 +32,16 @@ bool IPv6Address::isMulticast() const
 bool IPv6Address::isLinkLocal() const
 {
     return _address[0] == 0xfe && _address[1] == 0x80;
+}
+
+bool IPv6Address::isZero() const
+{
+    for(uint8_t i; i < 16; i++) {
+        if (_address[i] != 0x00)
+            return 0;
+    }
+
+    return 1;
 }
 
 void IPv6Address::setEui64(const MACAddress *macaddr)

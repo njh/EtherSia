@@ -73,6 +73,11 @@ public:
     void setSolicitedNodeMulticastAddress(const IPv6Address *addr);
 
     /**
+     * Set the address to all-zeros (::)
+     */
+    void setZero();
+
+    /**
      * Returns true if the address is a multicast address (starts FF)
      */
     bool isMulticast() const;
@@ -81,6 +86,11 @@ public:
      * Returns true if the address is a link-local address (starts FE80)
      */
     bool isLinkLocal() const;
+
+    /**
+     * Returns true if the address is empty / all-zeros (::)
+     */
+    bool isZero() const;
 
     /**
      * Print a IPv6 address to a stream as a human readable string.
