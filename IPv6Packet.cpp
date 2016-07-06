@@ -21,7 +21,7 @@ void IPv6Packet::init()
 
 uint8_t* IPv6Packet::payload()
 {
-    return (uint8_t *)(this + ETHER_HEADER_LEN + IP6_HEADER_LEN);
+    return (uint8_t *)(this) + sizeof(IPv6Packet);
 }
 
 bool IPv6Packet::isValid()
