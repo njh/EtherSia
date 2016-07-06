@@ -138,18 +138,4 @@ struct icmp6_na_header {
 static_assert(sizeof(struct icmp6_na_header) == ICMP6_NA_HEADER_LEN, "Size is not correct");
 
 
-struct udp_header {
-    uint16_t src_port;
-    uint16_t dest_port;
-    uint16_t length;
-    uint16_t checksum;
-} __attribute__((__packed__));
-#define UDP_HEADER_LEN            (8)
-#define UDP_HEADER_OFFSET         (IP6_HEADER_OFFSET + IP6_HEADER_LEN)
-#define UDP_HEADER                ((struct udp_header*)(buffer + UDP_HEADER_OFFSET))
-#define UDP_PAYLOAD_PTR           (char*)(buffer + UDP_HEADER_OFFSET + UDP_HEADER_LEN)
-
-static_assert(sizeof(struct udp_header) == UDP_HEADER_LEN, "Size is not correct");
-
-
 #endif

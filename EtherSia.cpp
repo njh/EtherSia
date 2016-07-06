@@ -19,9 +19,6 @@ boolean EtherSia::begin(const MACAddress *macaddr)
     buffer_len = 800;
     buffer = (uint8_t*)malloc(buffer_len);
 
-    udp_port = 0;
-    udp_callback = NULL;
-
     // Delay a 'random' amount to stop multiple nodes acting at the same time
     delay((*macaddr)[5] ^ 0x55);
 
@@ -47,99 +44,34 @@ IPv6Packet* EtherSia::getPacket()
     return (IPv6Packet*)buffer;
 }
 
-bool EtherSia::setDestinationAddress(const char *addr)
-{
-    return dest_addr.fromString(addr);
-
-//     if (dest_addr.isLinkLocal()) {
-//         // FIXME: implement MAC address lookup
-//     } else {
-//         dest_mac = router_mac;
-//     }
-}
-
-IPv6Address* EtherSia::getDestinationAddress()
-{
-    return &dest_addr;
-}
-
-
-void EtherSia::process_packet(uint16_t len)
-{
-    if (ETHER_HEADER->type != htons(ETHER_TYPE_IPV6)) {
-        return;
-    }
-
-#ifdef DEBUG
-    if ((IP6_HEADER->ver_tc[0] >> 4) & 0xF != 6) {
-        Serial.println("NOT 6");
-        return;
-    }
-#endif
-
-    switch(IP6_HEADER->proto) {
-    case IP6_PROTO_ICMP6:
-        icmp6_process_packet(len);
-        break;
-
-    case IP6_PROTO_TCP:
-        Serial.println(F("Got TCP packet"));
-        break;
-
-    case IP6_PROTO_UDP:
-        udp_process_packet(len);
-        break;
-
-    default:
-        Serial.print(F("Unknown next header type: "));
-        Serial.println(IP6_HEADER->proto, DEC);
-        break;
-    }
-}
-
-void EtherSia::loop()
-{
-    int len = read(buffer, buffer_len);
-
-    if (len) {
-        process_packet(len);
-    } else if (global_addr[0] == 0x00) {
-        static unsigned long nextRouterSolicitation = millis();
-        if ((long)(millis() - nextRouterSolicitation) >= 0) {
-            icmp6_send_rs();
-            nextRouterSolicitation = millis() + 4000;
-        }
-    }
-}
-
 IPv6Packet* EtherSia::receivePacket()
 {
     int len = read(buffer, buffer_len);
 
     if (len) {
-        IPv6Packet *packet = (IPv6Packet*)buffer;
-
-        if (packet->etherType != htons(ETHER_TYPE_IPV6)) {
+        IPv6Packet *packet = getPacket();
+        if (!packet->isValid()) {
             return NULL;
         }
-
-// #ifdef DEBUG
-//     if ((IP6_HEADER->ver_tc[0] >> 4) & 0xF != 6) {
-//         Serial.println("NOT 6");
-//         return;
-//     }
-// #endif
 
         if (packet->proto == IP6_PROTO_ICMP6) {
             icmp6_process_packet(len);
         }
 
         return packet;
-    } else if (global_addr[0] == 0x00) {
-        static unsigned long nextRouterSolicitation = millis();
-        if ((long)(millis() - nextRouterSolicitation) >= 0) {
-            icmp6_send_rs();
-            nextRouterSolicitation = millis() + 4000;
+    } else {
+        IPv6Packet *packet = getPacket();
+        if (packet) {
+            // We didn't receive anything; invalidate the buffer
+            packet->etherType = 0;
+        }
+
+        if (global_addr.isZero()) {
+            static unsigned long nextRouterSolicitation = millis();
+            if ((long)(millis() - nextRouterSolicitation) >= 0) {
+                icmp6_send_rs();
+                nextRouterSolicitation = millis() + 4000;
+            }
         }
     }
 
