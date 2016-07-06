@@ -24,6 +24,21 @@ uint8_t* IPv6Packet::payload()
     return (uint8_t *)(this + ETHER_HEADER_LEN + IP6_HEADER_LEN);
 }
 
+bool IPv6Packet::isValid()
+{
+    if (this->etherType != ntohs(ETHER_TYPE_IPV6)) {
+        return false;
+    }
+
+    // Check the version header
+    if ((this->ver_tc & 0x60) != 0x60) {
+        Serial.println("NOT 6");
+        return false;
+    }
+
+    return true;
+}
+
 // This function is derived from Contiki's uip6.c / upper_layer_chksum()
 uint16_t IPv6Packet::calculateChecksum()
 {

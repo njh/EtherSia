@@ -20,8 +20,9 @@ class IPv6Packet {
 public:
     IPv6Packet();
 
-    uint8_t* payload();
     void init();
+    uint8_t* payload();
+    bool isValid();
     uint16_t calculateChecksum();
 
     // Ethernet Header
