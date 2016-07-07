@@ -54,8 +54,6 @@ protected:
     uint8_t *buffer;
     uint16_t buffer_len;
 
-    void process_packet(uint16_t len);
-
     uint16_t icmp6_chksum();
     void icmp6_process_packet(uint16_t len);
     void icmp6_send_ns(IPv6Address *target_addr);
