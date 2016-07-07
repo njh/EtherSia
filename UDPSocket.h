@@ -10,10 +10,14 @@ class UDPSocket {
 
 public:
 
+    UDPSocket(EtherSia *ether);
     UDPSocket(EtherSia *ether, uint16_t port);
     UDPSocket(EtherSia *ether, IPv6Address *destination, uint16_t port);
 
-    void setDestination(IPv6Address *address, uint16_t port);
+    bool setDestination(const char *address, uint16_t port);
+    bool setDestination(IPv6Address *address, uint16_t port);
+    IPv6Address* getDestinationAddress();
+    uint16_t getDestinationPort();
 
     bool havePacket();
     bool verifyChecksum();

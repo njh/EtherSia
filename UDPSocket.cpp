@@ -1,10 +1,15 @@
 #include "EtherSia.h"
 #include "util.h"
 
-UDPSocket::UDPSocket(EtherSia *ether, uint16_t port=0)
+UDPSocket::UDPSocket(EtherSia *ether)
 {
     this->ether = ether;
-    setDestination(NULL, port);
+}
+
+UDPSocket::UDPSocket(EtherSia *ether, uint16_t port)
+{
+    this->ether = ether;
+    this->destPort = port;
 }
 
 UDPSocket::UDPSocket(EtherSia *ether, IPv6Address *destination, uint16_t port)
@@ -13,10 +18,27 @@ UDPSocket::UDPSocket(EtherSia *ether, IPv6Address *destination, uint16_t port)
     setDestination(destination, port);
 }
 
-void UDPSocket::setDestination(IPv6Address *address, uint16_t port)
+bool UDPSocket::setDestination(const char *address, uint16_t port)
 {
-    this->destAddress = *address;
     this->destPort = port;
+    return this->destAddress.fromString(address);
+}
+
+bool UDPSocket::setDestination(IPv6Address *address, uint16_t port)
+{
+    this->destPort = port;
+    this->destAddress = *address;
+    return true;
+}
+
+IPv6Address* UDPSocket::getDestinationAddress()
+{
+    return &destAddress;
+}
+
+uint16_t UDPSocket::getDestinationPort()
+{
+    return destPort;
 }
 
 bool UDPSocket::havePacket()
