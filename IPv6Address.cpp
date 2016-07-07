@@ -58,6 +58,7 @@ void IPv6Address::setEui64(const MACAddress *macaddr)
 
 void IPv6Address::setLinkLocalAllNodes()
 {
+    setZero();
     _address[0] = 0xFF;
     _address[1] = 0x02;
     _address[15] = 0x01;
@@ -65,6 +66,7 @@ void IPv6Address::setLinkLocalAllNodes()
 
 void IPv6Address::setLinkLocalAllRouters()
 {
+    setZero();
     _address[0] = 0xFF;
     _address[1] = 0x02;
     _address[15] = 0x02;
@@ -73,7 +75,7 @@ void IPv6Address::setLinkLocalAllRouters()
 // See RFC4291 section 2.7.1.
 void IPv6Address::setSolicitedNodeMulticastAddress(const IPv6Address *addr)
 {
-    memset(_address, 0, sizeof(_address));
+    setZero();
     _address[0] = 0xFF;
     _address[1] = 0x02;
     _address[11] = 0x01;

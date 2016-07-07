@@ -46,6 +46,8 @@ public:
 
     /**
      * Set the first two bytes to the link-local prefix (FE80:)
+     * Note this only sets the first 64-bits of the address.
+     * The last 64-bits are left unmodified.
      */
     void setLinkLocalPrefix();
 
@@ -61,6 +63,8 @@ public:
 
     /**
      * Set the last 64-bits of the IPv6 address to a EUI-64 based on a 48-bit MAC Address
+     * Note this only sets the last 64-bits of the address.
+     * The first 64-bits are left unmodified.
      * @param macaddr The MAC address
      */
     void setEui64(const MACAddress *macaddr);
