@@ -1,6 +1,6 @@
 
 #include "EtherSia.h"
-#include "packet_headers.h"
+#include "icmp6.h"
 
 
 void EtherSia::icmp6_ns_reply()
