@@ -46,15 +46,17 @@ void EtherSia::icmp6_send_ns(IPv6Address *target_addr)
     IPv6Packet *packet = getPacket();
 
     packet->init();
-    packet->length = ntohs(ICMP6_HEADER_LEN + ICMP6_RS_HEADER_LEN);
+    packet->length = ntohs(ICMP6_HEADER_LEN + ICMP6_NS_HEADER_LEN);
     packet->proto = IP6_PROTO_ICMP6;
     packet->hopLimit = 255;
     packet->src.setZero();
     packet->dest.setSolicitedNodeMulticastAddress(target_addr);
 
-    memset(ETHER_HEADER, 0, ETHER_HEADER_LEN);
     packet->etherSrc = enc_mac_addr;
     packet->etherDest.setIPv6Multicast(packet->dest);
+
+    ICMP6_HEADER->type = ICMP6_TYPE_NS;
+    ICMP6_HEADER->code = 0;
 
     memset(ICMP6_NS_HEADER, 0, ICMP6_NS_HEADER_LEN);
     ICMP6_NS_HEADER->target = *target_addr;
@@ -76,8 +78,10 @@ void EtherSia::icmp6_send_rs()
     packet->etherSrc = enc_mac_addr;
     packet->etherDest.setIPv6Multicast(packet->dest);
 
-    memset(ICMP6_RS_HEADER, 0, ICMP6_RS_HEADER_LEN);
     ICMP6_HEADER->type = ICMP6_TYPE_RS;
+    ICMP6_HEADER->code = 0;
+
+    memset(ICMP6_RS_HEADER, 0, ICMP6_RS_HEADER_LEN);
     ICMP6_RS_HEADER->option_type = ICMP6_OPTION_SOURCE_LINK_ADDRESS;
     ICMP6_RS_HEADER->option_len = 1;
     ICMP6_RS_HEADER->option_mac = enc_mac_addr;
