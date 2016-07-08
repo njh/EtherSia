@@ -22,8 +22,28 @@ boolean EtherSia::begin(const MACAddress *macaddr)
     // Delay a 'random' amount to stop multiple nodes acting at the same time
     delay((*macaddr)[5] ^ 0x55);
 
+    // Allow some extra time to let the Ethernet controller to get ready
+    delay(500);
+
     // Send link local Neighbour Solicitation for Duplicate Address Detection
     icmp6_send_ns(&link_local_addr);
+
+    // Perform stateless auto-configuration
+    unsigned long nextRouterSolicitation = millis();
+    uint8_t count = 0;
+    while (global_addr.isZero()) {
+        receivePacket();
+
+        if ((long)(millis() - nextRouterSolicitation) >= 0) {
+            icmp6_send_rs();
+            nextRouterSolicitation = millis() + ROUTER_SOLICITATION_TIMEOUT;
+            count++;
+        }
+
+        if (count > ROUTER_SOLICITATION_ATTEMPTS) {
+            return false;
+        }
+    }
 
     return true;
 }
@@ -61,18 +81,9 @@ IPv6Packet* EtherSia::receivePacket()
         return packet;
     } else {
         IPv6Packet *packet = getPacket();
-        if (packet) {
-            // We didn't receive anything; invalidate the buffer
-            packet->etherType = 0;
-        }
 
-        if (global_addr.isZero()) {
-            static unsigned long nextRouterSolicitation = millis();
-            if ((long)(millis() - nextRouterSolicitation) >= 0) {
-                icmp6_send_rs();
-                nextRouterSolicitation = millis() + 4000;
-            }
-        }
+        // We didn't receive anything; invalidate the buffer
+        packet->etherType = 0;
     }
 
     return NULL;

@@ -25,7 +25,11 @@ enum {
     ADDRESS_TYPE_MULTICAST
 };
 
+/** How often to send Router Solicitation (RS) packets */
+#define ROUTER_SOLICITATION_TIMEOUT    (3000)
 
+/** How many times to send Router Solicitation (RS) packets */
+#define ROUTER_SOLICITATION_ATTEMPTS   (4)
 
 
 class EtherSia : public ENC28J60 {
