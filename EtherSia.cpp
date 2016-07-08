@@ -48,6 +48,26 @@ boolean EtherSia::begin(const MACAddress *macaddr)
     return true;
 }
 
+void EtherSia::setGlobalAddress(IPv6Address *addr)
+{
+    global_addr = *addr;
+}
+
+void EtherSia::setGlobalAddress(const char* addr)
+{
+    global_addr.fromString(addr);
+}
+
+IPv6Address* EtherSia::getGlobalAddress()
+{
+    return &global_addr;
+}
+
+IPv6Address* EtherSia::getLinkLocalAddress()
+{
+    return &link_local_addr;
+}
+
 uint8_t EtherSia::is_our_address(const IPv6Address *addr)
 {
     if (*addr == link_local_addr) {

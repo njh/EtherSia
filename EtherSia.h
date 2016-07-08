@@ -39,6 +39,11 @@ public:
 
     boolean begin(const MACAddress *addr);
 
+    void setGlobalAddress(IPv6Address *addr);
+    void setGlobalAddress(const char* addr);
+    IPv6Address* getGlobalAddress();
+    IPv6Address* getLinkLocalAddress();
+
     IPv6Packet* receivePacket();
     IPv6Packet* getPacket();
 
