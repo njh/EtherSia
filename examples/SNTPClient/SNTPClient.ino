@@ -28,6 +28,9 @@ void setup() {
         Serial.println("Failed to configure Ethernet");
     }
 
+    Serial.print("Our global address is: ");
+    ether.getGlobalAddress()->println();
+
     if (udp.setDestination("2001:8b0:0:53::94", NTP_PORT)) {
         Serial.print("SNTP Server address: ");
         udp.getDestinationAddress()->println();
@@ -105,4 +108,5 @@ void displayTime(unsigned long secsSince1900)
       Serial.print('0');
     }
     Serial.println(epoch % 60); // print the second
+    Serial.println();
 }
