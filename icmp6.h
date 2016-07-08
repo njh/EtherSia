@@ -8,7 +8,7 @@
 #define ICMP6_TYPE_NS             135
 #define ICMP6_TYPE_NA             136
 
-#define ICMP6_FLAG_S              (1 << 6)
+#define ICMP6_NA_FLAG_S           (1 << 6)
 
 #define ICMP6_OPTION_SOURCE_LINK_ADDRESS 1
 #define ICMP6_OPTION_TARGET_LINK_ADDRESS 2
