@@ -3,12 +3,12 @@
 #include "icmp6.h"
 
 
-void EtherSia::icmp6_ns_reply()
+void EtherSia::icmp6NSReply()
 {
     IPv6Packet *packet = getPacket();
 
     // Is the Neighbour Solicitation addressed to us?
-    if (!is_our_address(&ICMP6_NS_HEADER_PTR->target)) {
+    if (!isOurAddress(&ICMP6_NS_HEADER_PTR->target)) {
         return;
     }
 
@@ -23,10 +23,10 @@ void EtherSia::icmp6_ns_reply()
     ICMP6_NA_HEADER_PTR->option_len = 1;  // Options length, 1 = 8 bytes.
     ICMP6_NA_HEADER_PTR->option_mac = enc_mac_addr;
 
-    icmp6_packet_send();
+    icmp6PacketSend();
 }
 
-void EtherSia::icmp6_echo_reply()
+void EtherSia::icmp6EchoReply()
 {
     IPv6Packet *packet = getPacket();
 
@@ -38,10 +38,10 @@ void EtherSia::icmp6_echo_reply()
     ICMP6_HEADER_PTR->type = ICMP6_TYPE_ECHO_REPLY;
     ICMP6_HEADER_PTR->code = 0;
 
-    icmp6_packet_send();
+    icmp6PacketSend();
 }
 
-void EtherSia::icmp6_send_ns(IPv6Address *target_addr)
+void EtherSia::icmp6SendNS(IPv6Address *target_addr)
 {
     IPv6Packet *packet = getPacket();
 
@@ -61,10 +61,10 @@ void EtherSia::icmp6_send_ns(IPv6Address *target_addr)
     memset(ICMP6_NS_HEADER_PTR, 0, ICMP6_NS_HEADER_LEN);
     ICMP6_NS_HEADER_PTR->target = *target_addr;
 
-    icmp6_packet_send();
+    icmp6PacketSend();
 }
 
-void EtherSia::icmp6_send_rs()
+void EtherSia::icmp6SendRS()
 {
     IPv6Packet *packet = getPacket();
 
@@ -72,7 +72,7 @@ void EtherSia::icmp6_send_rs()
     packet->length = ntohs(ICMP6_HEADER_LEN + ICMP6_RS_HEADER_LEN);
     packet->proto = IP6_PROTO_ICMP6;
     packet->hopLimit = 255;
-    packet->src = link_local_addr;
+    packet->src = linkLocalAddr;
     packet->dest.setLinkLocalAllRouters();
 
     packet->etherSrc = enc_mac_addr;
@@ -86,10 +86,10 @@ void EtherSia::icmp6_send_rs()
     ICMP6_RS_HEADER_PTR->option_len = 1;
     ICMP6_RS_HEADER_PTR->option_mac = enc_mac_addr;
 
-    icmp6_packet_send();
+    icmp6PacketSend();
 }
 
-void EtherSia::icmp6_packet_send()
+void EtherSia::icmp6PacketSend()
 {
     IPv6Packet *packet = getPacket();
 
@@ -99,7 +99,7 @@ void EtherSia::icmp6_packet_send()
     send();
 }
 
-void EtherSia::icmp6_process_prefix(struct icmp6_prefix_information *pi, MACAddress *router_mac_ptr)
+void EtherSia::icmp6ProcessPrefix(struct icmp6_prefix_information *pi, MACAddress *routerMacPtr)
 {
     // Only use prefix if the On-link AND address-configuration flags are set
     // L = Bit 8 = On-link flag
@@ -115,29 +115,29 @@ void EtherSia::icmp6_process_prefix(struct icmp6_prefix_information *pi, MACAddr
     }
 
     // Only set global address if there isn't one already set
-    if (global_addr.isZero()) {
-        global_addr = pi->prefix;
-        global_addr.setEui64(&enc_mac_addr);
+    if (globalAddr.isZero()) {
+        globalAddr = pi->prefix;
+        globalAddr.setEui64(&enc_mac_addr);
     }
 
     // Store the MAC address of the router
-    router_mac = *router_mac_ptr;
+    routerMac = *routerMacPtr;
 }
 
-void EtherSia::icmp6_process_ra()
+void EtherSia::icmp6ProcessRA()
 {
     IPv6Packet *packet = getPacket();
     int16_t remaining = ntohs(packet->length) - ICMP6_HEADER_LEN - ICMP6_RA_HEADER_LEN;
     uint8_t *ptr = (uint8_t*)packet + ICMP6_RA_HEADER_OFFSET + ICMP6_RA_HEADER_LEN;
     uint8_t *pi_ptr = NULL;
-    uint8_t *router_mac_ptr = NULL;
+    uint8_t *routerMac_ptr = NULL;
 
     // FIXME: check destination?
 
     while(remaining > 0) {
         switch(ptr[0]) {
         case ICMP6_OPTION_SOURCE_LINK_ADDRESS:
-            router_mac_ptr = &ptr[2];
+            routerMac_ptr = &ptr[2];
             break;
         case ICMP6_OPTION_PREFIX_INFORMATION:
             pi_ptr = &ptr[2];
@@ -151,28 +151,28 @@ void EtherSia::icmp6_process_ra()
         ptr += (8 * ptr[1]);
     }
 
-    if (pi_ptr && router_mac_ptr) {
-        icmp6_process_prefix(
+    if (pi_ptr && routerMac_ptr) {
+        icmp6ProcessPrefix(
             (struct icmp6_prefix_information*)pi_ptr,
-            (MACAddress *)router_mac_ptr
+            (MACAddress *)routerMac_ptr
         );
     }
 }
 
-void EtherSia::icmp6_process_packet(uint16_t len)
+void EtherSia::icmp6ProcessPacket(uint16_t len)
 {
-    if (!icmp6_verify_checksum()) {
+    if (!icmp6VerifyChecksum()) {
         Serial.println(F("ICMP6 checksum error."));
         return;
     }
 
     switch(ICMP6_HEADER_PTR->type) {
     case ICMP6_TYPE_NS:
-        icmp6_ns_reply();
+        icmp6NSReply();
         break;
 
     case ICMP6_TYPE_ECHO:
-        icmp6_echo_reply();
+        icmp6EchoReply();
         break;
 
     case ICMP6_TYPE_RS:
@@ -180,7 +180,7 @@ void EtherSia::icmp6_process_packet(uint16_t len)
         break;
 
     case ICMP6_TYPE_RA:
-        icmp6_process_ra();
+        icmp6ProcessRA();
         break;
 
     default:
@@ -190,7 +190,7 @@ void EtherSia::icmp6_process_packet(uint16_t len)
     }
 }
 
-uint8_t EtherSia::icmp6_verify_checksum()
+uint8_t EtherSia::icmp6VerifyChecksum()
 {
     IPv6Packet *packet = getPacket();
     uint16_t packetChecksum = ntohs(ICMP6_HEADER_PTR->checksum);

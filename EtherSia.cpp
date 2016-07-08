@@ -12,12 +12,12 @@ boolean EtherSia::begin(const MACAddress *macaddr)
     init(macaddr);
 
     // Calculate our link local address
-    link_local_addr.setLinkLocalPrefix();
-    link_local_addr.setEui64(macaddr);
+    linkLocalAddr.setLinkLocalPrefix();
+    linkLocalAddr.setEui64(macaddr);
 
     // FIXME: make this configurable
-    buffer_len = 800;
-    buffer = (uint8_t*)malloc(buffer_len);
+    bufferLen = 800;
+    buffer = (uint8_t*)malloc(bufferLen);
 
     // Delay a 'random' amount to stop multiple nodes acting at the same time
     delay((*macaddr)[5] ^ 0x55);
@@ -26,16 +26,16 @@ boolean EtherSia::begin(const MACAddress *macaddr)
     delay(500);
 
     // Send link local Neighbour Solicitation for Duplicate Address Detection
-    icmp6_send_ns(&link_local_addr);
+    icmp6SendNS(&linkLocalAddr);
 
     // Perform stateless auto-configuration
     unsigned long nextRouterSolicitation = millis();
     uint8_t count = 0;
-    while (global_addr.isZero()) {
+    while (globalAddr.isZero()) {
         receivePacket();
 
         if ((long)(millis() - nextRouterSolicitation) >= 0) {
-            icmp6_send_rs();
+            icmp6SendRS();
             nextRouterSolicitation = millis() + ROUTER_SOLICITATION_TIMEOUT;
             count++;
         }
@@ -50,29 +50,29 @@ boolean EtherSia::begin(const MACAddress *macaddr)
 
 void EtherSia::setGlobalAddress(IPv6Address *addr)
 {
-    global_addr = *addr;
+    globalAddr = *addr;
 }
 
 void EtherSia::setGlobalAddress(const char* addr)
 {
-    global_addr.fromString(addr);
+    globalAddr.fromString(addr);
 }
 
 IPv6Address* EtherSia::getGlobalAddress()
 {
-    return &global_addr;
+    return &globalAddr;
 }
 
 IPv6Address* EtherSia::getLinkLocalAddress()
 {
-    return &link_local_addr;
+    return &linkLocalAddr;
 }
 
-uint8_t EtherSia::is_our_address(const IPv6Address *addr)
+uint8_t EtherSia::isOurAddress(const IPv6Address *addr)
 {
-    if (*addr == link_local_addr) {
+    if (*addr == linkLocalAddr) {
         return ADDRESS_TYPE_LINK_LOCAL;
-    } else if (*addr == global_addr) {
+    } else if (*addr == globalAddr) {
         return ADDRESS_TYPE_GLOBAL;
     } else {
         return 0;
@@ -86,7 +86,7 @@ IPv6Packet* EtherSia::getPacket()
 
 IPv6Packet* EtherSia::receivePacket()
 {
-    int len = read(buffer, buffer_len);
+    int len = read(buffer, bufferLen);
 
     if (len) {
         IPv6Packet *packet = getPacket();
@@ -95,7 +95,7 @@ IPv6Packet* EtherSia::receivePacket()
         }
 
         if (packet->proto == IP6_PROTO_ICMP6) {
-            icmp6_process_packet(len);
+            icmp6ProcessPacket(len);
         }
 
         return packet;
@@ -115,15 +115,15 @@ void EtherSia::prepareSend()
 
     packet->init();
     if (packet->dest.isLinkLocal()) {
-        packet->src = link_local_addr;
+        packet->src = linkLocalAddr;
     } else {
-        packet->src = global_addr;
+        packet->src = globalAddr;
     }
 
     packet->etherSrc = enc_mac_addr;
 
     // FIXME: this might be a link-local MAC
-    packet->etherDest = router_mac;
+    packet->etherDest = routerMac;
 }
 
 void EtherSia::prepareReply()
@@ -131,10 +131,10 @@ void EtherSia::prepareReply()
     IPv6Packet *packet = (IPv6Packet*)buffer;
     IPv6Address *replySrcAddr;
 
-    if (is_our_address(&packet->dest) == ADDRESS_TYPE_GLOBAL) {
-        replySrcAddr = &global_addr;
+    if (isOurAddress(&packet->dest) == ADDRESS_TYPE_GLOBAL) {
+        replySrcAddr = &globalAddr;
     } else {
-        replySrcAddr = &link_local_addr;
+        replySrcAddr = &linkLocalAddr;
     }
 
     packet->dest = packet->src;

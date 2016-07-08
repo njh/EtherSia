@@ -47,7 +47,7 @@ public:
     IPv6Packet* receivePacket();
     IPv6Packet* getPacket();
 
-    uint8_t is_our_address(const IPv6Address *addr);
+    uint8_t isOurAddress(const IPv6Address *addr);
 
     void send();
 
@@ -55,24 +55,24 @@ public:
     void prepareReply();
 
 protected:
-    IPv6Address link_local_addr;
-    IPv6Address global_addr;
+    IPv6Address linkLocalAddr;
+    IPv6Address globalAddr;
 
-    MACAddress router_mac;
+    MACAddress routerMac;
 
     uint8_t *buffer;
-    uint16_t buffer_len;
+    uint16_t bufferLen;
 
-    uint16_t icmp6_chksum();
-    void icmp6_process_packet(uint16_t len);
-    void icmp6_send_ns(IPv6Address *target_addr);
-    void icmp6_ns_reply();
-    void icmp6_echo_reply();
-    void icmp6_send_rs();
-    void icmp6_process_ra();
-    void icmp6_process_prefix(struct icmp6_prefix_information *pi, MACAddress *router_mac_ptr);
-    void icmp6_packet_send();
-    uint8_t icmp6_verify_checksum();
+    uint16_t icmp6Chksum();
+    void icmp6ProcessPacket(uint16_t len);
+    void icmp6SendNS(IPv6Address *target_addr);
+    void icmp6NSReply();
+    void icmp6EchoReply();
+    void icmp6SendRS();
+    void icmp6ProcessRA();
+    void icmp6ProcessPrefix(struct icmp6_prefix_information *pi, MACAddress *routerMacPtr);
+    void icmp6PacketSend();
+    uint8_t icmp6VerifyChecksum();
 };
 
 #endif

@@ -59,7 +59,7 @@ bool UDPSocket::havePacket()
         return 0;
     }
 
-    if (!ether->is_our_address(packetDestination())) {
+    if (!ether->isOurAddress(packetDestination())) {
         // Wrong destination
         return 0;
     }
@@ -125,7 +125,7 @@ void UDPSocket::sendReply(const char *data)
 void UDPSocket::sendReply(const uint8_t* data, uint16_t len)
 {
     IPv6Packet *packet = ether->getPacket();
-    struct udp_header *udpHeader = (udp_header *)packet->payload();
+    struct udp_header *udpHeader = UDP_HEADER_PTR;
     uint16_t destPort = udpHeader->destPort;
     uint16_t srcPort = udpHeader->srcPort;
 
