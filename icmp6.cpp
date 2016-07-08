@@ -101,18 +101,27 @@ void EtherSia::icmp6_packet_send()
 
 void EtherSia::icmp6_process_prefix(struct icmp6_prefix_information *pi, MACAddress *router_mac_ptr)
 {
-    // FIXME: Only if On-link AND stateless address configuration flags set
+    // Only use prefix if the On-link AND address-configuration flags are set
+    // L = Bit 8 = On-link flag
+    // A = Bit 7 = Autonomous address-configuration flag
+    // 0b11000000 = 0xC0
+    if (pi->flags & 0xC0 != 0xC0) {
+        return;
+    }
 
-    // FIXME: Only if prefix-length is 64?
+    // We only support a prefix length of 64
+    if (pi->prefix_length != 64) {
+        return;
+    }
 
-    this->global_addr = pi->prefix;
-    this->global_addr.setEui64(&enc_mac_addr);
-    Serial.print(F("Global IP="));
-    this->global_addr.println();
+    // Only set global address if there isn't one already set
+    if (global_addr.isZero()) {
+        global_addr = pi->prefix;
+        global_addr.setEui64(&enc_mac_addr);
+    }
 
-    this->router_mac = *router_mac_ptr;
-    Serial.print(F("Router MAC="));
-    this->router_mac.println();
+    // Store the MAC address of the router
+    router_mac = *router_mac_ptr;
 }
 
 void EtherSia::icmp6_process_ra()
