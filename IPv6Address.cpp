@@ -36,7 +36,7 @@ bool IPv6Address::isLinkLocal() const
 
 bool IPv6Address::isZero() const
 {
-    for(uint8_t i; i < 16; i++) {
+    for(uint8_t i=0; i < 16; i++) {
         if (_address[i] != 0x00)
             return 0;
     }
