@@ -25,8 +25,19 @@ public:
      * @param addr an array of bytes
      */
     IPv6Address(const uint8_t *addr);
+
+    /**
+     * Constructor from a human readable IPv6 address string
+     * @param addrstr the address to parse
+     */
     IPv6Address(const char *addrstr);
 
+    /**
+     * Set address to the a human readable IPv6 string
+     * The address string can contain double colon :: notation to save space
+     * @param addrstr an IPv6 address as a null-terminated string
+     * @return true if the string was parsed successfully
+     */
     bool fromString(const char *addrstr);
 
     /**
