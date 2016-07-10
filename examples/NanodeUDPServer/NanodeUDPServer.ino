@@ -31,6 +31,11 @@ void setup() {
         Serial.println("Failed to configure Ethernet");
     }
 
+    Serial.print("Our link-local address is: ");
+    ether.getLinkLocalAddress()->println();
+    Serial.print("Our global address is: ");
+    ether.getGlobalAddress()->println();
+
     // Turn off the Red LED (it is connected to +5v)
     pinMode(NANODE_LED_PIN, OUTPUT);
     digitalWrite(NANODE_LED_PIN, HIGH);
