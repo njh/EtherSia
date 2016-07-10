@@ -17,6 +17,10 @@
 #define ICMP6_OPTION_MTU                 5
 
 
+/**
+ * Structure for accessing the fields of a ICMP6 packet
+ * @private
+ */
 struct icmp6_header {
     uint8_t type;
     uint8_t code;
@@ -26,9 +30,14 @@ struct icmp6_header {
 #define ICMP6_HEADER_OFFSET       (ETHER_HEADER_LEN + IP6_HEADER_LEN)
 #define ICMP6_HEADER_PTR          ((struct icmp6_header*)(buffer + ICMP6_HEADER_OFFSET))
 
+/* Verify that compiler gets the structure size correct */
 static_assert(sizeof(struct icmp6_header) == ICMP6_HEADER_LEN, "Size is not correct");
 
 
+/**
+ * Structure for accessing the fields of a ICMP6 Router Solicitation packet
+ * @private
+ */
 struct icmp6_rs_header {
     uint8_t reserved[4];
 
@@ -40,8 +49,13 @@ struct icmp6_rs_header {
 #define ICMP6_RS_HEADER_OFFSET    (ICMP6_HEADER_OFFSET + ICMP6_HEADER_LEN)
 #define ICMP6_RS_HEADER_PTR       ((struct icmp6_rs_header*)(buffer + ICMP6_RS_HEADER_OFFSET))
 
+/* Verify that compiler gets the structure size correct */
 static_assert(sizeof(struct icmp6_rs_header) == ICMP6_RS_HEADER_LEN, "Size is not correct");
 
+/**
+ * Structure for accessing the fields of a ICMP6 Router Advertisement packet
+ * @private
+ */
 struct icmp6_ra_header {
     uint8_t current_hop_limit;
     uint8_t flags;
@@ -54,9 +68,14 @@ struct icmp6_ra_header {
 #define ICMP6_RA_HEADER_OFFSET    (ICMP6_HEADER_OFFSET + ICMP6_HEADER_LEN)
 #define ICMP6_RA_HEADER_PTR       ((struct icmp6_ra_header*)(buffer + ICMP6_RA_HEADER_OFFSET))
 
+/* Verify that compiler gets the structure size correct */
 static_assert(sizeof(struct icmp6_ra_header) == ICMP6_RA_HEADER_LEN, "Size is not correct");
 
 
+/**
+ * Structure for accessing the fields of a ICMP6 Prefix Information data
+ * @private
+ */
 struct icmp6_prefix_information {
     uint8_t prefix_length;
     uint8_t flags;
@@ -69,6 +88,10 @@ struct icmp6_prefix_information {
 } __attribute__((__packed__));
 
 
+/**
+ * Structure for accessing the fields of a ICMP6 Neighbour Solicitation packet
+ * @private
+ */
 struct icmp6_ns_header {
     uint8_t reserved[4];
     IPv6Address target;
@@ -77,9 +100,14 @@ struct icmp6_ns_header {
 #define ICMP6_NS_HEADER_OFFSET    (ICMP6_HEADER_OFFSET + ICMP6_HEADER_LEN)
 #define ICMP6_NS_HEADER_PTR       ((struct icmp6_ns_header*)(buffer + ICMP6_NS_HEADER_OFFSET))
 
+/* Verify that compiler gets the structure size correct */
 static_assert(sizeof(struct icmp6_ns_header) == ICMP6_NS_HEADER_LEN, "Size is not correct");
 
 
+/**
+ * Structure for accessing the fields of a ICMP6 Neighbour Advertisement packet
+ * @private
+ */
 struct icmp6_na_header {
     uint8_t flags;
     uint8_t reserved[3];
@@ -93,6 +121,7 @@ struct icmp6_na_header {
 #define ICMP6_NA_HEADER_OFFSET    (ICMP6_HEADER_OFFSET + ICMP6_HEADER_LEN)
 #define ICMP6_NA_HEADER_PTR       ((struct icmp6_na_header*)(buffer + ICMP6_NA_HEADER_OFFSET))
 
+/* Verify that compiler gets the structure size correct */
 static_assert(sizeof(struct icmp6_na_header) == ICMP6_NA_HEADER_LEN, "Size is not correct");
 
 

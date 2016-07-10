@@ -1,10 +1,23 @@
+/** 
+ * Header file for the IPv6Address class
+ * @file IPv6Address.h
+ */
+
 #ifndef IPv6Address_H
 #define IPv6Address_H
 
 #include <stdint.h>
 
-
+/** The maximum string length of an IPv6 address */
 #define MAX_IPV6_ADDRESS_STR_LEN  39
+
+
+/** A enumeration of IPv6 address types */
+enum IPv6AddressType {
+    ADDRESS_TYPE_LINK_LOCAL = 1,  /**< Link-local address type */
+    ADDRESS_TYPE_GLOBAL,          /**< Global address type */
+    ADDRESS_TYPE_MULTICAST        /**< Multicast address type */
+};
 
 
 /**

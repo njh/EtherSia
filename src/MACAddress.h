@@ -1,3 +1,8 @@
+/** 
+ * Header file for the MACAddress class
+ * @file MACAddress.h
+ */
+
 #ifndef MACAddress_H
 #define MACAddress_H
 
@@ -60,12 +65,16 @@ public:
     /**
      * Get an individual octet from the MAC address.
      * Indexed from 0 to 5.
+     * @param index The byte number from the address to get
+     * @return The requested byte from the address
      */
     uint8_t operator[](int index) const { return _address[index]; };
 
     /**
      * Get an individual octet from the MAC address.
      * Indexed from 0 to 5.
+     * @param index The byte number from the address to get
+     * @return The requested byte from the address
      */
     uint8_t& operator[](int index) { return _address[index]; };
 

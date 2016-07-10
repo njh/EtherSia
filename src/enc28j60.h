@@ -1,3 +1,8 @@
+/** 
+ * Header file for direct Ethernet frame access to the ENC28J60 controller
+ * @file enc28j60.h
+ */
+
 /*
  * Copyright (c) 2012-2013, Thingsquare, http://www.thingsquare.com/.
  * All rights reserved.
@@ -36,7 +41,7 @@
 
 
 /**
- * Send and receive Ethernet packets directly using a ENC28J60 controller.
+ * Send and receive Ethernet frames directly using a ENC28J60 controller.
  */
 class ENC28J60 {
 
@@ -58,13 +63,13 @@ public:
 
     /**
      * Initialise the Ethernet controller
-     * Must be called before sending or receiving Ethernet packets
+     * Must be called before sending or receiving Ethernet frames
      * @param enc_mac_addr the local MAC address
      */
     void init(const MACAddress *enc_mac_addr);
 
     /**
-     * Send an Ethernet packet
+     * Send an Ethernet frame
      * @param data a pointer to the data to send
      * @param datalen the length of the data in the packet
      * @return the number of bytes transmitted
@@ -72,7 +77,7 @@ public:
     int send(const uint8_t *data, uint16_t datalen);
 
     /**
-     * Read an Ethernet packet
+     * Read an Ethernet frame
      * @param buffer a pointer to a buffer to write the packet to
      * @param bufsize the available space in the buffer
      * @return the length of the received packet
