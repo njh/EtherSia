@@ -70,7 +70,7 @@ protected:
     void icmp6EchoReply();
     void icmp6SendRS();
     void icmp6ProcessRA();
-    void icmp6ProcessPrefix(struct icmp6_prefix_information *pi, MACAddress *routerMacPtr);
+    void icmp6ProcessPrefix(struct icmp6_prefix_information *pi);
     void icmp6PacketSend();
     uint8_t icmp6VerifyChecksum();
 };

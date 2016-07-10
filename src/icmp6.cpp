@@ -98,7 +98,7 @@ void EtherSia::icmp6PacketSend()
     send();
 }
 
-void EtherSia::icmp6ProcessPrefix(struct icmp6_prefix_information *pi, MACAddress *routerMacPtr)
+void EtherSia::icmp6ProcessPrefix(struct icmp6_prefix_information *pi)
 {
     // Only use prefix if the On-link AND address-configuration flags are set
     // L = Bit 8 = On-link flag
@@ -119,8 +119,6 @@ void EtherSia::icmp6ProcessPrefix(struct icmp6_prefix_information *pi, MACAddres
         globalAddr.setEui64(&enc_mac_addr);
     }
 
-    // Store the MAC address of the router
-    routerMac = *routerMacPtr;
 }
 
 void EtherSia::icmp6ProcessRA()
@@ -128,18 +126,19 @@ void EtherSia::icmp6ProcessRA()
     IPv6Packet *packet = getPacket();
     int16_t remaining = ntohs(packet->length) - ICMP6_HEADER_LEN - ICMP6_RA_HEADER_LEN;
     uint8_t *ptr = (uint8_t*)packet + ICMP6_RA_HEADER_OFFSET + ICMP6_RA_HEADER_LEN;
-    uint8_t *pi_ptr = NULL;
-    uint8_t *routerMac_ptr = NULL;
 
     // FIXME: check destination?
 
     while(remaining > 0) {
         switch(ptr[0]) {
         case ICMP6_OPTION_SOURCE_LINK_ADDRESS:
-            routerMac_ptr = &ptr[2];
+            // Store the MAC address of the router
+            routerMac = *((MACAddress*)&ptr[2]);
             break;
         case ICMP6_OPTION_PREFIX_INFORMATION:
-            pi_ptr = &ptr[2];
+            icmp6ProcessPrefix(
+                (struct icmp6_prefix_information*)&ptr[2]
+            );
             break;
         case ICMP6_OPTION_MTU:
             // FIXME: do something with the MTU?
@@ -148,13 +147,6 @@ void EtherSia::icmp6ProcessRA()
 
         remaining -= (8 * ptr[1]);
         ptr += (8 * ptr[1]);
-    }
-
-    if (pi_ptr && routerMac_ptr) {
-        icmp6ProcessPrefix(
-            (struct icmp6_prefix_information*)pi_ptr,
-            (MACAddress *)routerMac_ptr
-        );
     }
 }
 
