@@ -181,7 +181,7 @@ void EtherSia::icmp6ProcessPacket()
     }
 }
 
-uint8_t EtherSia::icmp6VerifyChecksum()
+bool EtherSia::icmp6VerifyChecksum()
 {
     IPv6Packet *packet = getPacket();
     uint16_t packetChecksum = ntohs(ICMP6_HEADER_PTR->checksum);
