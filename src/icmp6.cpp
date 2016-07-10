@@ -41,7 +41,7 @@ void EtherSia::icmp6EchoReply()
     icmp6PacketSend();
 }
 
-void EtherSia::icmp6SendNS(IPv6Address *target_addr)
+void EtherSia::icmp6SendNS(IPv6Address *targetAddress)
 {
     IPv6Packet *packet = getPacket();
 
@@ -49,7 +49,7 @@ void EtherSia::icmp6SendNS(IPv6Address *target_addr)
     packet->length = ntohs(ICMP6_HEADER_LEN + ICMP6_NS_HEADER_LEN);
     packet->hopLimit = 255;
     packet->src.setZero();
-    packet->dest.setSolicitedNodeMulticastAddress(target_addr);
+    packet->dest.setSolicitedNodeMulticastAddress(targetAddress);
 
     packet->etherSrc = enc_mac_addr;
     packet->etherDest.setIPv6Multicast(packet->dest);
@@ -58,7 +58,7 @@ void EtherSia::icmp6SendNS(IPv6Address *target_addr)
     ICMP6_HEADER_PTR->code = 0;
 
     memset(ICMP6_NS_HEADER_PTR, 0, ICMP6_NS_HEADER_LEN);
-    ICMP6_NS_HEADER_PTR->target = *target_addr;
+    ICMP6_NS_HEADER_PTR->target = *targetAddress;
 
     icmp6PacketSend();
 }
