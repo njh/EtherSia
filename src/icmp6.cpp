@@ -47,7 +47,6 @@ void EtherSia::icmp6SendNS(IPv6Address *target_addr)
 
     packet->init();
     packet->length = ntohs(ICMP6_HEADER_LEN + ICMP6_NS_HEADER_LEN);
-    packet->proto = IP6_PROTO_ICMP6;
     packet->hopLimit = 255;
     packet->src.setZero();
     packet->dest.setSolicitedNodeMulticastAddress(target_addr);
@@ -70,7 +69,6 @@ void EtherSia::icmp6SendRS()
 
     packet->init();
     packet->length = ntohs(ICMP6_HEADER_LEN + ICMP6_RS_HEADER_LEN);
-    packet->proto = IP6_PROTO_ICMP6;
     packet->hopLimit = 255;
     packet->src = linkLocalAddr;
     packet->dest.setLinkLocalAllRouters();
@@ -93,6 +91,7 @@ void EtherSia::icmp6PacketSend()
 {
     IPv6Packet *packet = getPacket();
 
+    packet->proto = IP6_PROTO_ICMP6;
     ICMP6_HEADER_PTR->checksum = 0;
     ICMP6_HEADER_PTR->checksum = htons(packet->calculateChecksum());
 
