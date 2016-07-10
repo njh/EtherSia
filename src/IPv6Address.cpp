@@ -24,17 +24,17 @@ void IPv6Address::setLinkLocalPrefix()
     _address[1] = 0x80;
 }
 
-bool IPv6Address::isMulticast() const
+boolean IPv6Address::isMulticast() const
 {
     return _address[0] == 0xFF;
 }
 
-bool IPv6Address::isLinkLocal() const
+boolean IPv6Address::isLinkLocal() const
 {
     return _address[0] == 0xfe && _address[1] == 0x80;
 }
 
-bool IPv6Address::isZero() const
+boolean IPv6Address::isZero() const
 {
     for(uint8_t i=0; i < 16; i++) {
         if (_address[i] != 0x00)
@@ -90,12 +90,12 @@ uint8_t* IPv6Address::getPtr()
     return _address;
 }
 
-bool IPv6Address::operator==(const IPv6Address& addr) const
+boolean IPv6Address::operator==(const IPv6Address& addr) const
 {
     return memcmp(_address, addr._address, sizeof(_address)) == 0;
 }
 
-bool IPv6Address::fromString(const char *addrstr)
+boolean IPv6Address::fromString(const char *addrstr)
 {
     uint16_t accumulator = 0;
     uint8_t colon_count = 0;

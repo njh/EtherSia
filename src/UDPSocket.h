@@ -14,13 +14,13 @@ public:
     UDPSocket(EtherSia *ether, uint16_t port);
     UDPSocket(EtherSia *ether, IPv6Address *destination, uint16_t port);
 
-    bool setDestination(const char *address, uint16_t port);
-    bool setDestination(IPv6Address *address, uint16_t port);
+    boolean setDestination(const char *address, uint16_t port);
+    boolean setDestination(IPv6Address *address, uint16_t port);
     IPv6Address* getDestinationAddress();
     uint16_t getDestinationPort();
 
-    bool havePacket();
-    bool verifyChecksum();
+    boolean havePacket();
+    boolean verifyChecksum();
     
     void send(const char *data);
     void send(const uint8_t *data=NULL, uint16_t length=0);
@@ -36,7 +36,7 @@ public:
 
     uint8_t* payload();
     uint16_t payloadLength();
-    bool payloadEquals(const char *str);
+    boolean payloadEquals(const char *str);
     
 protected:
 

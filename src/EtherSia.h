@@ -72,7 +72,7 @@ protected:
     void icmp6ProcessRA();
     void icmp6ProcessPrefix(struct icmp6_prefix_information *pi);
     void icmp6PacketSend();
-    bool icmp6VerifyChecksum();
+    boolean icmp6VerifyChecksum();
 };
 
 #endif

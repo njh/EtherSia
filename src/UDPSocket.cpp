@@ -18,13 +18,13 @@ UDPSocket::UDPSocket(EtherSia *ether, IPv6Address *destination, uint16_t port)
     setDestination(destination, port);
 }
 
-bool UDPSocket::setDestination(const char *address, uint16_t port)
+boolean UDPSocket::setDestination(const char *address, uint16_t port)
 {
     this->destPort = port;
     return this->destAddress.fromString(address);
 }
 
-bool UDPSocket::setDestination(IPv6Address *address, uint16_t port)
+boolean UDPSocket::setDestination(IPv6Address *address, uint16_t port)
 {
     this->destPort = port;
     this->destAddress = *address;
@@ -41,7 +41,7 @@ uint16_t UDPSocket::getDestinationPort()
     return destPort;
 }
 
-bool UDPSocket::havePacket()
+boolean UDPSocket::havePacket()
 {
     IPv6Packet* packet = ether->getPacket();
 
@@ -73,7 +73,7 @@ bool UDPSocket::havePacket()
     return 1;
 }
 
-bool UDPSocket::verifyChecksum()
+boolean UDPSocket::verifyChecksum()
 {
     IPv6Packet *packet = ether->getPacket();
     struct udp_header *udpHeader = UDP_HEADER_PTR;
@@ -185,7 +185,7 @@ uint16_t UDPSocket::payloadLength()
     return packetLength() - UDP_HEADER_LEN;
 }
 
-bool UDPSocket::payloadEquals(const char *str)
+boolean UDPSocket::payloadEquals(const char *str)
 {
     return strncmp((char*)payload(), str, payloadLength()) == 0;
 }

@@ -38,7 +38,7 @@ public:
      * @param addrstr an IPv6 address as a null-terminated string
      * @return true if the string was parsed successfully
      */
-    bool fromString(const char *addrstr);
+    boolean fromString(const char *addrstr);
 
     /**
      * Get a pointer to a 16-byte array of octets.
@@ -53,7 +53,7 @@ public:
     /**
      * Check if the address equals another IPv6 address.
      */
-    bool operator==(const IPv6Address& addr) const;
+    boolean operator==(const IPv6Address& addr) const;
 
     /**
      * Set the first two bytes to the link-local prefix (FE80:)
@@ -95,17 +95,17 @@ public:
     /**
      * Returns true if the address is a multicast address (starts FF)
      */
-    bool isMulticast() const;
+    boolean isMulticast() const;
 
     /**
      * Returns true if the address is a link-local address (starts FE80)
      */
-    bool isLinkLocal() const;
+    boolean isLinkLocal() const;
 
     /**
      * Returns true if the address is empty / all-zeros (::)
      */
-    bool isZero() const;
+    boolean isZero() const;
 
     /**
      * Print a IPv6 address to a stream as a human readable string.

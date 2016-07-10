@@ -22,7 +22,7 @@ public:
 
     void init();
     uint8_t* payload();
-    bool isValid();
+    boolean isValid();
     uint16_t calculateChecksum();
 
     // Ethernet Header

@@ -39,7 +39,7 @@ public:
      * @param macstr a human readable string containing a 17 character MAC address
      * @return true if successful, false if parsing failed
      */
-    bool fromString(const char *macstr);
+    boolean fromString(const char *macstr);
 
     /**
      * Get a pointer to a 6-byte array of octets.

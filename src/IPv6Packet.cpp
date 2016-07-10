@@ -24,7 +24,7 @@ uint8_t* IPv6Packet::payload()
     return (uint8_t *)(this) + sizeof(IPv6Packet);
 }
 
-bool IPv6Packet::isValid()
+boolean IPv6Packet::isValid()
 {
     if (this->etherType != ntohs(ETHER_TYPE_IPV6)) {
         return false;
