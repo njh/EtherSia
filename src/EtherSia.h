@@ -64,8 +64,8 @@ protected:
     uint16_t bufferLen;
 
     uint16_t icmp6Chksum();
-    void icmp6ProcessPacket(uint16_t len);
     void icmp6SendNS(IPv6Address *target_addr);
+    void icmp6ProcessPacket();
     void icmp6NSReply();
     void icmp6EchoReply();
     void icmp6SendRS();

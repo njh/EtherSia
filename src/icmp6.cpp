@@ -158,7 +158,7 @@ void EtherSia::icmp6ProcessRA()
     }
 }
 
-void EtherSia::icmp6ProcessPacket(uint16_t len)
+void EtherSia::icmp6ProcessPacket()
 {
     if (!icmp6VerifyChecksum()) {
         Serial.println(F("ICMP6 checksum error."));

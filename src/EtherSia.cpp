@@ -95,7 +95,7 @@ IPv6Packet* EtherSia::receivePacket()
         }
 
         if (packet->proto == IP6_PROTO_ICMP6) {
-            icmp6ProcessPacket(len);
+            icmp6ProcessPacket();
         }
 
         return packet;
