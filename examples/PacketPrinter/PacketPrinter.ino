@@ -30,8 +30,6 @@ void loop() {
     IPv6Packet *packet = ether.receivePacket();
 
     if (packet) {
-        boolean success = false;
-
         Serial.print("Src MAC: ");
         packet->etherSrc.println();
 
