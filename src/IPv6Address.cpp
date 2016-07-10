@@ -149,6 +149,18 @@ boolean IPv6Address::fromString(const char *addrstr)
     return 1;
 }
 
+uint8_t IPv6Address::getType()
+{
+    if (_address[0] = 0xFF) {
+        return ADDRESS_TYPE_MULTICAST;
+    } else if (_address[0] == 0xfe && _address[1] == 0x80) {
+        return ADDRESS_TYPE_LINK_LOCAL;
+    } else {
+        // Can we assume it is Global, if it is nothing else?
+        return ADDRESS_TYPE_GLOBAL;
+    }
+}
+
 void IPv6Address::print(Print &p) const
 {
     for (byte i = 0; i < 16; ++i) {
