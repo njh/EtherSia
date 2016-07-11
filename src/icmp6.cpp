@@ -50,8 +50,6 @@ void EtherSia::icmp6SendNS(IPv6Address *targetAddress)
     packet->hopLimit = 255;
     packet->src.setZero();
     packet->dest.setSolicitedNodeMulticastAddress(targetAddress);
-
-    packet->etherSrc = enc_mac_addr;
     packet->etherDest.setIPv6Multicast(packet->dest);
 
     ICMP6_HEADER_PTR->type = ICMP6_TYPE_NS;
@@ -72,8 +70,6 @@ void EtherSia::icmp6SendRS()
     packet->hopLimit = 255;
     packet->src = linkLocalAddr;
     packet->dest.setLinkLocalAllRouters();
-
-    packet->etherSrc = enc_mac_addr;
     packet->etherDest.setIPv6Multicast(packet->dest);
 
     ICMP6_HEADER_PTR->type = ICMP6_TYPE_RS;
