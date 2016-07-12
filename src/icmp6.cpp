@@ -18,7 +18,7 @@ void EtherSia::icmp6NSReply()
     packet->length = ntohs(ICMP6_HEADER_LEN + ICMP6_NA_HEADER_LEN);
     ICMP6_HEADER_PTR->type = ICMP6_TYPE_NA;
     ICMP6_NA_HEADER_PTR->flags = ICMP6_NA_FLAG_S; // Solicited flag.
-    ICMP6_NA_HEADER_PTR->reserved[0] = ICMP6_NA_HEADER_PTR->reserved[1] = ICMP6_NA_HEADER_PTR->reserved[2] = 0;
+    memset(ICMP6_NA_HEADER_PTR->reserved, 0, sizeof(ICMP6_NA_HEADER_PTR->reserved));
     ICMP6_NA_HEADER_PTR->option_type = ICMP6_OPTION_TARGET_LINK_ADDRESS;
     ICMP6_NA_HEADER_PTR->option_len = 1;  // Options length, 1 = 8 bytes.
     ICMP6_NA_HEADER_PTR->option_mac = enc_mac_addr;
@@ -55,7 +55,7 @@ void EtherSia::icmp6SendNS(IPv6Address *targetAddress)
     ICMP6_HEADER_PTR->type = ICMP6_TYPE_NS;
     ICMP6_HEADER_PTR->code = 0;
 
-    memset(ICMP6_NS_HEADER_PTR, 0, ICMP6_NS_HEADER_LEN);
+    memset(ICMP6_NS_HEADER_PTR->reserved, 0, sizeof(ICMP6_NS_HEADER_PTR->reserved));
     ICMP6_NS_HEADER_PTR->target = *targetAddress;
 
     icmp6PacketSend();
@@ -75,7 +75,7 @@ void EtherSia::icmp6SendRS()
     ICMP6_HEADER_PTR->type = ICMP6_TYPE_RS;
     ICMP6_HEADER_PTR->code = 0;
 
-    memset(ICMP6_RS_HEADER_PTR, 0, ICMP6_RS_HEADER_LEN);
+    memset(ICMP6_RS_HEADER_PTR->reserved, 0, sizeof(ICMP6_RS_HEADER_PTR->reserved));
     ICMP6_RS_HEADER_PTR->option_type = ICMP6_OPTION_SOURCE_LINK_ADDRESS;
     ICMP6_RS_HEADER_PTR->option_len = 1;
     ICMP6_RS_HEADER_PTR->option_mac = enc_mac_addr;
