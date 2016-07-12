@@ -1,11 +1,17 @@
+html: doxygen
+
 doxygen:
-	doxygen
+	@doxygen Doxyfile
+	@echo ""
+	@echo "Done, error log follows:"
+	@echo ""
+	@cat "doxygen.log"
 
 clean:
-	rm -f {*.html,*.css,*.js,*.png}
-	rm -Rf search
+	rm -rf html
+	rm -f "doxygen.log"
 
 upload: doxygen
-	rsync -avz -e ssh . njh@www.aelius.com:~/public_html/ethersia/
+	rsync -avz -e ssh html/ njh@www.aelius.com:~/public_html/ethersia/
 
-.PHONY: clean doxygen upload
+.PHONY: html doxygen clean upload

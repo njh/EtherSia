@@ -1,6 +1,2 @@
-docs/*.css
-docs/*.html
-docs/*.js
-docs/*.png
-docs/search/*
-docs/doxygen-warnings.log
+docs/html
+docs/doxygen.log
