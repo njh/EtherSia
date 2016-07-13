@@ -1,13 +1,40 @@
-// Remember to change the address you send to below in the setDestination() call
-//
-// Use the socat command to receive packets sent by this sketch:
-//
-// socat -u UDP6-LISTEN:1234 STDOUT
-//
+/**
+ * Example of sending UDP packets from a Nanode board
+ *
+ * Sends a 'Hello Message' every 5 seconds to specificed IPv6 Address.
+ * Remember to change the address you send to below in the setDestination() call.
+ *
+ * Use the socat command to receive packets sent by this sketch:
+ *
+ *     socat -u UDP6-LISTEN:1234 STDOUT
+ * 
+ * Requires the NanodeUNIO library:
+ * https://github.com/sde1000/NanodeUNIO
+ *
+ * Nanode Hardware
+ * ---------------
+ * - CPU: Atmel ATMEGA328P
+ * - Ethernet: Microchip ENC28J60
+ * - MAC Address: Microchip 11AA02E48 serial EEPROM
+ *
+ * Nanode Pin Mapping
+ * ------------------
+ * | Pin | Use                                |
+ * |-----|------------------------------------|
+ * | D6  | Red LED                            |
+ * | D7  | UNI/O bus: MAC Address (11AA02E48) |
+ * | D8  | SPI bus: Ethernet Slave Select     |
+ * | D11 | SPI bus: Shared MOSI               |
+ * | D12 | SPI bus: Shared MISO               |
+ * | D13 | SPI bus: Shared Serial Clock       |
+ *
+ * @file
+ */
 
 #include <NanodeUNIO.h>
 #include <EtherSia.h>
 
+/** Ethernet Interface (with Chip Select connected to Pin 8) */
 EtherSia ether(8);
 UDPSocket udp(&ether);
 

@@ -1,15 +1,18 @@
 html: doxygen
 
-doxygen:
+examples.txt: ../examples/*/*.ino
+	./generate-examples.pl > examples.txt
+
+doxygen: examples.txt
 	@doxygen Doxyfile
 	@echo ""
 	@echo "Done, error log follows:"
 	@echo ""
-	@cat "doxygen.log"
+	@cat doxygen.log
 
 clean:
 	rm -rf html
-	rm -f "doxygen.log"
+	rm -f doxygen.log
 
 upload: doxygen
 	rsync -avz -e ssh html/ njh@www.aelius.com:~/public_html/ethersia/

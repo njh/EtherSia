@@ -1,18 +1,26 @@
-// SNTP Client - sends UDP requests to an IPv6 NTP Server
-//               and displays the current time
-// 
-// Uses a static MAC address, please update with your own.
-//
-// Get your own Random Locally Administered MAC Address here:
-// https://www.hellion.org.uk/cgi-bin/randmac.pl
-//
+/**
+ * SNTP Client - sends UDP requests to an IPv6 NTP Server and displays the current time
+ *
+ * Uses a static MAC address, please update with your own.
+ * 
+ * Get your own Random Locally Administered MAC Address here:
+ * https://www.hellion.org.uk/cgi-bin/randmac.pl
+ *
+ * @file
+ */
 
 #include <EtherSia.h>
 
+/** Ethernet Interface (with Chip Select connected to Pin 8) */
 EtherSia ether(8);
+
+/** Define a UDP socket to send packets from */
 UDPSocket udp(&ether);
 
+/** The UDP port number to send NTP packets to */
 const uint8_t NTP_PORT = 123;
+
+/** The size of the NTP request packet */
 const uint8_t NTP_PACKET_SIZE = 48;
 
 void setup() {
@@ -76,6 +84,7 @@ void loop() {
 }
 
 
+/** Decode a NTP timestamp and print it to Serial */
 void displayTime(unsigned long secsSince1900)
 {
     Serial.print("Seconds since Jan 1 1900 = ");

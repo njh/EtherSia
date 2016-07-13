@@ -1,13 +1,17 @@
-// Packet Printer - prints Ethernet packet headers received to Serial
-// 
-// Uses a static MAC address, please update with your own.
-//
-// Get your own Random Locally Administered MAC Address here:
-// https://www.hellion.org.uk/cgi-bin/randmac.pl
-//
+/**
+ * Packet Printer - prints Ethernet and IPv6 packet headers received to Serial
+ *
+ * Uses a static MAC address, please update with your own.
+ * 
+ * Get your own Random Locally Administered MAC Address here:
+ * https://www.hellion.org.uk/cgi-bin/randmac.pl
+ *
+ * @file
+ */
 
 #include <EtherSia.h>
 
+/** Ethernet Interface (with Chip Select connected to Pin 8) */
 EtherSia ether(8);
 
 void setup() {
