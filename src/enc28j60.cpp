@@ -360,7 +360,7 @@ ENC28J60::reset(void)
 
     /* Wait for OST */
     PRINTF("waiting for ESTAT_CLKRDY\n");
-    while((readreg(ESTAT) & ESTAT_CLKRDY) == 0);
+    while((readreg(ESTAT) & ESTAT_CLKRDY) == 0) {};
     PRINTF("ESTAT_CLKRDY\n");
 
     setregbank(ERXTX_BANK);

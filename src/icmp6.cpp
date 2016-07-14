@@ -100,7 +100,7 @@ void EtherSia::icmp6ProcessPrefix(struct icmp6_prefix_information *pi)
     // L = Bit 8 = On-link flag
     // A = Bit 7 = Autonomous address-configuration flag
     // 0b11000000 = 0xC0
-    if (pi->flags & 0xC0 != 0xC0) {
+    if ((pi->flags & 0xC0) != 0xC0) {
         return;
     }
 

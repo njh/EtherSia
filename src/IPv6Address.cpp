@@ -151,7 +151,7 @@ boolean IPv6Address::fromString(const char *addrstr)
 
 uint8_t IPv6Address::getType()
 {
-    if (_address[0] = 0xFF) {
+    if (_address[0] == 0xFF) {
         return ADDRESS_TYPE_MULTICAST;
     } else if (_address[0] == 0xfe && _address[1] == 0x80) {
         return ADDRESS_TYPE_LINK_LOCAL;
