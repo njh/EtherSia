@@ -1,0 +1,26 @@
+#include "util.h"
+#suite util
+
+#test asciiToHex_0
+ck_assert(asciiToHex('0') == 0x0);
+
+#test asciiToHex_9
+ck_assert(asciiToHex('9') == 0x9);
+
+#test asciiToHex_A
+ck_assert(asciiToHex('A') == 0xA);
+
+#test asciiToHex_F
+ck_assert(asciiToHex('F') == 0xF);
+
+#test asciiToHex_a
+ck_assert(asciiToHex('a') == 0xa);
+
+#test asciiToHex_f
+ck_assert(asciiToHex('f') == 0xf);
+
+#test asciiToHex_underscore
+ck_assert(asciiToHex('_') == -1);
+
+#test asciiToHex_colon
+ck_assert(asciiToHex(':') == -1);

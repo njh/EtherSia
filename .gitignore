@@ -1,3 +1,6 @@
 docs/html
 docs/doxygen.log
 docs/examples.txt
+
+tests/check_util
+tests/check_*.cpp
