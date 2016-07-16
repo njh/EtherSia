@@ -191,8 +191,7 @@ protected:
     /**
      * Get the 16-bit checksum the current packet in the buffer
      *
-     * @note Please call havePacket() first, before calling this method.
-     * @return The destination port number
+     * @return The checksum of the packet
      */
     uint16_t packetChecksum();
 
