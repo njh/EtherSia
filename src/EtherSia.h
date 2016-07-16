@@ -41,9 +41,9 @@ class EtherSia : public ENC28J60 {
 public:
     /**
      * Constructor that uses the default hardware SPI pins
-     * @param cs the Arduino Chip Select / Slave Select pin
+     * @param cs the Arduino Chip Select / Slave Select pin (default 10)
      */
-    EtherSia(int8_t cs);
+    EtherSia(int8_t cs=10);
 
     /**
      * Constructor for using software SPI, with custom set of pins

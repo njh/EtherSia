@@ -48,9 +48,9 @@ class ENC28J60 {
 public:
     /**
      * Constructor that uses the default hardware SPI pins
-     * @param cs the Arduino Chip Select / Slave Select pin
+     * @param cs the Arduino Chip Select / Slave Select pin (default 10)
      */
-    ENC28J60(int8_t cs);
+    ENC28J60(int8_t cs=10);
 
     /**
      * Constructor for using software SPI, with custom set of pins
