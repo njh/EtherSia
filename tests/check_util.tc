@@ -24,3 +24,26 @@ ck_assert(asciiToHex('_') == -1);
 
 #test asciiToHex_colon
 ck_assert(asciiToHex(':') == -1);
+
+#test chksum_hello
+const char* hello = "Hello";
+uint16_t checksum = ~ chksum(0, (const uint8_t*)hello, sizeof(hello));
+ck_assert_uint_eq(checksum, 0x9ABA);
+
+#test chksum_simple_accumulative
+uint16_t checksum = 0;
+const char* hello = "Hello";
+const char* world = "World";
+checksum = chksum(checksum, (const uint8_t*)hello, sizeof(hello));
+checksum = ~ chksum(checksum, (const uint8_t*)world, sizeof(world));
+ck_assert_uint_eq(checksum, 0x0976);
+
+#test chksum_wikipedia
+// Example from: https://en.wikipedia.org/wiki/IPv4_header_checksum
+const uint8_t data[] = {
+    0x45, 0x00, 0x00, 0x73, 0x00, 0x00, 0x40, 0x00, 0x40, 0x11, // 0xb8, 0x61, 
+    0xc0, 0xa8, 0x00, 0x01, 0xc0, 0xa8, 0x00, 0xc7,
+};
+uint16_t checksum = ~ chksum(0, data, sizeof(data));
+ck_assert_uint_eq(checksum, 0xB861);
+
