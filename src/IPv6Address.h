@@ -140,4 +140,7 @@ public:
 
 } __attribute__((__packed__));
 
+/* Verify that compiler gets the structure size correct */
+static_assert(sizeof(IPv6Address) == 16, "Size is not correct");
+
 #endif

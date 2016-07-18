@@ -102,4 +102,7 @@ public:
 
 } __attribute__((__packed__));
 
+/* Verify that compiler gets the structure size correct */
+static_assert(sizeof(MACAddress) == 6, "Size is not correct");
+
 #endif
