@@ -131,7 +131,7 @@ IPv6Address* EtherSia::getHostByName(const char* hostname)
     uint8_t requestCount = 0;
     UDPSocket udp(this);
 
-    if (udp.setRemoteAddress("2001:4860:4860::8888", DNS_PORT_NUMBER)) {
+    if (udp.setRemoteAddress(&dnsServerAddr, DNS_PORT_NUMBER)) {
         Serial.print("DNS Server address: ");
         udp.getRemoteAddress()->println();
     }

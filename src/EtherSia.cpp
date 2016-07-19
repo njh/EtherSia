@@ -1,9 +1,16 @@
 #include "EtherSia.h"
 #include "util.h"
 
+// https://developers.google.com/speed/public-dns/
+static const uint8_t googlePublicDnsAddr[16] PROGMEM = {
+    0x20, 0x01, 0x48, 0x60, 0x48, 0x60, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x88, 0x88
+};
 
 EtherSia::EtherSia(int8_t cs) : ENC28J60(cs)
 {
+    // Use Google Public DNS by default
+    memcpy_P(dnsServerAddr, googlePublicDnsAddr, sizeof(googlePublicDnsAddr));
 }
 
 
@@ -77,6 +84,16 @@ uint8_t EtherSia::isOurAddress(const IPv6Address *addr)
     } else {
         return 0;
     }
+}
+
+void EtherSia::setDnsServerAddress(IPv6Address *addr)
+{
+    dnsServerAddr = *addr;
+}
+
+IPv6Address* EtherSia::getDnsServerAddress()
+{
+    return &dnsServerAddr;
 }
 
 IPv6Packet* EtherSia::getPacket()

@@ -44,7 +44,7 @@ public:
     UDPSocket(EtherSia *ether, IPv6Address *remoteAddress, uint16_t remotePort);
 
     /**
-     * Set the remote (destination) address and port to send packets to
+     * Set the remote address (as a string) and port to send packets to
      *
      * If the remote address looks like a hostname, it will be looked up using DNS.
      *

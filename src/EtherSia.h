@@ -104,6 +104,28 @@ public:
     IPv6Address* getLinkLocalAddress();
 
     /**
+     * Check to see if an IPv6 address belongs to this Ethernet interface
+     *
+     * @param addr the IPv6Addrss to check
+     * @return ture if the
+     */
+    uint8_t isOurAddress(const IPv6Address *addr);
+
+    /**
+     * Set the IPv6 address DNS server to use for hostname lookups
+     *
+     * @param addr The DNS Server IP address
+     */
+    void setDnsServerAddress(IPv6Address *addr);
+
+    /**
+     * Get the IPv6 address of the DNS server
+     *
+     * @return The DNS Server address as an IPv6Address object
+     */
+    IPv6Address* getDnsServerAddress();
+
+    /**
      * Check if there is an IPv6 packet waiting for us and fetch it.
      * If there is no packet available this method returns NULL.
      *
@@ -118,14 +140,6 @@ public:
      * @return A pointer to an IPv6Packet
      */
     IPv6Packet* getPacket();
-
-    /**
-     * Check to see if an IPv6 address belongs to this Ethernet interface
-     *
-     * @param addr the IPv6Addrss to check
-     * @return ture if the
-     */
-    uint8_t isOurAddress(const IPv6Address *addr);
 
     /**
      * Send the packet currently in the packet buffer.
@@ -175,6 +189,7 @@ public:
 protected:
     IPv6Address linkLocalAddr;  /**< The IPv6 Link-local address of the Ethernet Interface */
     IPv6Address globalAddr;     /**< The IPv6 Global address of the Ethernet Interface */
+    IPv6Address dnsServerAddr;  /**< The IPv6 address of the configured DNS server */
 
     MACAddress routerMac;       /**< The MAC Address of the router to send packets outside of this subnet */
 
