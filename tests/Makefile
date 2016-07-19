@@ -15,7 +15,7 @@ check_util: check_util.cpp
 	   -o check_util \
      -lcheck \
      check_util.cpp \
-     libarduino/print.cpp \
+     libarduino/Print.cpp \
      ../src/util.cpp
 
 clean:
