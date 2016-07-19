@@ -156,6 +156,22 @@ public:
      */
     void prepareReply();
 
+    /**
+     * Lookup a hostname using DNS and get an IPv6 address for it
+     *
+     * This method receives and processes UDP packets while it is 
+     * waiting for the DNS reply. Other packets may be missed / lost
+     * while this method is running.
+     *
+     * It is recommended that this method is called within setup(),
+     * to avoid packets being lost within loop().
+     *
+     * @param hostname The hostname to look up
+     * @return An IPv6 address or NULL if the lookup failed
+     */
+    IPv6Address* getHostByName(const char* hostname);
+
+
 protected:
     IPv6Address linkLocalAddr;  /**< The IPv6 Link-local address of the Ethernet Interface */
     IPv6Address globalAddr;     /**< The IPv6 Global address of the Ethernet Interface */
