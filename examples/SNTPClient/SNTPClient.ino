@@ -39,9 +39,9 @@ void setup() {
     Serial.print("Our global address is: ");
     ether.getGlobalAddress()->println();
 
-    if (udp.setDestination("2001:8b0:0:53::94", NTP_PORT)) {
+    if (udp.setRemoteAddress("2001:8b0:0:53::94", NTP_PORT)) {
         Serial.print("SNTP Server address: ");
-        udp.getDestinationAddress()->println();
+        udp.getRemoteAddress()->println();
     }
 
     Serial.println("Ready.");

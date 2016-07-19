@@ -1,4 +1,4 @@
-/** 
+/**
  * Header file for the UDPSocket class
  * @file UDPSocket.h
  */
@@ -20,6 +20,7 @@ public:
 
     /**
      * Construct a UDP socket
+     * The local port number will be sent to a random port number
      *
      * @param ether The Ethernet interface to attach the socket to
      */
@@ -29,48 +30,48 @@ public:
      * Construct a UDP socket, with a listening port defined
      *
      * @param ether The Ethernet interface to attach the socket to
-     * @param port The UDP port number to listen on
+     * @param localPort The local UDP port number to listen on
      */
-    UDPSocket(EtherSia *ether, uint16_t port);
+    UDPSocket(EtherSia *ether, uint16_t localPort);
 
     /**
-     * Construct a UDP socket, with a destination address and port
+     * Construct a UDP socket, with a remote address and port
      *
      * @param ether The Ethernet interface to attach the socket to
-     * @param destination The IPv6 address to send to
-     * @param port The UDP port number to send to
+     * @param remoteAddress The IPv6 address to send to
+     * @param remotePort The UDP port number to send to
      */
-    UDPSocket(EtherSia *ether, IPv6Address *destination, uint16_t port);
+    UDPSocket(EtherSia *ether, IPv6Address *remoteAddress, uint16_t remotePort);
 
     /**
-     * Set the destination address and port to send packets to
+     * Set the remote (destination) address and port to send packets to
      *
-     * @param address The destination address as a human readable string
-     * @param port The UDP port number to send packets to
-     * @return true if the destination address was set successfully
+     * @param remoteAddress The remote address as a human readable string
+     * @param remotePort The UDP port number to send packets to
+     * @return true if the remote address was set successfully
      */
-    boolean setDestination(const char *address, uint16_t port);
+    boolean setRemoteAddress(const char *remoteAddress, uint16_t remotePort);
 
     /**
-     * Set the destination address and port to send packets to
+     * Set the remote address and port to send packets to
      *
-     * @param address The destination address as a 16-byte array
-     * @param port The UDP port number to send packets to
-     * @return true if the destination address was set successfully
+     * @param remoteAddress The remote address as a 16-byte array
+     * @param remotePort The remote UDP port number to send packets to
+     * @return true if the remote address was set successfully
      */
-    boolean setDestination(IPv6Address *address, uint16_t port);
+    boolean setRemoteAddress(IPv6Address *remoteAddress, uint16_t remotePort);
 
     /**
-     * Get the destination address that packets are being sent to
-     * @return the IPv6 destination address
+     * Get the remote address that packets are being sent to
+     * @return the IPv6 remote address
      */
-    IPv6Address* getDestinationAddress();
+    IPv6Address* getRemoteAddress();
 
     /**
-     * Get the destination UDP port number that packets are being sent to
+     * Get the remote UDP port number that packets are being sent to
      * @return the port number
      */
-    uint16_t getDestinationPort();
+    uint16_t getRemotePort();
 
     /**
      * Check if a UDP packet is available to be processed on this socket
@@ -83,7 +84,7 @@ public:
      * @return true if packet checksum is valid
      */
     boolean verifyChecksum();
-    
+
     /**
      * Send a string out on the UDP socket
      * @param data The null-terminated string to send
@@ -197,8 +198,9 @@ protected:
 
 
     EtherSia *ether;            ///< The Ethernet Interface that this UDP socket is attached to
-    IPv6Address destAddress;    ///< The IPv6 destination address
-    uint16_t destPort;          ///< The IPv6 destination port number
+    IPv6Address remoteAddress;  ///< The IPv6 remote address
+    uint16_t remotePort;        ///< The IPv6 remote port number
+    uint16_t localPort;         ///< The IPv6 local port number
 };
 
 
@@ -217,13 +219,13 @@ struct udp_header {
 /**
  * The length of a UDP packet header
  * @private
- */ 
+ */
 #define UDP_HEADER_LEN            (8)
 
 /**
  * Get the pointer to the UDP header from within EtherSia
  * @private
- */ 
+ */
 #define UDP_HEADER_PTR            ((struct udp_header*)(getPacket()->payload()))
 
 /* Verify that compiler gets the structure size correct */

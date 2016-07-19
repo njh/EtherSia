@@ -2,7 +2,7 @@
  * Example of sending UDP packets from a Nanode board
  *
  * Sends a 'Hello Message' every 5 seconds to specificed IPv6 Address.
- * Remember to change the address you send to below in the setDestination() call.
+ * Remember to change the address you send to below in the setRemoteAddress() call.
  *
  * Use the socat command to receive packets sent by this sketch:
  *
@@ -36,6 +36,8 @@
 
 /** Ethernet Interface (with Chip Select connected to Pin 8) */
 EtherSia ether(8);
+
+/** Define UDP socket to send packets from */
 UDPSocket udp(&ether);
 
 void setup() {
@@ -59,9 +61,9 @@ void setup() {
         Serial.println("Failed to configure Ethernet");
     }
 
-    if (udp.setDestination("2001:41c8:51:7cf::6", 1234)) {
-        Serial.print("Destination address: ");
-        udp.getDestinationAddress()->println();
+    if (udp.setRemoteAddress("2001:41c8:51:7cf::6", 1234)) {
+        Serial.print("Remote address: ");
+        udp.getRemoteAddress()->println();
     }
 
     Serial.println("Ready.");

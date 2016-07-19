@@ -4,41 +4,43 @@
 UDPSocket::UDPSocket(EtherSia *ether)
 {
     this->ether = ether;
+    this->localPort = random(20000, 30000);
 }
 
-UDPSocket::UDPSocket(EtherSia *ether, uint16_t port)
+UDPSocket::UDPSocket(EtherSia *ether, uint16_t localPort)
 {
     this->ether = ether;
-    this->destPort = port;
+    this->localPort = localPort;
 }
 
-UDPSocket::UDPSocket(EtherSia *ether, IPv6Address *destination, uint16_t port)
+UDPSocket::UDPSocket(EtherSia *ether, IPv6Address *remoteAddress, uint16_t remotePort)
 {
     this->ether = ether;
-    setDestination(destination, port);
+    this->localPort = 10000 + remotePort;
+    setRemoteAddress(remoteAddress, remotePort);
 }
 
-boolean UDPSocket::setDestination(const char *address, uint16_t port)
+boolean UDPSocket::setRemoteAddress(const char *remoteAddress, uint16_t remotePort)
 {
-    this->destPort = port;
-    return this->destAddress.fromString(address);
+    this->remotePort = remotePort;
+    return this->remoteAddress.fromString(remoteAddress);
 }
 
-boolean UDPSocket::setDestination(IPv6Address *address, uint16_t port)
+boolean UDPSocket::setRemoteAddress(IPv6Address *remoteAddress, uint16_t remotePort)
 {
-    this->destPort = port;
-    this->destAddress = *address;
+    this->remotePort = remotePort;
+    this->remoteAddress = *remoteAddress;
     return true;
 }
 
-IPv6Address* UDPSocket::getDestinationAddress()
+IPv6Address* UDPSocket::getRemoteAddress()
 {
-    return &destAddress;
+    return &remoteAddress;
 }
 
-uint16_t UDPSocket::getDestinationPort()
+uint16_t UDPSocket::getRemotePort()
 {
-    return destPort;
+    return remotePort;
 }
 
 boolean UDPSocket::havePacket()
@@ -54,7 +56,7 @@ boolean UDPSocket::havePacket()
         return 0;
     }
 
-    if (packetDestinationPort() != destPort) {
+    if (packetDestinationPort() != localPort) {
         // Wrong port
         return 0;
     }
@@ -104,13 +106,13 @@ void UDPSocket::send(const uint8_t *data, uint16_t len)
     // Setup the IPv6 packet header
     packet->length = htons(UDP_HEADER_LEN + len);
     packet->proto = IP6_PROTO_UDP;
-    packet->dest = destAddress;
+    packet->dest = remoteAddress;
     ether->prepareSend();
 
     // Set the UDP header
     udpHeader->length = packet->length;
-    udpHeader->destPort = htons(destPort);
-    udpHeader->srcPort = udpHeader->destPort;
+    udpHeader->destPort = htons(remotePort);
+    udpHeader->srcPort = htons(localPort);
     udpHeader->checksum = 0;
     udpHeader->checksum = htons(packet->calculateChecksum());
 
