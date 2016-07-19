@@ -94,13 +94,21 @@ public:
     void send(const char *data);
 
     /**
+     * Send the contents of the packet payload buffer
+     *
+     * Place the data in the payload() buffer before calling this method.
+     *
+     * @param length The length of the UDP payload
+     */
+    void send(uint16_t length);
+
+    /**
      * Send data out on the UDP socket
-     * If data is NULL, it will send the data already in the EtherSia packet buffer
      *
      * @param data A pointer to the data to send
      * @param length The length (in bytes) of the data to send
      */
-    void send(const uint8_t *data=NULL, uint16_t length=0);
+    void send(const uint8_t *data, uint16_t length);
 
     /**
      * Send a reply to the last packet received
@@ -109,13 +117,21 @@ public:
     void sendReply(const char *data);
 
     /**
+     * Send a reply to the last packet received
+     *
+     * Place the data in the payload() buffer before calling this method.
+     * 
+     * @param length The length (in bytes) of the data to send
+     */
+    void sendReply(uint16_t length);
+
+    /**
      * Send a reply to the last packet recieved
-     * If data is NULL, it will send the data already in the EtherSia packet buffer
      *
      * @param data A pointer to the data to send
      * @param length The length (in bytes) of the data to send
      */
-    void sendReply(const uint8_t *data=NULL, uint16_t length=0);
+    void sendReply(const uint8_t *data, uint16_t length);
 
     /**
      * Get the IPv6 source address of the last UDP packet received

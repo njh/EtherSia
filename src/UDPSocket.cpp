@@ -108,13 +108,18 @@ void UDPSocket::send(const char *data)
 
 void UDPSocket::send(const uint8_t *data, uint16_t len)
 {
-    IPv6Packet *packet = ether->getPacket();
     struct udp_header *udpHeader = UDP_HEADER_PTR;
 
-    if (data) {
-        // FIXME: check it isn't too big
-        memcpy((uint8_t*)udpHeader + UDP_HEADER_LEN, data, len);
-    }
+    // FIXME: check it isn't too big
+    memcpy((uint8_t*)udpHeader + UDP_HEADER_LEN, data, len);
+
+    send(len);
+}
+
+void UDPSocket::send(uint16_t len)
+{
+    IPv6Packet *packet = ether->getPacket();
+    struct udp_header *udpHeader = UDP_HEADER_PTR;
 
     // Setup the IPv6 packet header
     packet->length = htons(UDP_HEADER_LEN + len);
@@ -139,14 +144,19 @@ void UDPSocket::sendReply(const char *data)
 
 void UDPSocket::sendReply(const uint8_t* data, uint16_t len)
 {
+    struct udp_header *udpHeader = UDP_HEADER_PTR;
+
+    memcpy((uint8_t*)udpHeader + UDP_HEADER_LEN, data, len);
+
+    sendReply(len);
+}
+
+void UDPSocket::sendReply(uint16_t len)
+{
     IPv6Packet *packet = ether->getPacket();
     struct udp_header *udpHeader = UDP_HEADER_PTR;
     uint16_t destPort = udpHeader->destPort;
     uint16_t srcPort = udpHeader->srcPort;
-
-    if (data) {
-        memcpy((uint8_t*)udpHeader + UDP_HEADER_LEN, data, len);
-    }
 
     packet->length = htons(UDP_HEADER_LEN + len);
     ether->prepareReply();

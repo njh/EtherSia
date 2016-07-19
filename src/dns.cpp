@@ -132,7 +132,6 @@ IPv6Address* EtherSia::getHostByName(const char* hostname)
     UDPSocket udp(this);
 
     if (udp.setRemoteAddress(&dnsServerAddr, DNS_PORT_NUMBER)) {
-        Serial.print("DNS Server address: ");
         udp.getRemoteAddress()->println();
     }
 
@@ -149,13 +148,13 @@ IPv6Address* EtherSia::getHostByName(const char* hostname)
         if ((long)(millis() - nextRequest) >= 0) {
             uint16_t len = makeDNSRequest(udp.payload(), hostname);
             if (len) {
-                udp.send(NULL, len);
+                udp.send(len);
                 nextRequest = millis() + DNS_REQUEST_TIMEOUT;
             }
             requestCount++;
         }
     }
-    
+
     // Lookup failed
     return NULL;
 }
