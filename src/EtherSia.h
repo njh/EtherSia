@@ -1,4 +1,4 @@
-/** 
+/**
  * Main header file for EtherSia - include this in your project
  * @file EtherSia.h
  */
@@ -57,11 +57,11 @@ public:
     /**
      * Configure the Ethernet interface and get things ready
      *
-     * If a IPv6 address has not already been set, then 
-     * stateless auto-configuration will start - attempting to 
+     * If a IPv6 address has not already been set, then
+     * stateless auto-configuration will start - attempting to
      * get an IP address and Router address using IGMP6.
-     * 
-     * @param addr The local MAC address for the Ethernet interface 
+     *
+     * @param addr The local MAC address for the Ethernet interface
      * @return Returns true if setting up the Ethernet interface was successful
      */
     boolean begin(const MACAddress *addr);
@@ -71,7 +71,7 @@ public:
      * from an IPv6Address object
      *
      * This is not needed, if stateless auto-configuration is used.
-     * 
+     *
      * @note Call this before begin().
      * @param addr The Global IP address for this Ethernet interface
      */
@@ -88,7 +88,7 @@ public:
 
     /**
      * Get the global IPv6 address of the Ethernet Interface
-     * If this is called after begin(), then it will return 
+     * If this is called after begin(), then it will return
      * the IP address assigned during stateless auto-configuration.
      *
      * @return The Global IP address as an IPv6Address object
@@ -113,7 +113,7 @@ public:
 
     /**
      * Get a pointer to the packet buffer (the last packet sent or received).
-     * 
+     *
      * @note Unlike receivePacket(), this method will never return NULL.
      * @return A pointer to an IPv6Packet
      */
@@ -121,7 +121,7 @@ public:
 
     /**
      * Check to see if an IPv6 address belongs to this Ethernet interface
-     * 
+     *
      * @param addr the IPv6Addrss to check
      * @return ture if the
      */
@@ -134,7 +134,7 @@ public:
 
     /**
      * Get the packet buffer ready to send a packet
-     * 
+     *
      * This method sets:
      * - EtherType, IP version, Traffic Class, Flow Label, Hop Limit
      * - Ethernet and IPv6 source address
@@ -146,7 +146,7 @@ public:
 
     /**
      * Convert the packet current in the packet buffer into a reply
-     * 
+     *
      * This method sets:
      * - EtherType, IP version, Traffic Class, Flow Label, Hop Limit
      * - Sets the IPv6 destination and to the source address
@@ -165,7 +165,7 @@ protected:
     uint8_t *buffer;            /**< The buffer that sent and received packets are stored in */
     uint16_t bufferLen;         /**< The length of the packet buffer */
 
-    
+
     /**
      * Process a received ICMPv6 packet in the packet buffer
      *

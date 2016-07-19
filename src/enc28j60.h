@@ -1,4 +1,4 @@
-/** 
+/**
  * Header file for direct Ethernet frame access to the ENC28J60 controller
  * @file enc28j60.h
  */

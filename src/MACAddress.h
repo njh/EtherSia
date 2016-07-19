@@ -1,4 +1,4 @@
-/** 
+/**
  * Header file for the MACAddress class
  * @file MACAddress.h
  */

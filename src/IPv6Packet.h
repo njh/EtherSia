@@ -1,4 +1,4 @@
-/** 
+/**
  * Header file for the IPv6Packet class
  * @file IPv6Packet.h
  */
@@ -21,7 +21,7 @@ enum ether_types {
 /** Enumeration of IP protocol numbers */
 enum ip_protocol {
     IP6_PROTO_TCP = 6,      ///< IP protocol number for TCP
-    IP6_PROTO_UDP = 17,     ///< IP protocol number for UDP 
+    IP6_PROTO_UDP = 17,     ///< IP protocol number for UDP
     IP6_PROTO_ICMP6 = 58    ///< IP protocol number for ICMP6
 };
 

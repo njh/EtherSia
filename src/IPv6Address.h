@@ -1,4 +1,4 @@
-/** 
+/**
  * Header file for the IPv6Address class
  * @file IPv6Address.h
  */
