@@ -14,6 +14,14 @@
 int8_t asciiToHex(char c);
 
 /**
+ * Check if a string contains colons
+ *
+ * @param str The string to check
+ * @return True if the string contains colons
+ */
+boolean containsColon(const char *str);
+
+/**
  * Print a 2-byte human readable hex value for an 8-bit integer
  * 
  * @param byte The value to print (in range 0x00 to 0xFF)

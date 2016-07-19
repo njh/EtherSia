@@ -14,6 +14,16 @@ int8_t asciiToHex(char c)
     }
 }
 
+boolean containsColon(const char *str)
+{
+    for (const char *ptr = str; *ptr; ptr++) {
+        if (*ptr == ':')
+            return true;
+    }
+
+    return false;
+}
+
 void printPaddedHex(uint8_t byte, Print &p)
 {
     char str[2];
