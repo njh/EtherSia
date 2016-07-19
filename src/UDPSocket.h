@@ -46,7 +46,9 @@ public:
     /**
      * Set the remote (destination) address and port to send packets to
      *
-     * @param remoteAddress The remote address as a human readable string
+     * If the remote address looks like a hostname, it will be looked up using DNS.
+     *
+     * @param remoteAddress The remote address or hostname
      * @param remotePort The UDP port number to send packets to
      * @return true if the remote address was set successfully
      */

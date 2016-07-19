@@ -23,7 +23,20 @@ UDPSocket::UDPSocket(EtherSia *ether, IPv6Address *remoteAddress, uint16_t remot
 boolean UDPSocket::setRemoteAddress(const char *remoteAddress, uint16_t remotePort)
 {
     this->remotePort = remotePort;
-    return this->remoteAddress.fromString(remoteAddress);
+    if (containsColon(remoteAddress)) {
+        // Parse a human readable IPv6 Address string
+        return this->remoteAddress.fromString(remoteAddress);
+    } else {
+        // Lookup a hostname
+        IPv6Address *addr = ether->getHostByName(remoteAddress);
+        if (addr) {
+            this->remoteAddress = *addr;
+            return true;
+        } else {
+            // Fail
+            return false;
+        }
+    }
 }
 
 boolean UDPSocket::setRemoteAddress(IPv6Address *remoteAddress, uint16_t remotePort)

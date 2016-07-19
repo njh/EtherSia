@@ -7,6 +7,7 @@ Features
 --------
 - Neighbour Discovery Protocol / Stateless Autoconfiguration
 - UDP Client and Server
+- DNS Client
 
 
 Limitations

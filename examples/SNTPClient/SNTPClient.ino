@@ -39,7 +39,7 @@ void setup() {
     Serial.print("Our global address is: ");
     ether.getGlobalAddress()->println();
 
-    if (udp.setRemoteAddress("2001:8b0:0:53::94", NTP_PORT)) {
+    if (udp.setRemoteAddress("time.ethersia.aelius.com", NTP_PORT)) {
         Serial.print("SNTP Server address: ");
         udp.getRemoteAddress()->println();
     }
