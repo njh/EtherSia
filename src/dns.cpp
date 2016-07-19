@@ -128,6 +128,7 @@ static IPv6Address* processDNSReply(uint8_t* payload, uint16_t length)
 IPv6Address* EtherSia::getHostByName(const char* hostname)
 {
     unsigned long nextRequest = millis();
+    uint8_t requestCount = 0;
     UDPSocket udp(this);
 
     if (udp.setRemoteAddress("2001:4860:4860::8888", DNS_PORT_NUMBER)) {
@@ -135,12 +136,10 @@ IPv6Address* EtherSia::getHostByName(const char* hostname)
         udp.getRemoteAddress()->println();
     }
 
-    while (1) {
+    while (requestCount <= DNS_REQUEST_ATTEMPTS) {
         receivePacket();
 
         if (udp.havePacket()) {
-            Serial.println("Received DNS reply.");
-
             IPv6Address *addr = processDNSReply(udp.payload(), udp.payloadLength());
             if (addr) {
                 return addr;
@@ -148,12 +147,15 @@ IPv6Address* EtherSia::getHostByName(const char* hostname)
         }
 
         if ((long)(millis() - nextRequest) >= 0) {
-            Serial.println("Sending DNS request.");
             uint16_t len = makeDNSRequest(udp.payload(), hostname);
             if (len) {
                 udp.send(NULL, len);
                 nextRequest = millis() + DNS_REQUEST_TIMEOUT;
             }
+            requestCount++;
         }
     }
+    
+    // Lookup failed
+    return NULL;
 }
