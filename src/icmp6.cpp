@@ -177,6 +177,28 @@ void EtherSia::icmp6ProcessPacket()
     }
 }
 
+boolean EtherSia::icmp6AutoConfigure()
+{
+    unsigned long nextRouterSolicitation = millis();
+    uint8_t count = 0;
+    while (globalAddr.isZero()) {
+        receivePacket();
+
+        if ((long)(millis() - nextRouterSolicitation) >= 0) {
+            icmp6SendRS();
+            nextRouterSolicitation = millis() + ROUTER_SOLICITATION_TIMEOUT;
+            count++;
+        }
+
+        if (count > ROUTER_SOLICITATION_ATTEMPTS) {
+            return false;
+        }
+    }
+
+    // We have a global IPv6 address - success
+    return true;
+}
+
 boolean EtherSia::icmp6VerifyChecksum()
 {
     IPv6Packet *packet = getPacket();

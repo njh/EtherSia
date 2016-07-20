@@ -205,6 +205,13 @@ protected:
     void icmp6ProcessPacket();
 
     /**
+     * Perform Stateless auto-configuration
+     *
+     * @return true if successful, false if failure
+     */
+    boolean icmp6AutoConfigure();
+
+    /**
      * Send a ICMPv6 Neighbour Solicitation (NS) for specified IPv6 Address
      *
      * @param targetAddress The IPv6 address to be resolved

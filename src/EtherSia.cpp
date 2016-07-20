@@ -36,23 +36,12 @@ boolean EtherSia::begin(const MACAddress *macaddr)
     icmp6SendNS(&linkLocalAddr);
 
     // Perform stateless auto-configuration
-    unsigned long nextRouterSolicitation = millis();
-    uint8_t count = 0;
-    while (globalAddr.isZero()) {
-        receivePacket();
+    boolean result = icmp6AutoConfigure();
 
-        if ((long)(millis() - nextRouterSolicitation) >= 0) {
-            icmp6SendRS();
-            nextRouterSolicitation = millis() + ROUTER_SOLICITATION_TIMEOUT;
-            count++;
-        }
+    // Now there has been a little bit of randomness in network activity
+    randomSeed(micros());
 
-        if (count > ROUTER_SOLICITATION_ATTEMPTS) {
-            return false;
-        }
-    }
-
-    return true;
+    return result;
 }
 
 void EtherSia::setGlobalAddress(IPv6Address *addr)
