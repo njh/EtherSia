@@ -80,7 +80,6 @@ boolean UDPSocket::havePacket()
     }
 
     if (!verifyChecksum()) {
-        Serial.println(F("UDP checksum error."));
         return 0;
     }
 

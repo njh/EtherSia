@@ -30,9 +30,6 @@ void EtherSia::icmp6EchoReply()
 {
     IPv6Packet *packet = getPacket();
 
-    Serial.print(F("Ping from "));
-    packet->src.println();
-
     prepareReply();
 
     ICMP6_HEADER_PTR->type = ICMP6_TYPE_ECHO_REPLY;
@@ -149,7 +146,6 @@ void EtherSia::icmp6ProcessRA()
 void EtherSia::icmp6ProcessPacket()
 {
     if (!icmp6VerifyChecksum()) {
-        Serial.println(F("ICMP6 checksum error."));
         return;
     }
 
@@ -168,11 +164,6 @@ void EtherSia::icmp6ProcessPacket()
 
     case ICMP6_TYPE_RA:
         icmp6ProcessRA();
-        break;
-
-    default:
-        Serial.print(F("Unknown ICMP6 type="));
-        Serial.println(ICMP6_HEADER_PTR->type, DEC);
         break;
     }
 }

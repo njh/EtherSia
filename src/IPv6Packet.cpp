@@ -32,7 +32,6 @@ boolean IPv6Packet::isValid()
 
     // Check the version header
     if ((this->ver_tc & 0x60) != 0x60) {
-        Serial.println("NOT 6");
         return false;
     }
 
