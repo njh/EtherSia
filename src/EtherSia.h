@@ -67,6 +67,28 @@ public:
     boolean begin(const MACAddress *addr);
 
     /**
+     * Set the size of the network packet buffer in bytes
+     *
+     * The buffer is used for both sending and receiving packets, 
+     * so it should be bigger than the biggest packet you want to 
+     * send or receive.
+     *
+     * If you don't call this method, the default size is 500 bytes.
+     *
+     * @note Call this before begin().
+     *       It is not possible to change the buffer size once it has been created.
+     * @param size The size to make the packet buffer
+     */
+    void setBufferSize(uint16_t size);
+
+    /**
+     * Get the size of the network packet buffer
+     *
+     * @return The of the packet buffer (in bytes)
+     */
+    uint16_t getBufferSize();
+
+    /**
      * Manually set the global IPv6 address for the Ethernet Interface
      * from an IPv6Address object
      *
@@ -194,7 +216,7 @@ protected:
     MACAddress routerMac;       /**< The MAC Address of the router to send packets outside of this subnet */
 
     uint8_t *buffer;            /**< The buffer that sent and received packets are stored in */
-    uint16_t bufferLen;         /**< The length of the packet buffer */
+    uint16_t bufferSize;        /**< The size of the packet buffer in bytes */
 
 
     /**

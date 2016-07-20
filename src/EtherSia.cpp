@@ -11,6 +11,9 @@ EtherSia::EtherSia(int8_t cs) : ENC28J60(cs)
 {
     // Use Google Public DNS by default
     memcpy_P(dnsServerAddr, googlePublicDnsAddr, sizeof(googlePublicDnsAddr));
+
+    this->buffer = NULL;
+    this->bufferSize = 500;
 }
 
 
@@ -22,9 +25,8 @@ boolean EtherSia::begin(const MACAddress *macaddr)
     linkLocalAddr.setLinkLocalPrefix();
     linkLocalAddr.setEui64(macaddr);
 
-    // FIXME: make this configurable
-    bufferLen = 800;
-    buffer = (uint8_t*)malloc(bufferLen);
+    // Allocate memory for the packet buffer
+    buffer = (uint8_t*)malloc(bufferSize);
 
     // Delay a 'random' amount to stop multiple nodes acting at the same time
     delay((*macaddr)[5] ^ 0x55);
@@ -42,6 +44,16 @@ boolean EtherSia::begin(const MACAddress *macaddr)
     randomSeed(micros());
 
     return result;
+}
+
+void EtherSia::setBufferSize(uint16_t size)
+{
+    this->bufferSize = size;
+}
+
+uint16_t EtherSia::getBufferSize()
+{
+    return this->bufferSize;
 }
 
 void EtherSia::setGlobalAddress(IPv6Address *addr)
@@ -92,7 +104,7 @@ IPv6Packet* EtherSia::getPacket()
 
 IPv6Packet* EtherSia::receivePacket()
 {
-    int len = read(buffer, bufferLen);
+    int len = read(buffer, bufferSize);
 
     if (len) {
         IPv6Packet *packet = getPacket();
