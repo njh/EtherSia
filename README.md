@@ -3,11 +3,21 @@ EtherSia
 
 A minimal IPv6 library for an [Arduino] with an [ENC28J60] Ethernet controller.
 
+
 Features
 --------
 - Neighbour Discovery Protocol / Stateless Autoconfiguration
 - UDP Client and Server
 - DNS Client
+
+
+Design Decisions
+----------------
+1. Optimised for Arduino - not a general purpose library
+2. Should be easy to use - this is what Arduino is all about
+3. Should work within the constrains of an [Uno] - 32k ROM and 2k RAM
+4. Should follow the [Style Guide] and avoid using complex C features like Pointers and Callbacks
+5. Decouple the core from protocols where possible, to allow for program size optimisations
 
 
 Limitations
@@ -43,6 +53,8 @@ License: [3-clause BSD license]
 
 
 [Arduino]:                http://www.arduino.cc/
+[Uno]:                    http://www.arduino.cc/en/Main/ArduinoBoardUno
+[Style Guide]:            http://www.arduino.cc/en/Reference/APIStyleGuide
 [Contiki]:                http://www.contiki-os.org/
 [ENC28J60]:               http://www.microchip.com/ENC28J60
 [EtherCard]:              http://github.com/jcw/ethercard
