@@ -58,9 +58,9 @@ public:
 
     /**
      * Calculate the multicast MAC address for an IPv6 address.
-     * @param addr An IPv6 address as an array of 16-bytes
+     * @param address An IPv6 address as an array of 16-bytes
      */
-    void setIPv6Multicast(const uint8_t* addr);
+    void setIPv6Multicast(const uint8_t* address);
 
     /**
      * Get an individual octet from the MAC address.

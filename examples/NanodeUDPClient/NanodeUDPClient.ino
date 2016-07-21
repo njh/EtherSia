@@ -42,7 +42,7 @@ UDPSocket udp(&ether);
 
 void setup() {
     NanodeUNIO unio(NANODE_MAC_DEVICE);
-    MACAddress macaddr;
+    MACAddress macAddress;
     boolean r;
 
     // Setup serial port
@@ -50,14 +50,14 @@ void setup() {
     Serial.println("[NanodeUDPClient]");
 
     Serial.print("Reading MAC address... ");
-    r = unio.read(macaddr, NANODE_MAC_ADDRESS, 6);
+    r = unio.read(macAddress, NANODE_MAC_ADDRESS, 6);
     if (r) Serial.println("success");
     else Serial.println("failure");
 
-    macaddr.println();
+    macAddress.println();
 
     // Start Ethernet
-    if (ether.begin(&macaddr) == false) {
+    if (ether.begin(&macAddress) == false) {
         Serial.println("Failed to configure Ethernet");
     }
 

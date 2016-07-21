@@ -61,16 +61,16 @@ public:
      * stateless auto-configuration will start - attempting to
      * get an IP address and Router address using IGMP6.
      *
-     * @param addr The local MAC address for the Ethernet interface
+     * @param address The local MAC address for the Ethernet interface
      * @return Returns true if setting up the Ethernet interface was successful
      */
-    boolean begin(const MACAddress *addr);
+    boolean begin(const MACAddress *address);
 
     /**
      * Set the size of the network packet buffer in bytes
      *
-     * The buffer is used for both sending and receiving packets, 
-     * so it should be bigger than the biggest packet you want to 
+     * The buffer is used for both sending and receiving packets,
+     * so it should be bigger than the biggest packet you want to
      * send or receive.
      *
      * If you don't call this method, the default size is 500 bytes.
@@ -95,18 +95,18 @@ public:
      * This is not needed, if stateless auto-configuration is used.
      *
      * @note Call this before begin().
-     * @param addr The Global IP address for this Ethernet interface
+     * @param address The Global IP address for this Ethernet interface
      */
-    void setGlobalAddress(IPv6Address *addr);
+    void setGlobalAddress(IPv6Address *address);
 
     /**
      * Manually set the global IPv6 address for the Ethernet Interface
      * from human readable string.
      *
      * @note Call this before begin().
-     * @param addr The Global IP address for this Ethernet interface
+     * @param address The Global IP address for this Ethernet interface
      */
-    void setGlobalAddress(const char* addr);
+    void setGlobalAddress(const char* address);
 
     /**
      * Get the global IPv6 address of the Ethernet Interface
@@ -128,17 +128,17 @@ public:
     /**
      * Check to see if an IPv6 address belongs to this Ethernet interface
      *
-     * @param addr the IPv6Addrss to check
+     * @param address the IPv6Addrss to check
      * @return ture if the
      */
-    uint8_t isOurAddress(const IPv6Address *addr);
+    uint8_t isOurAddress(const IPv6Address *address);
 
     /**
      * Set the IPv6 address DNS server to use for hostname lookups
      *
-     * @param addr The DNS Server IP address
+     * @param address The DNS Server IP address
      */
-    void setDnsServerAddress(IPv6Address *addr);
+    void setDnsServerAddress(IPv6Address *address);
 
     /**
      * Get the IPv6 address of the DNS server
@@ -186,7 +186,7 @@ public:
      * This method sets:
      * - EtherType, IP version, Traffic Class, Flow Label, Hop Limit
      * - Sets the IPv6 destination and to the source address
-     * - Sets the IPv6 src address to either our link local or global address
+     * - Sets the IPv6 source address to either our link local or global address
      * - Swaps the Ethernet source and destination addresses
      *
      */
@@ -209,14 +209,14 @@ public:
 
 
 protected:
-    IPv6Address linkLocalAddr;  /**< The IPv6 Link-local address of the Ethernet Interface */
-    IPv6Address globalAddr;     /**< The IPv6 Global address of the Ethernet Interface */
-    IPv6Address dnsServerAddr;  /**< The IPv6 address of the configured DNS server */
+    IPv6Address linkLocalAddress;  /**< The IPv6 Link-local address of the Ethernet Interface */
+    IPv6Address globalAddress;     /**< The IPv6 Global address of the Ethernet Interface */
+    IPv6Address dnsServerAddress;  /**< The IPv6 address of the configured DNS server */
 
-    MACAddress routerMac;       /**< The MAC Address of the router to send packets outside of this subnet */
+    MACAddress routerMac;   /**< The MAC Address of the router to send packets outside of this subnet */
 
-    uint8_t *buffer;            /**< The buffer that sent and received packets are stored in */
-    uint16_t bufferSize;        /**< The size of the packet buffer in bytes */
+    uint8_t *buffer;        /**< The buffer that sent and received packets are stored in */
+    uint16_t bufferSize;    /**< The size of the packet buffer in bytes */
 
 
     /**

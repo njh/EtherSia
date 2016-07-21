@@ -65,19 +65,19 @@ public:
     uint16_t calculateChecksum();
 
     // Ethernet Header
-    MACAddress etherDest;  ///< The Ethernet frame destination MAC address
-    MACAddress etherSrc;   ///< The Ethernet frame source MAC address
-    uint16_t etherType;    ///< 16-bit Ethernet frame type field (aka EtherType)
+    MACAddress etherDestination; ///< The Ethernet frame destination MAC address
+    MACAddress etherSource;      ///< The Ethernet frame source MAC address
+    uint16_t etherType;          ///< 16-bit Ethernet frame type field (aka EtherType)
 
     // IPv6 Header
-    uint8_t  ver_tc;       ///< 4-bits of version, 4-bits of traffic class
-    uint8_t  tc_fl;        ///< 4-bits of traffic class, 4-bits of flow label
-    uint16_t flowLabel;    ///< Remaining 16-bits of 20-bit flow label
-    uint16_t length;       ///< Payload length (not including this header)
-    uint8_t  proto;        ///< Identifies the type of header immediately following
-    uint8_t  hopLimit;     ///< Decremented by 1 by each node that forwards the packet
-    IPv6Address src;       ///< The IPv6 packet source address
-    IPv6Address dest;      ///< The IPv6 packet destination address
+    uint8_t  ver_tc;         ///< 4-bits of version, 4-bits of traffic class
+    uint8_t  tc_fl;          ///< 4-bits of traffic class, 4-bits of flow label
+    uint16_t flowLabel;      ///< Remaining 16-bits of 20-bit flow label
+    uint16_t length;         ///< Payload length (not including this header)
+    uint8_t  protocol;       ///< Identifies the type of header immediately following
+    uint8_t  hopLimit;       ///< Decremented by 1 by each node that forwards the packet
+    IPv6Address source;      ///< The IPv6 packet source address
+    IPv6Address destination; ///< The IPv6 packet destination address
 
 }  __attribute__((__packed__));
 

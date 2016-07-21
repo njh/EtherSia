@@ -21,7 +21,7 @@ void EtherSia::icmp6NSReply()
     memset(ICMP6_NA_HEADER_PTR->reserved, 0, sizeof(ICMP6_NA_HEADER_PTR->reserved));
     ICMP6_NA_HEADER_PTR->option_type = ICMP6_OPTION_TARGET_LINK_ADDRESS;
     ICMP6_NA_HEADER_PTR->option_len = 1;  // Options length, 1 = 8 bytes.
-    ICMP6_NA_HEADER_PTR->option_mac = enc_mac_addr;
+    ICMP6_NA_HEADER_PTR->option_mac = encMacAddress;
 
     icmp6PacketSend();
 }
@@ -45,9 +45,9 @@ void EtherSia::icmp6SendNS(IPv6Address *targetAddress)
     packet->init();
     packet->length = ntohs(ICMP6_HEADER_LEN + ICMP6_NS_HEADER_LEN);
     packet->hopLimit = 255;
-    packet->src.setZero();
-    packet->dest.setSolicitedNodeMulticastAddress(targetAddress);
-    packet->etherDest.setIPv6Multicast(packet->dest);
+    packet->source.setZero();
+    packet->destination.setSolicitedNodeMulticastAddress(targetAddress);
+    packet->etherDestination.setIPv6Multicast(packet->destination);
 
     ICMP6_HEADER_PTR->type = ICMP6_TYPE_NS;
     ICMP6_HEADER_PTR->code = 0;
@@ -65,9 +65,9 @@ void EtherSia::icmp6SendRS()
     packet->init();
     packet->length = ntohs(ICMP6_HEADER_LEN + ICMP6_RS_HEADER_LEN);
     packet->hopLimit = 255;
-    packet->src = linkLocalAddr;
-    packet->dest.setLinkLocalAllRouters();
-    packet->etherDest.setIPv6Multicast(packet->dest);
+    packet->source = linkLocalAddress;
+    packet->destination.setLinkLocalAllRouters();
+    packet->etherDestination.setIPv6Multicast(packet->destination);
 
     ICMP6_HEADER_PTR->type = ICMP6_TYPE_RS;
     ICMP6_HEADER_PTR->code = 0;
@@ -75,7 +75,7 @@ void EtherSia::icmp6SendRS()
     memset(ICMP6_RS_HEADER_PTR->reserved, 0, sizeof(ICMP6_RS_HEADER_PTR->reserved));
     ICMP6_RS_HEADER_PTR->option_type = ICMP6_OPTION_SOURCE_LINK_ADDRESS;
     ICMP6_RS_HEADER_PTR->option_len = 1;
-    ICMP6_RS_HEADER_PTR->option_mac = enc_mac_addr;
+    ICMP6_RS_HEADER_PTR->option_mac = encMacAddress;
 
     icmp6PacketSend();
 }
@@ -84,7 +84,7 @@ void EtherSia::icmp6PacketSend()
 {
     IPv6Packet *packet = getPacket();
 
-    packet->proto = IP6_PROTO_ICMP6;
+    packet->protocol = IP6_PROTO_ICMP6;
     ICMP6_HEADER_PTR->checksum = 0;
     ICMP6_HEADER_PTR->checksum = htons(packet->calculateChecksum());
 
@@ -107,9 +107,9 @@ void EtherSia::icmp6ProcessPrefix(struct icmp6_prefix_information *pi)
     }
 
     // Only set global address if there isn't one already set
-    if (globalAddr.isZero()) {
-        globalAddr = pi->prefix;
-        globalAddr.setEui64(&enc_mac_addr);
+    if (globalAddress.isZero()) {
+        globalAddress = pi->prefix;
+        globalAddress.setEui64(&encMacAddress);
     }
 
 }
@@ -172,7 +172,7 @@ boolean EtherSia::icmp6AutoConfigure()
 {
     unsigned long nextRouterSolicitation = millis();
     uint8_t count = 0;
-    while (globalAddr.isZero()) {
+    while (globalAddress.isZero()) {
         receivePacket();
 
         if ((long)(millis() - nextRouterSolicitation) >= 0) {

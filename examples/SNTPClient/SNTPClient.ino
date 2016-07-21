@@ -24,15 +24,15 @@ const uint8_t NTP_PORT = 123;
 const uint8_t NTP_PACKET_SIZE = 48;
 
 void setup() {
-    MACAddress macaddr("76:73:19:ba:b8:19");
+    MACAddress macAddress("76:73:19:ba:b8:19");
 
     // Setup serial port
     Serial.begin(38400);
     Serial.println("[EtherSia SNTPClient]");
-    macaddr.println();
+    macAddress.println();
 
     // Start Ethernet
-    if (ether.begin(&macaddr) == false) {
+    if (ether.begin(&macAddress) == false) {
         Serial.println("Failed to configure Ethernet");
     }
 

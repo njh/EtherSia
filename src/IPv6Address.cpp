@@ -44,16 +44,16 @@ boolean IPv6Address::isZero() const
     return 1;
 }
 
-void IPv6Address::setEui64(const MACAddress *macaddr)
+void IPv6Address::setEui64(const MACAddress *macAddress)
 {
-    _address[8] = (*macaddr)[0] ^ 0x02;
-    _address[9] = (*macaddr)[1];
-    _address[10] = (*macaddr)[2];
+    _address[8] = (*macAddress)[0] ^ 0x02;
+    _address[9] = (*macAddress)[1];
+    _address[10] = (*macAddress)[2];
     _address[11] = 0xff;
     _address[12] = 0xfe;
-    _address[13] = (*macaddr)[3];
-    _address[14] = (*macaddr)[4];
-    _address[15] = (*macaddr)[5];
+    _address[13] = (*macAddress)[3];
+    _address[14] = (*macAddress)[4];
+    _address[15] = (*macAddress)[5];
 }
 
 void IPv6Address::setLinkLocalAllNodes()
@@ -73,16 +73,16 @@ void IPv6Address::setLinkLocalAllRouters()
 }
 
 // See RFC4291 section 2.7.1.
-void IPv6Address::setSolicitedNodeMulticastAddress(const IPv6Address *addr)
+void IPv6Address::setSolicitedNodeMulticastAddress(const IPv6Address *address)
 {
     setZero();
     _address[0] = 0xFF;
     _address[1] = 0x02;
     _address[11] = 0x01;
     _address[12] = 0xFF;
-    _address[13] = addr->_address[13];
-    _address[14] = addr->_address[14];
-    _address[15] = addr->_address[15];
+    _address[13] = address->_address[13];
+    _address[14] = address->_address[14];
+    _address[15] = address->_address[15];
 }
 
 uint8_t* IPv6Address::getPtr()
@@ -90,9 +90,9 @@ uint8_t* IPv6Address::getPtr()
     return _address;
 }
 
-boolean IPv6Address::operator==(const IPv6Address& addr) const
+boolean IPv6Address::operator==(const IPv6Address& address) const
 {
-    return memcmp(_address, addr._address, sizeof(_address)) == 0;
+    return memcmp(_address, address._address, sizeof(_address)) == 0;
 }
 
 boolean IPv6Address::fromString(const char *addrstr)

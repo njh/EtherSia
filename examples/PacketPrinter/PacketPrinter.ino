@@ -15,16 +15,16 @@
 EtherSia ether(8);
 
 void setup() {
-    MACAddress macaddr("e2:d7:66:39:6b:5e");
+    MACAddress macAddress("e2:d7:66:39:6b:5e");
 
     // Setup serial port for debugging
     Serial.begin(38400);
     Serial.println("[EtherSia PacketPrinter]");
 
     Serial.print("Our MAC is: ");
-    macaddr.println();
+    macAddress.println();
 
-    if (ether.begin(&macaddr) == false) {
+    if (ether.begin(&macAddress) == false) {
         Serial.println("Failed to configure Ethernet");
     }
 }
@@ -34,20 +34,20 @@ void loop() {
     IPv6Packet *packet = ether.receivePacket();
 
     if (packet) {
-        Serial.print("Src MAC: ");
-        packet->etherSrc.println();
+        Serial.print("Source MAC: ");
+        packet->etherSource.println();
 
-        Serial.print("Dest MAC: ");
-        packet->etherDest.println();
+        Serial.print("Destination MAC: ");
+        packet->etherDestination.println();
 
-        Serial.print("Src Address: ");
-        packet->src.println();
+        Serial.print("Source Address: ");
+        packet->source.println();
 
-        Serial.print("Dest Address: ");
-        packet->dest.println();
+        Serial.print("Destination Address: ");
+        packet->destination.println();
 
         Serial.print("Protocol: ");
-        Serial.println(packet->proto, DEC);
+        Serial.println(packet->protocol, DEC);
 
         Serial.print("Length: ");
         Serial.println(ntohs(packet->length), DEC);

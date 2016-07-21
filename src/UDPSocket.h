@@ -228,8 +228,8 @@ protected:
  * @private
  */
 struct udp_header {
-    uint16_t srcPort;
-    uint16_t destPort;
+    uint16_t sourcePort;
+    uint16_t destinationPort;
     uint16_t length;
     uint16_t checksum;
 } __attribute__((__packed__));

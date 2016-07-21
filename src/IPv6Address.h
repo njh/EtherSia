@@ -35,9 +35,9 @@ public:
 
     /**
      * Constructor from a 128 bit (16-byte) array of bytes
-     * @param addr an array of bytes
+     * @param address an array of bytes
      */
-    IPv6Address(const uint8_t *addr);
+    IPv6Address(const uint8_t *address);
 
     /**
      * Constructor from a human readable IPv6 address string
@@ -72,7 +72,7 @@ public:
     /**
      * Check if the address equals another IPv6 address.
      */
-    boolean operator==(const IPv6Address& addr) const;
+    boolean operator==(const IPv6Address& address) const;
 
     /**
      * Set the first two bytes to the link-local prefix (FE80:)
@@ -95,16 +95,16 @@ public:
      * Set the last 64-bits of the IPv6 address to a EUI-64 based on a 48-bit MAC Address
      * Note this only sets the last 64-bits of the address.
      * The first 64-bits are left unmodified.
-     * @param macaddr The MAC address
+     * @param macAddress The MAC address
      */
-    void setEui64(const MACAddress *macaddr);
+    void setEui64(const MACAddress *macAddress);
 
     /**
      * Set the address to a Solicited Node Multicast Address
      * For example the multicast address for fe80::2aa:ff:fe28:9c5a would be ff02::1:ff28:9c5a
-     * @param addr The IPv6 unicast address
+     * @param address The IPv6 unicast address
      */
-    void setSolicitedNodeMulticastAddress(const IPv6Address *addr);
+    void setSolicitedNodeMulticastAddress(const IPv6Address *address);
 
     /**
      * Set the address to all-zeros (::)
