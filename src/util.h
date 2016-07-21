@@ -14,10 +14,10 @@
 int8_t asciiToHex(char c);
 
 /**
- * Check if a string contains colons
+ * Check if a string contains one or more colons
  *
  * @param str The string to check
- * @return True if the string contains colons
+ * @return True if the string contains at least one colon
  */
 boolean containsColon(const char *str);
 
