@@ -16,7 +16,7 @@ UDPSocket::UDPSocket(EtherSia *ether, uint16_t localPort)
 UDPSocket::UDPSocket(EtherSia *ether, IPv6Address *remoteAddress, uint16_t remotePort)
 {
     this->ether = ether;
-    this->localPort = 10000 + remotePort;
+    this->localPort = 10000 | remotePort;
     setRemoteAddress(remoteAddress, remotePort);
 }
 
