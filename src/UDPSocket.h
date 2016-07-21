@@ -120,7 +120,7 @@ public:
      * Send a reply to the last packet received
      *
      * Place the data in the payload() buffer before calling this method.
-     * 
+     *
      * @param length The length (in bytes) of the data to send
      */
     void sendReply(uint16_t length);

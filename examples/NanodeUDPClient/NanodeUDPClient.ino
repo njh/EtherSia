@@ -7,7 +7,7 @@
  * Use the socat command to receive packets sent by this sketch:
  *
  *     socat -u UDP6-LISTEN:1234 STDOUT
- * 
+ *
  * Requires the NanodeUNIO library:
  * https://github.com/sde1000/NanodeUNIO
  *

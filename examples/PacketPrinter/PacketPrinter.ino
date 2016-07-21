@@ -2,7 +2,7 @@
  * Packet Printer - prints Ethernet and IPv6 packet headers received to Serial
  *
  * Uses a static MAC address, please update with your own.
- * 
+ *
  * Get your own Random Locally Administered MAC Address here:
  * https://www.hellion.org.uk/cgi-bin/randmac.pl
  *

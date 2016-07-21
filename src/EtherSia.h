@@ -195,7 +195,7 @@ public:
     /**
      * Lookup a hostname using DNS and get an IPv6 address for it
      *
-     * This method receives and processes UDP packets while it is 
+     * This method receives and processes UDP packets while it is
      * waiting for the DNS reply. Other packets may be missed / lost
      * while this method is running.
      *
