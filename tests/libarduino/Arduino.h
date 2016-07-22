@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define HIGH 0x1
 #define LOW  0x0
@@ -13,6 +14,7 @@
 
 
 extern "C" {
+    typedef uint16_t word;
     typedef uint8_t byte ;
     typedef bool boolean ;
 

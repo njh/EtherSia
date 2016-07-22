@@ -1,0 +1,75 @@
+#include "Arduino.h"
+
+#include "MACAddress.h"
+#suite MACAddress
+
+const uint8_t zero[6] = {
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+};
+
+#test new_MACAddress
+MACAddress addr;
+ck_assert(memcmp(zero, addr, 6) == 0);
+
+
+#test new_MACAddress_six_uint8
+MACAddress addr(0x01, 0x02, 0x03, 0x04, 0x05, 0x06);
+ck_assert(addr[0] == 0x01);
+ck_assert(addr[1] == 0x02);
+ck_assert(addr[2] == 0x03);
+ck_assert(addr[3] == 0x04);
+ck_assert(addr[4] == 0x05);
+ck_assert(addr[5] == 0x06);
+
+
+#test new_MACAddress_string
+uint8_t test[] = {0x4e, 0x27, 0xb0, 0xbe, 0x69, 0x24};
+MACAddress addr("4e:27:b0:be:69:24");
+ck_assert(memcmp(test, addr, 6) == 0);
+
+
+#test fromString
+uint8_t test[] = {0x6a, 0x06, 0xed, 0x54, 0x7f, 0xd1};
+MACAddress addr;
+ck_assert(addr.fromString("6a:06:ed:54:7f:d1") == true);
+ck_assert(memcmp(test, addr, 6) == 0);
+
+
+#test fromString_dash
+uint8_t test[] = {0x6a, 0x06, 0xed, 0x54, 0x7f, 0xd1};
+MACAddress addr;
+ck_assert(addr.fromString("6a-06-ed-54-7f-d1") == true);
+ck_assert(memcmp(test, addr, 6) == 0);
+
+
+#test fromString_invalid_nonhex
+MACAddress addr;
+ck_assert(addr.fromString("6a:xx:xx:xx:xx:d1") == false);
+
+
+#test fromString_invalid_empty
+MACAddress addr;
+ck_assert(addr.fromString("") == false);
+
+
+#test fromString_invalid_foobar
+MACAddress addr;
+ck_assert(addr.fromString("foobar") == false);
+
+
+#test getPtr
+uint8_t bytes[] = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66};
+MACAddress *addr = (MACAddress*)bytes;
+ck_assert_ptr_eq(addr->getPtr(), bytes);
+
+
+#test setIPv6Multicast
+uint8_t v6addr[] = {
+    0x20, 0x01, 0x48, 0x60, 0x48, 0x60, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x88, 0x88
+};
+uint8_t test[] = {0x33, 0x33, 0x00, 0x00, 0x88, 0x88};
+MACAddress addr;
+addr.setIPv6Multicast(v6addr);
+ck_assert(memcmp(test, addr, 6) == 0);
+
