@@ -28,8 +28,6 @@ void EtherSia::icmp6NSReply()
 
 void EtherSia::icmp6EchoReply()
 {
-    IPv6Packet *packet = getPacket();
-
     prepareReply();
 
     ICMP6_HEADER_PTR->type = ICMP6_TYPE_ECHO_REPLY;
