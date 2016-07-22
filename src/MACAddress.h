@@ -79,16 +79,6 @@ public:
     uint8_t& operator[](int index) { return _address[index]; };
 
     /**
-     * Read a EUI-48 MAC address from a I2C EEPROM device
-     *
-     * Default settings are for an AT24MAC402 EEPROM.
-     *
-     * @param address the I2C address (default 0x58).
-     * @param location the memory location in the EEPROM (default 0x9A)
-     */
-    void readI2C(uint8_t address=0x58, uint8_t location=0x9A);
-
-    /**
      * Print a MAC address to a stream as a human readable string.
      * @param print The stream to print to (defaults to Serial)
      */
