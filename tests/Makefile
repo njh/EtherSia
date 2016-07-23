@@ -1,35 +1,46 @@
-CFLAGS = -std=c++11 -Wall -Werror -Wextra -pedantic
+CFLAGS = -std=c++11 -Wall -Wextra -Werror -pedantic
+CFLAGS += -Wno-gnu-zero-variadic-macro-arguments -Wno-constant-conversion -Wno-tautological-constant-out-of-range-compare
 CFLAGS += -I../src -I./libarduino
 
 CHECK_CFLAGS = $(shell pkg-config --cflags check)
 CHECK_LIBS = $(shell pkg-config --libs check)
 
-check: check_mac_address.cmd check_util.cmd
-	./check_mac_address.cmd
-	./check_util.cmd
+LIBARDUINO_SOURCES=$(wildcard libarduino/*.cpp)
+LIBARDUINO_OBJECTS=$(LIBARDUINO_SOURCES:%.cpp=%.o)
+
+LIBETHERSIA_SOURCES=$(wildcard ../src/*.cpp)
+LIBETHERSIA_OBJECTS=$(LIBETHERSIA_SOURCES:%.cpp=%.o)
+
+TEST_SUITES=$(wildcard *.tc)
+TEST_SOURCES=$(TEST_SUITES:%.tc=%.cpp)
+TEST_COMMANDS=$(TEST_SUITES:%.tc=%.cmd)
+
+
 
 test: check
+
+check: $(TEST_COMMANDS)
+	$(foreach f,$^,./$(f);)
+
+%.o: %.cpp
+	$(CXX) $(CFLAGS) $(CHECK_CFLAGS) -c -o $@ $<
+
+libarduino.a: $(LIBARDUINO_OBJECTS)
+	$(AR) rcs $@ $^
+
+libethersia.a: $(LIBETHERSIA_OBJECTS)
+	$(AR) rcs $@ $^
 
 %.cpp: %.tc
 	checkmk $< > $@ || rm -f $@
 
-check_mac_address.cmd: check_mac_address.cpp
-	c++ $(CFLAGS) \
-     -o $@ $< \
-     $(CHECK_LIBS) \
-     libarduino/Print.cpp \
-     ../src/IPv6Address.cpp \
-     ../src/MACAddress.cpp \
-     ../src/util.cpp
+%.cmd: %.o libarduino.a libethersia.a
+	$(CXX) $(CHECK_LIBS) -o $@ $^
 
-check_util.cmd: check_util.cpp
-	c++ $(CFLAGS) \
-     -o $@ $< \
-     $(CHECK_LIBS) \
-     libarduino/Print.cpp \
-     ../src/util.cpp
 
 clean:
-	rm -f check_mac_address.cmd check_mac_address.cpp check_util.cmd check_util.cpp
+	rm -f libarduino.a $(LIBARDUINO_OBJECTS)
+	rm -f libethersia.a $(LIBETHERSIA_OBJECTS)
+	rm -f $(TEST_SOURCES) $(TEST_COMMANDS)
 
 .PHONY: test check clean
