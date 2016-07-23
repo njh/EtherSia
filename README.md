@@ -39,11 +39,14 @@ then take a look at [EtherCard].
 Compatibility
 -------------
 
+EtherSia should work on any Arduino board with [ENC28J60] based network interface.
+There are the results of boards I have tested with:
+
 | Board                           | Tested? | Select Pin (CS) | Hardware MAC Address |
 |---------------------------------|---------|-----------------|----------------------|
 | [Nanode v5]                     | Working | 8               | UNI/O 11AA02E48      |
 | [Nanode RF] / Classic           | -       | 8               | MCP79411             |
-| [Nano Shield]                   | -       | 10              | None                 |
+| [Nano Shield]                   | Working | 10              | None                 |
 | Velleman [KA04]/[VMA04]         | -       | 10              | None                 |
 | [Ciseco Ethernet Shield] K016   | -       | 10 / Custom     | None                 |
 | [Snootlab Gate 0.5]             | -       | 10              | None                 |
