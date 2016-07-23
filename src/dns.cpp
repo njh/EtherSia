@@ -71,8 +71,6 @@ static uint8_t* skipOverName(uint8_t* ptr)
             ptr++;
             break;
         }
-
-        // FIXME: check we haven't gone beyond the length of the buffer
     }
 
     return ptr;
@@ -84,6 +82,7 @@ static IPv6Address* processDNSReply(uint8_t* payload, uint16_t length)
     uint8_t questionCount = ntohs(dns->qdcount);
     uint8_t answerCount = ntohs(dns->ancount);
     uint8_t *ptr = payload + sizeof(struct dnsHeader);
+    uint8_t *endPtr = ptr + length;
 
     // FIXME: check the ID and source
     // FIXME: check it is a reply
@@ -95,7 +94,11 @@ static IPv6Address* processDNSReply(uint8_t* payload, uint16_t length)
         ptr = skipOverName(ptr);
         // Type and Class
         ptr += 4;
-        // FIXME: check we haven't gone beyond the length of the payload
+        
+        if (ptr >= endPtr) {
+            // We went beyond the end of the payload
+            return NULL;
+        }
     }
 
     while(answerCount--) {
@@ -117,7 +120,10 @@ static IPv6Address* processDNSReply(uint8_t* payload, uint16_t length)
         // Skip to the next answer
         ptr += sizeof(struct dnsRecord) + rdlength;
 
-        // FIXME: check we haven't gone beyond the length of the payload
+        if (ptr >= endPtr) {
+            // We went beyond the end of the payload
+            return NULL;
+        }
     }
 
     // Failed to find a valid response
