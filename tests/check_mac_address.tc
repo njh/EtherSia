@@ -47,6 +47,11 @@ MACAddress addr;
 ck_assert(addr.fromString("6a:xx:xx:xx:xx:d1") == false);
 
 
+#test fromString_invalid_no_separator
+MACAddress addr;
+ck_assert(addr.fromString("6a06ed547fd1") == false);
+
+
 #test fromString_invalid_empty
 MACAddress addr;
 ck_assert(addr.fromString("") == false);
