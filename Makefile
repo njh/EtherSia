@@ -6,5 +6,6 @@ test:
 
 clean:
 	$(MAKE) -C docs clean
+	$(MAKE) -C tests clean
 
 .PHONY: clean docs
