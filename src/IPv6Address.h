@@ -7,6 +7,7 @@
 #define IPv6Address_H
 
 #include <stdint.h>
+#include "MACAddress.h"
 
 /** The maximum string length of an IPv6 address */
 #define MAX_IPV6_ADDRESS_STR_LEN  39

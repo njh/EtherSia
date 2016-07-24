@@ -1,5 +1,7 @@
 #include <stdint.h>
 
+#include "IPv6Address.h"
+
 /** How often to send DNS request packets */
 #define DNS_REQUEST_TIMEOUT    (3500)
 
@@ -55,3 +57,17 @@ struct dnsRecord {
     uint16_t rdlength;
     // Data field here
 } __attribute__((__packed__));
+
+
+/**
+ * Write a DNS Request for a hostname into a buffer
+ * @private
+ */
+uint16_t dnsMakeRequest(uint8_t *buffer, const char *hostname, uint16_t requestId);
+
+/**
+ * Get the pointer a IPv6 Address from a DNS response
+ * Returns NULL if it is not a valid response
+ * @private
+ */
+IPv6Address* dnsProcessReply(uint8_t* payload, uint16_t length, uint16_t requestId);

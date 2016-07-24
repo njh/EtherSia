@@ -28,11 +28,12 @@ static uint8_t* encodeName(uint8_t *query, const char *nameptr)
     return query;
 }
 
-static uint16_t makeDNSRequest(uint8_t *buffer, const char *host) {
+uint16_t dnsMakeRequest(uint8_t *buffer, const char *host, uint16_t requestId)
+{
     struct dnsHeader *dns = (struct dnsHeader*)buffer;
     uint8_t *ptr = buffer;
 
-    dns->id = random(65535);    // FIXME: use sequence instead?
+    dns->id = htons(requestId);
     dns->flags1 = 0x01;         // FIXME: use define flags
     dns->flags2 = 0x00;
     dns->qdcount = htons(1);    // Packet contains a single question
@@ -76,7 +77,8 @@ static uint8_t* skipOverName(uint8_t* ptr)
     return ptr;
 }
 
-static IPv6Address* processDNSReply(uint8_t* payload, uint16_t length)
+
+IPv6Address* dnsProcessReply(uint8_t* payload, uint16_t length, uint16_t requestId)
 {
     struct dnsHeader *dns = (struct dnsHeader*)payload;
     uint8_t questionCount = ntohs(dns->qdcount);
@@ -84,7 +86,11 @@ static IPv6Address* processDNSReply(uint8_t* payload, uint16_t length)
     uint8_t *ptr = payload + sizeof(struct dnsHeader);
     uint8_t *endPtr = ptr + length;
 
-    // FIXME: check the ID and source
+    if (ntohs(dns->id) != requestId) {
+        // Response ID doesn't match the request ID
+        return NULL;
+    }
+
     // FIXME: check it is a reply
     // FIXME: check the flags
 
@@ -134,6 +140,7 @@ static IPv6Address* processDNSReply(uint8_t* payload, uint16_t length)
 IPv6Address* EtherSia::getHostByName(const char* hostname)
 {
     unsigned long nextRequest = millis();
+    uint16_t id = random(65535);
     uint8_t requestCount = 0;
     UDPSocket udp(this);
 
@@ -143,14 +150,14 @@ IPv6Address* EtherSia::getHostByName(const char* hostname)
         receivePacket();
 
         if (udp.havePacket()) {
-            IPv6Address *address = processDNSReply(udp.payload(), udp.payloadLength());
+            IPv6Address *address = dnsProcessReply(udp.payload(), udp.payloadLength(), id);
             if (address) {
                 return address;
             }
         }
 
         if ((long)(millis() - nextRequest) >= 0) {
-            uint16_t len = makeDNSRequest(udp.payload(), hostname);
+            uint16_t len = dnsMakeRequest(udp.payload(), hostname, id);
             if (len) {
                 udp.send(len);
                 nextRequest = millis() + DNS_REQUEST_TIMEOUT;
