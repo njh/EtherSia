@@ -17,7 +17,7 @@
 
 /** Convert a 16-bit integer from host (little-endian) to network (big-endian) */
 #ifndef htons
-#define htons(x) ( ((x)<<8) | (((x)>>8)&0xFF) )
+#define htons(x) ( (((x)<<8)&0xFF00) | (((x)>>8)&0x00FF) )
 #endif
 
 /** Convert a 16-bit integer from network (big-endian) to host (little-endian) */
