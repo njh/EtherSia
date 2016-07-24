@@ -15,6 +15,8 @@ extern "C" {
     typedef uint16_t word;
     typedef uint8_t byte ;
     typedef bool boolean ;
+
+    void* malloc(size_t size);
 }
 
 /* sketch */
@@ -30,8 +32,6 @@ void pinMode(uint8_t, uint8_t);
 void digitalWrite(uint8_t, uint8_t);
 int digitalRead(uint8_t);
 
-void * malloc(size_t size);
-   
 long random(long);
 long random(long, long);
 void randomSeed(unsigned long);

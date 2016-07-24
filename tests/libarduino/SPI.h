@@ -1,3 +1,4 @@
+#include <stdint.h>
 
 #ifndef LSBFIRST
 #define LSBFIRST 0
@@ -29,7 +30,7 @@ class SPIClass {
 public:
   static void begin();
 
-  static uint8_t transfer(uint8_t val) { return val; }
+  static uint8_t transfer(uint8_t val);
 
   static void end();
 
