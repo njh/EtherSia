@@ -34,7 +34,7 @@ uint16_t dnsMakeRequest(uint8_t *buffer, const char *host, uint16_t requestId)
     uint8_t *ptr = buffer;
 
     dns->id = htons(requestId);
-    dns->flags1 = 0x01;         // FIXME: use define flags
+    dns->flags1 = DNS_FLAG_QUERY | DNS_FLAG_RD;
     dns->flags2 = 0x00;
     dns->qdcount = htons(1);    // Packet contains a single question
     dns->ancount = htons(0);

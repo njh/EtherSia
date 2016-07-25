@@ -8,11 +8,41 @@
 /** How many times to send DNS request packets */
 #define DNS_REQUEST_ATTEMPTS   (3)
 
-
+/** The UDP port number to send queries to */
 #define DNS_PORT_NUMBER        (53)
 
+/*  DNS Header section format
+    From RFC1035 section 4.1.1.
+                                    1  1  1  1  1  1
+      0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    |                      ID                       |
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    |QR|   Opcode  |AA|TC|RD|RA|   Z    |   RCODE   |
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+*/
+
+/** The QR bit is set to 0 for queries */
 #define DNS_FLAG_QUERY         (0)
+
+/** The QR bit is set to 1 for responses */
 #define DNS_FLAG_RESPONSE      (1 << 7)
+
+/** Authoritative Answer Flag */
+#define DNS_FLAG_AA            (1 << 2)
+
+/** TrunCation flag - set if packet has been trancated */
+#define DNS_FLAG_TC            (1 << 1)
+
+/** Recursion Desired */
+#define DNS_FLAG_RD            (1 << 0)
+
+/** Recursion Available */
+#define DNS_FLAG_RA            (1 << 7)
+
+/** Bit mask to extract the RCODE from flags2 byte */
+#define DNS_RCODE_MASK         (0x0F)
+
 
 enum dnsType {
     DNS_TYPE_A     = 1,
