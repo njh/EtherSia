@@ -38,16 +38,16 @@ ck_assert(containsColon("www.aelius.com:80") == true);
 
 #test chksum_hello
 const char* hello = "Hello";
-uint16_t checksum = ~ chksum(0, (const uint8_t*)hello, sizeof(hello));
-ck_assert_uint_eq(checksum, 0x9ABA);
+uint16_t checksum = ~ chksum(0, (const uint8_t*)hello, strlen(hello));
+ck_assert_uint_eq(checksum, 0xDC2D);
 
 #test chksum_simple_accumulative
 uint16_t checksum = 0;
 const char* hello = "Hello";
 const char* world = "World";
-checksum = chksum(checksum, (const uint8_t*)hello, sizeof(hello));
-checksum = ~ chksum(checksum, (const uint8_t*)world, sizeof(world));
-ck_assert_uint_eq(checksum, 0x0976);
+checksum = chksum(checksum, (const uint8_t*)hello, strlen(hello));
+checksum = ~ chksum(checksum, (const uint8_t*)world, strlen(world));
+ck_assert_uint_eq(checksum, 0xAE51);
 
 #test chksum_wikipedia
 // Example from: https://en.wikipedia.org/wiki/IPv4_header_checksum
