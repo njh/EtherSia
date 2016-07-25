@@ -36,6 +36,19 @@ ck_assert_int_eq(packet->protocol, IP6_PROTO_ICMP6);
 IPv6Packet *packet = (IPv6Packet *)rs_buffer;
 ck_assert(packet->isValid());
 
+#test isValid_null_packet
+uint8_t buffer[128];
+memset(buffer, 0, sizeof(buffer));
+IPv6Packet *packet = (IPv6Packet *)buffer;
+ck_assert(packet->isValid() == false);
+
+#test isValid_wrong_version
+uint8_t buffer[128];
+memcpy(buffer, rs_buffer, sizeof(rs_buffer));
+IPv6Packet *packet = (IPv6Packet *)buffer;
+packet->ver_tc = 0x40;
+ck_assert(packet->isValid() == false);
+
 #test calculateChecksum
 IPv6Packet *packet = (IPv6Packet *)rs_buffer;
 // Calculation comes out as 0 because of the checksum field in the ICMP6 header
