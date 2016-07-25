@@ -37,7 +37,7 @@ libethersia.a: $(LIBETHERSIA_OBJECTS)
 	checkmk $< > $@ || rm -f $@
 
 %.cmd: %.o libarduino.a libethersia.a
-	$(CXX) $(CHECK_LIBS) -o $@ $^
+	$(CXX) -o $@ $< -L. -lethersia -larduino $(CHECK_LIBS)
 
 
 clean:
