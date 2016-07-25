@@ -54,7 +54,7 @@ uint16_t dnsMakeRequest(uint8_t *buffer, const char *host, uint16_t requestId)
     return ptr-buffer;
 }
 
-static uint8_t* skipOverName(uint8_t* ptr)
+static const uint8_t* skipOverName(const uint8_t* ptr)
 {
     while (*ptr) {
         // Check if top two bits are set
@@ -78,13 +78,13 @@ static uint8_t* skipOverName(uint8_t* ptr)
 }
 
 
-IPv6Address* dnsProcessReply(uint8_t* payload, uint16_t length, uint16_t requestId)
+IPv6Address* dnsProcessReply(const uint8_t* payload, uint16_t length, uint16_t requestId)
 {
     struct dnsHeader *dns = (struct dnsHeader*)payload;
     uint8_t questionCount = ntohs(dns->qdcount);
     uint8_t answerCount = ntohs(dns->ancount);
-    uint8_t *ptr = payload + sizeof(struct dnsHeader);
-    uint8_t *endPtr = ptr + length;
+    const uint8_t *ptr = payload + sizeof(struct dnsHeader);
+    const uint8_t *endPtr = ptr + length;
 
     if (ntohs(dns->id) != requestId) {
         // Response ID doesn't match the request ID

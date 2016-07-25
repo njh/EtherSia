@@ -100,4 +100,4 @@ uint16_t dnsMakeRequest(uint8_t *buffer, const char *hostname, uint16_t requestI
  * Returns NULL if it is not a valid response
  * @private
  */
-IPv6Address* dnsProcessReply(uint8_t* payload, uint16_t length, uint16_t requestId);
+IPv6Address* dnsProcessReply(const uint8_t* payload, uint16_t length, uint16_t requestId);
