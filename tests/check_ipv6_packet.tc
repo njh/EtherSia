@@ -17,8 +17,14 @@ uint8_t rs_buffer[] = {
 
 #test new_packet
 IPv6Packet packet;
+uint8_t zeroMac[6] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+ck_assert(memcmp(packet.etherSource, zeroMac, 6) == 0);
+ck_assert(memcmp(packet.etherDestination, zeroMac, 6) == 0);
 ck_assert_int_eq(packet.etherType, htons(ETHER_TYPE_IPV6));
+ck_assert_int_eq(packet.ver_tc, 0x60);
+ck_assert_int_eq(packet.tc_fl, 0x00);
 ck_assert_int_eq(packet.flowLabel, 0);
+ck_assert_int_eq(packet.hopLimit, IP6_DEFAULT_HOP_LIMIT);
 
 #test etherType
 IPv6Packet *packet = (IPv6Packet *)rs_buffer;
