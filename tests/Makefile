@@ -22,7 +22,7 @@ TEST_COMMANDS=$(TEST_SUITES:%.tc=%.cmd)
 test: check
 
 check: $(TEST_COMMANDS)
-	$(foreach f,$^,./$(f);)
+	@$(foreach f,$^,./$(f) &&) echo "All tests passed."
 
 %.o: %.cpp
 	$(CXX) $(CFLAGS) $(CHECK_CFLAGS) -c -o $@ $<
