@@ -91,8 +91,10 @@ IPv6Address* dnsProcessReply(uint8_t* payload, uint16_t length, uint16_t request
         return NULL;
     }
 
-    // FIXME: check it is a reply
-    // FIXME: check the flags
+    if ((dns->flags2 & DNS_RCODE_MASK) != 0) {
+        // Response Code is non-zero (an error)
+        return NULL;
+    }
 
     // Skip over the question section
     while(questionCount--) {
