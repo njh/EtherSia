@@ -64,12 +64,26 @@ void IPv6Address::setLinkLocalAllNodes()
     _address[15] = 0x01;
 }
 
+boolean IPv6Address::isLinkLocalAllNodes() const
+{
+    IPv6Address expected;
+    expected.setLinkLocalAllNodes();
+    return *this == expected;
+}
+
 void IPv6Address::setLinkLocalAllRouters()
 {
     setZero();
     _address[0] = 0xFF;
     _address[1] = 0x02;
     _address[15] = 0x02;
+}
+
+boolean IPv6Address::isLinkLocalAllRouters() const
+{
+    IPv6Address expected;
+    expected.setLinkLocalAllRouters();
+    return *this == expected;
 }
 
 // See RFC4291 section 2.7.1.
@@ -83,6 +97,14 @@ void IPv6Address::setSolicitedNodeMulticastAddress(const IPv6Address *address)
     _address[13] = address->_address[13];
     _address[14] = address->_address[14];
     _address[15] = address->_address[15];
+}
+
+// See RFC4291 section 2.7.1.
+boolean IPv6Address::isSolicitedNodeMulticastAddress(const IPv6Address *address) const
+{
+    IPv6Address expected;
+    expected.setSolicitedNodeMulticastAddress(address);
+    return *this == expected;
 }
 
 uint8_t* IPv6Address::getPtr()

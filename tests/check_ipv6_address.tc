@@ -126,6 +126,17 @@ addr.setLinkLocalAllNodes();
 ck_assert(memcmp(expect, addr, 16) == 0);
 
 
+#test isLinkLocalAllNodes_true
+IPv6Address addr;
+addr.setLinkLocalAllNodes();
+ck_assert(addr.isLinkLocalAllNodes() == true);
+
+
+#test isLinkLocalAllNodes_false
+IPv6Address addr;
+ck_assert(addr.isLinkLocalAllNodes() == false);
+
+
 #test setLinkLocalAllRouters
 uint8_t expect[16] = {
     0xff, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -134,6 +145,17 @@ uint8_t expect[16] = {
 IPv6Address addr;
 addr.setLinkLocalAllRouters();
 ck_assert(memcmp(expect, addr, 16) == 0);
+
+
+#test isLinkLocalAllRouters_true
+IPv6Address addr;
+addr.setLinkLocalAllRouters();
+ck_assert(addr.isLinkLocalAllRouters() == true);
+
+
+#test isLinkLocalAllRouters_false
+IPv6Address addr;
+ck_assert(addr.isLinkLocalAllRouters() == false);
 
 
 #test isMulticast
@@ -155,6 +177,19 @@ IPv6Address globalAddr("2001:4860:4860::8888");
 IPv6Address addr;
 addr.setSolicitedNodeMulticastAddress(&globalAddr);
 ck_assert(memcmp(expect, addr, 16) == 0);
+
+
+#test isSolicitedNodeMulticastAddress_true
+IPv6Address globalAddr("2001:4860:4860::8888");
+IPv6Address addr;
+addr.setSolicitedNodeMulticastAddress(&globalAddr);
+ck_assert(addr.isSolicitedNodeMulticastAddress(&globalAddr) == true);
+
+
+#test isSolicitedNodeMulticastAddress_false
+IPv6Address globalAddr("2001:4860:4860::8888");
+IPv6Address addr;
+ck_assert(addr.isSolicitedNodeMulticastAddress(&globalAddr) == false);
 
 
 #test equal

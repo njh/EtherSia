@@ -88,9 +88,23 @@ public:
     void setLinkLocalAllNodes();
 
     /**
+     * Check if multicast address for all nodes on the local network segment (FF02::1)
+     *
+     * @return true if address if for the Link Local all nodes address
+     */
+    boolean isLinkLocalAllNodes() const;
+
+    /**
      * Set address to multicast address for all routers on the local network segment (FF02::2)
      */
     void setLinkLocalAllRouters();
+
+    /**
+     * Check if multicast address for all routers on the local network segment (FF02::2)
+     *
+     * @return true if address if for the Link Local all routers address
+     */
+    boolean isLinkLocalAllRouters() const;
 
     /**
      * Set the last 64-bits of the IPv6 address to a EUI-64 based on a 48-bit MAC Address
@@ -106,6 +120,16 @@ public:
      * @param address The IPv6 unicast address
      */
     void setSolicitedNodeMulticastAddress(const IPv6Address *address);
+
+    /**
+     * Check if address is a specific node multicast address
+     *
+     * For example the multicast address for fe80::2aa:ff:fe28:9c5a would be ff02::1:ff28:9c5a
+     *
+     * @param address The IPv6 unicast address to calculate the multicast address from
+     * @return true if address if the specific node multicast address
+     */
+    boolean isSolicitedNodeMulticastAddress(const IPv6Address *address) const;
 
     /**
      * Set the address to all-zeros (::)
