@@ -83,25 +83,9 @@ boolean UDPSocket::havePacket()
         return 0;
     }
 
-    if (!verifyChecksum()) {
-        return 0;
-    }
 
     // The packet in the buffer is valid for this socket
     return 1;
-}
-
-boolean UDPSocket::verifyChecksum()
-{
-    IPv6Packet *packet = ether->getPacket();
-    struct udp_header *udpHeader = UDP_HEADER_PTR;
-    uint16_t packetChecksum = ntohs(udpHeader->checksum);
-
-    // Set field in packet to 0 before calculating the checksum
-    udpHeader->checksum = 0;
-
-    // Does the calculated checksum equal the checksum in the packet?
-    return packet->calculateChecksum() == packetChecksum;
 }
 
 void UDPSocket::send(const char *data)

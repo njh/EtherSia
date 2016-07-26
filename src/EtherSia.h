@@ -272,12 +272,6 @@ protected:
      * Ensures the protocol and checksum are set before sending.
      */
     void icmp6PacketSend();
-
-    /**
-     * Check to see if the ICMPv6 checksum is set valid
-     * @return True if the ICMPv6 checksum is correct
-     */
-    boolean icmp6VerifyChecksum();
 };
 
 #endif

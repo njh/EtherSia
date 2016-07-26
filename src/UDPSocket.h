@@ -82,12 +82,6 @@ public:
     boolean havePacket();
 
     /**
-     * Verify the checksum of the UDP packet currently in the packet buffer
-     * @return true if packet checksum is valid
-     */
-    boolean verifyChecksum();
-
-    /**
      * Send a string out on the UDP socket
      * @param data The null-terminated string to send
      */

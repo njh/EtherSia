@@ -151,10 +151,6 @@ void EtherSia::icmp6ProcessPacket()
         return;
     }
 
-    if (!icmp6VerifyChecksum()) {
-        return;
-    }
-
     switch(ICMP6_HEADER_PTR->type) {
     case ICMP6_TYPE_NS:
         icmp6NSReply();
@@ -194,16 +190,4 @@ boolean EtherSia::icmp6AutoConfigure()
 
     // We have a global IPv6 address - success
     return true;
-}
-
-boolean EtherSia::icmp6VerifyChecksum()
-{
-    IPv6Packet *packet = getPacket();
-    uint16_t packetChecksum = ntohs(ICMP6_HEADER_PTR->checksum);
-
-    // Set field in packet to 0 before calculating the checksum
-    ICMP6_HEADER_PTR->checksum = 0;
-
-    // Does the calculated checksum equal the checksum in the packet?
-    return packet->calculateChecksum() == packetChecksum;
 }

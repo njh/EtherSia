@@ -35,6 +35,11 @@ boolean IPv6Packet::isValid()
         return false;
     }
 
+    // Verify the packet checksum (it should add up to 0)
+    if (calculateChecksum() != 0) {
+        return false;
+    }
+
     return true;
 }
 
