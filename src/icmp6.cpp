@@ -7,8 +7,9 @@ void EtherSia::icmp6NSReply()
 {
     IPv6Packet *packet = getPacket();
 
-    // Is the Neighbour Solicitation addressed to us?
-    if (!isOurAddress(&ICMP6_NS_HEADER_PTR->target)) {
+    // Does the Neighbour Solicitation target belong to us?
+    uint8_t type = isOurAddress(&ICMP6_NS_HEADER_PTR->target);
+    if (type != ADDRESS_TYPE_LINK_LOCAL && type != ADDRESS_TYPE_GLOBAL) {
         return;
     }
 
