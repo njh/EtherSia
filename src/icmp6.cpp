@@ -143,6 +143,13 @@ void EtherSia::icmp6ProcessRA()
 
 void EtherSia::icmp6ProcessPacket()
 {
+    IPv6Packet *packet = getPacket();
+
+    if (isOurAddress(&packet->destination) == 0) {
+        // Packet isn't addressed to us
+        return;
+    }
+
     if (!icmp6VerifyChecksum()) {
         return;
     }
