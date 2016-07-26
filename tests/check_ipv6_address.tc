@@ -16,11 +16,11 @@ ck_assert(memcmp(zero, addr, 16) == 0);
 
 
 #test setZero
-uint8_t test[16] = {
+uint8_t expect[16] = {
   0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
   0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F
 };
-IPv6Address *addr = (IPv6Address *)test;
+IPv6Address *addr = (IPv6Address *)expect;
 addr->setZero();
 ck_assert(memcmp(zero, addr, 16) == 0);
 
@@ -31,22 +31,22 @@ ck_assert(addr->isZero() == true);
 
 
 #test isZero_false
-uint8_t test[16] = {
+uint8_t expect[16] = {
   0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
   0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F
 };
-IPv6Address *addr = (IPv6Address *)test;
+IPv6Address *addr = (IPv6Address *)expect;
 ck_assert(addr->isZero() == false);
 
 
 #test fromString_home
-uint8_t test[16] = {
+uint8_t expect[16] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01
 };
 IPv6Address addr;
 addr.fromString("::1");
-ck_assert(memcmp(test, addr, 16) == 0);
+ck_assert(memcmp(expect, addr, 16) == 0);
 
 
 #test fromString_zero
@@ -56,31 +56,32 @@ ck_assert(addr.isZero() == true);
 
 
 #test fromString_googlePublicDNS
-uint8_t test[16] = {
+uint8_t expect[16] = {
     0x20, 0x01, 0x48, 0x60, 0x48, 0x60, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x88, 0x88
 };
 IPv6Address addr;
 addr.fromString("2001:4860:4860::8888");
 ck_assert(memcmp(test, addr, 16) == 0);
+ck_assert(memcmp(expect, addr, 16) == 0);
 
 
 #test fromString_googlePublicDNS_expanded
-uint8_t test[16] = {
+uint8_t expect[16] = {
     0x20, 0x01, 0x48, 0x60, 0x48, 0x60, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x88, 0x88
 };
 IPv6Address addr;
 addr.fromString("2001:4860:4860:0000:0000:0000:0000:8888");
-ck_assert(memcmp(test, addr, 16) == 0);
+ck_assert(memcmp(expect, addr, 16) == 0);
 
 
 #test new_string_googlePublicDNS
-uint8_t test[16] = {
+uint8_t expect[16] = {
     0x20, 0x01, 0x48, 0x60, 0x48, 0x60, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x88, 0x88
 };
 IPv6Address addr("2001:4860:4860:0000:0000:0000:0000:8888");
-ck_assert(memcmp(test, addr, 16) == 0);
+ck_assert(memcmp(expect, addr, 16) == 0);
 
 
