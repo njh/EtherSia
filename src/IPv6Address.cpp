@@ -117,6 +117,11 @@ boolean IPv6Address::operator==(const IPv6Address& address) const
     return memcmp(_address, address._address, sizeof(_address)) == 0;
 }
 
+boolean IPv6Address::operator!=(const IPv6Address& address) const
+{
+    return !(*this == address);
+}
+
 boolean IPv6Address::fromString(const char *addrstr)
 {
     uint16_t accumulator = 0;

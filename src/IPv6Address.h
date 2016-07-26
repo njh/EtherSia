@@ -76,6 +76,11 @@ public:
     boolean operator==(const IPv6Address& address) const;
 
     /**
+     * Check if the address is not equal to another IPv6 address.
+     */
+    boolean operator!=(const IPv6Address& address) const;
+
+    /**
      * Set the first two bytes to the link-local prefix (FE80:)
      * Note this only sets the first 64-bits of the address.
      * The last 64-bits are left unmodified.
