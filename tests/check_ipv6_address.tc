@@ -45,13 +45,15 @@ uint8_t expect[16] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01
 };
 IPv6Address addr;
-addr.fromString("::1");
+boolean result = addr.fromString("::1");
+ck_assert(result == true);
 ck_assert(memcmp(expect, addr, 16) == 0);
 
 
 #test fromString_zero
 IPv6Address addr;
-addr.fromString("::");
+boolean result = addr.fromString("::");
+ck_assert(result == true);
 ck_assert(addr.isZero() == true);
 
 
@@ -61,8 +63,8 @@ uint8_t expect[16] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x88, 0x88
 };
 IPv6Address addr;
-addr.fromString("2001:4860:4860::8888");
-ck_assert(memcmp(test, addr, 16) == 0);
+boolean result = addr.fromString("2001:4860:4860::8888");
+ck_assert(result == true);
 ck_assert(memcmp(expect, addr, 16) == 0);
 
 
@@ -72,8 +74,15 @@ uint8_t expect[16] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x88, 0x88
 };
 IPv6Address addr;
-addr.fromString("2001:4860:4860:0000:0000:0000:0000:8888");
+boolean result = addr.fromString("2001:4860:4860:0000:0000:0000:0000:8888");
+ck_assert(result == true);
 ck_assert(memcmp(expect, addr, 16) == 0);
+
+
+#test fromString_invalid
+IPv6Address addr;
+boolean result = addr.fromString("2001*4860*4860*0000*0000*0000*0000*8888");
+ck_assert(result == false);
 
 
 #test new_string_googlePublicDNS
@@ -84,4 +93,88 @@ uint8_t expect[16] = {
 IPv6Address addr("2001:4860:4860:0000:0000:0000:0000:8888");
 ck_assert(memcmp(expect, addr, 16) == 0);
 
+
+#test setLinkLocal
+uint8_t expect[16] = {
+    0xfe, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x03, 0x23, 0x45, 0xff, 0xfe, 0x67, 0x89, 0x10
+};
+MACAddress macAddress("01:23:45:67:89:10");
+IPv6Address addr;
+addr.setLinkLocalPrefix();
+addr.setEui64(&macAddress);
+ck_assert(memcmp(expect, addr, 16) == 0);
+
+
+#test isLinkLocal
+IPv6Address addr("fe80::0323:45ff:fe67:8910");
+ck_assert(addr.isLinkLocal() == true);
+
+
+#test isLinkLocal_global
+IPv6Address addr("2001:4860:4860::8888");
+ck_assert(addr.isLinkLocal() == false);
+
+
+#test setLinkLocalAllNodes
+uint8_t expect[16] = {
+    0xff, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01
+};
+IPv6Address addr;
+addr.setLinkLocalAllNodes();
+ck_assert(memcmp(expect, addr, 16) == 0);
+
+
+#test setLinkLocalAllRouters
+uint8_t expect[16] = {
+    0xff, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02
+};
+IPv6Address addr;
+addr.setLinkLocalAllRouters();
+ck_assert(memcmp(expect, addr, 16) == 0);
+
+
+#test isMulticast
+IPv6Address addr("ff02::1");
+ck_assert(addr.isMulticast() == true);
+
+
+#test isMulticast_global
+IPv6Address addr("2001:4860:4860::8888");
+ck_assert(addr.isMulticast() == false);
+
+
+#test setSolicitedNodeMulticastAddress
+uint8_t expect[16] = {
+    0xff, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x01, 0xff, 0x00, 0x88, 0x88
+};
+IPv6Address globalAddr("2001:4860:4860::8888");
+IPv6Address addr;
+addr.setSolicitedNodeMulticastAddress(&globalAddr);
+ck_assert(memcmp(expect, addr, 16) == 0);
+
+
+#test equal
+uint8_t addrBuf[16] = {
+    0x20, 0x01, 0x48, 0x60, 0x48, 0x60, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x88, 0x88
+};
+IPv6Address addr("2001:4860:4860::8888");
+IPv6Address *addr2 = (IPv6Address*)addrBuf;
+ck_assert(addr == *addr2);
+
+#test getType_global
+IPv6Address addr("2001:4860:4860::8888");
+ck_assert_int_eq(addr.getType(), ADDRESS_TYPE_GLOBAL);
+
+#test getType_linkLocal
+IPv6Address addr("fe80::0323:45ff:fe67:8910");
+ck_assert_int_eq(addr.getType(), ADDRESS_TYPE_LINK_LOCAL);
+
+#test getType_multicast
+IPv6Address addr("ff02::2");
+ck_assert_int_eq(addr.getType(), ADDRESS_TYPE_MULTICAST);
 
