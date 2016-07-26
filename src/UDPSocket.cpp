@@ -74,15 +74,24 @@ boolean UDPSocket::havePacket()
     }
 
     if (packetDestinationPort() != localPort) {
-        // Wrong port
+        // Wrong destination port
+        return 0;
+    }
+
+    if (remotePort && packetSourcePort() != remotePort) {
+        // Wrong source port
         return 0;
     }
 
     if (!ether->isOurAddress(packetDestination())) {
-        // Wrong destination
+        // Wrong destination address
         return 0;
     }
 
+    if (!remoteAddress.isZero() && *packetSource() != remoteAddress) {
+        // Wrong source address
+        return 0;
+    }
 
     // The packet in the buffer is valid for this socket
     return 1;
