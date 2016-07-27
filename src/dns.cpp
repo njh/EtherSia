@@ -84,7 +84,7 @@ IPv6Address* dnsProcessReply(const uint8_t* payload, uint16_t length, uint16_t r
     uint8_t questionCount = ntohs(dns->qdcount);
     uint8_t answerCount = ntohs(dns->ancount);
     const uint8_t *ptr = payload + sizeof(struct dnsHeader);
-    const uint8_t *endPtr = ptr + length;
+    const uint8_t *endPtr = payload + length;
 
     if (ntohs(dns->id) != requestId) {
         // Response ID doesn't match the request ID
@@ -103,7 +103,7 @@ IPv6Address* dnsProcessReply(const uint8_t* payload, uint16_t length, uint16_t r
         // Type and Class
         ptr += 4;
         
-        if (ptr >= endPtr) {
+        if (ptr > endPtr) {
             // We went beyond the end of the payload
             return NULL;
         }
@@ -128,7 +128,7 @@ IPv6Address* dnsProcessReply(const uint8_t* payload, uint16_t length, uint16_t r
         // Skip to the next answer
         ptr += sizeof(struct dnsRecord) + rdlength;
 
-        if (ptr >= endPtr) {
+        if (ptr > endPtr) {
             // We went beyond the end of the payload
             return NULL;
         }
