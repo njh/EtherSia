@@ -119,8 +119,6 @@ void EtherSia::icmp6ProcessRA()
     int16_t remaining = ntohs(packet->length) - ICMP6_HEADER_LEN - ICMP6_RA_HEADER_LEN;
     uint8_t *ptr = (uint8_t*)packet + ICMP6_RA_HEADER_OFFSET + ICMP6_RA_HEADER_LEN;
 
-    // FIXME: check destination?
-
     while(remaining > 0) {
         switch(ptr[0]) {
         case ICMP6_OPTION_SOURCE_LINK_ADDRESS:
