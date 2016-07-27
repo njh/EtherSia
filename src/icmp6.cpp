@@ -130,9 +130,6 @@ void EtherSia::icmp6ProcessRA()
                 (struct icmp6_prefix_information*)&ptr[2]
             );
             break;
-        case ICMP6_OPTION_MTU:
-            // FIXME: do something with the MTU?
-            break;
         }
 
         remaining -= (8 * ptr[1]);
