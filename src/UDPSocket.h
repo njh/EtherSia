@@ -41,7 +41,7 @@ public:
      * @param remoteAddress The IPv6 address to send to
      * @param remotePort The UDP port number to send to
      */
-    UDPSocket(EtherSia *ether, IPv6Address *remoteAddress, uint16_t remotePort);
+    UDPSocket(EtherSia *ether, IPv6Address &remoteAddress, uint16_t remotePort);
 
     /**
      * Set the remote address (as a string) and port to send packets to
@@ -61,13 +61,13 @@ public:
      * @param remotePort The remote UDP port number to send packets to
      * @return true if the remote address was set successfully
      */
-    boolean setRemoteAddress(IPv6Address *remoteAddress, uint16_t remotePort);
+    boolean setRemoteAddress(IPv6Address &remoteAddress, uint16_t remotePort);
 
     /**
      * Get the remote address that packets are being sent to
      * @return the IPv6 remote address
      */
-    IPv6Address* getRemoteAddress();
+    IPv6Address& getRemoteAddress();
 
     /**
      * Get the remote UDP port number that packets are being sent to
@@ -133,7 +133,7 @@ public:
      * @note Please call havePacket() first, before calling this method.
      * @return The source IPv6 address
      */
-    IPv6Address* packetSource();
+    IPv6Address& packetSource();
 
     /**
      * Get the IPv6 destination address of the last UDP packet received
@@ -141,7 +141,7 @@ public:
      * @note Please call havePacket() first, before calling this method.
      * @return The destination IPv6 address
      */
-    IPv6Address* packetDestination();
+    IPv6Address& packetDestination();
 
     /**
      * Get the IPv6 source port number of the last UDP packet received

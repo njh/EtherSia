@@ -17,7 +17,7 @@ UDPSocket::UDPSocket(EtherSia *ether, uint16_t localPort)
     this->remotePort = 0;
 }
 
-UDPSocket::UDPSocket(EtherSia *ether, IPv6Address *remoteAddress, uint16_t remotePort)
+UDPSocket::UDPSocket(EtherSia *ether, IPv6Address &remoteAddress, uint16_t remotePort)
 {
     this->ether = ether;
     this->localPort = 10000 | remotePort;
@@ -43,16 +43,16 @@ boolean UDPSocket::setRemoteAddress(const char *remoteAddress, uint16_t remotePo
     }
 }
 
-boolean UDPSocket::setRemoteAddress(IPv6Address *remoteAddress, uint16_t remotePort)
+boolean UDPSocket::setRemoteAddress(IPv6Address &remoteAddress, uint16_t remotePort)
 {
     this->remotePort = remotePort;
-    this->remoteAddress = *remoteAddress;
+    this->remoteAddress = remoteAddress;
     return true;
 }
 
-IPv6Address* UDPSocket::getRemoteAddress()
+IPv6Address& UDPSocket::getRemoteAddress()
 {
-    return &remoteAddress;
+    return remoteAddress;
 }
 
 uint16_t UDPSocket::getRemotePort()
@@ -88,7 +88,7 @@ boolean UDPSocket::havePacket()
         return 0;
     }
 
-    if (!remoteAddress.isZero() && *packetSource() != remoteAddress) {
+    if (!remoteAddress.isZero() && packetSource() != remoteAddress) {
         // Wrong source address
         return 0;
     }
@@ -166,14 +166,14 @@ void UDPSocket::sendReply(uint16_t len)
     ether->send();
 }
 
-IPv6Address* UDPSocket::packetSource()
+IPv6Address& UDPSocket::packetSource()
 {
-    return &getPacket()->source;
+    return getPacket()->source;
 }
 
-IPv6Address* UDPSocket::packetDestination()
+IPv6Address& UDPSocket::packetDestination()
 {
-    return &getPacket()->destination;
+    return getPacket()->destination;
 }
 
 uint16_t UDPSocket::packetSourcePort()

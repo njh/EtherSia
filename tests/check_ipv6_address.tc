@@ -102,7 +102,7 @@ uint8_t expect[16] = {
 MACAddress macAddress("01:23:45:67:89:10");
 IPv6Address addr;
 addr.setLinkLocalPrefix();
-addr.setEui64(&macAddress);
+addr.setEui64(macAddress);
 ck_assert(memcmp(expect, addr, 16) == 0);
 
 
@@ -175,21 +175,21 @@ uint8_t expect[16] = {
 };
 IPv6Address globalAddr("2001:4860:4860::8888");
 IPv6Address addr;
-addr.setSolicitedNodeMulticastAddress(&globalAddr);
+addr.setSolicitedNodeMulticastAddress(globalAddr);
 ck_assert(memcmp(expect, addr, 16) == 0);
 
 
 #test isSolicitedNodeMulticastAddress_true
 IPv6Address globalAddr("2001:4860:4860::8888");
 IPv6Address addr;
-addr.setSolicitedNodeMulticastAddress(&globalAddr);
-ck_assert(addr.isSolicitedNodeMulticastAddress(&globalAddr) == true);
+addr.setSolicitedNodeMulticastAddress(globalAddr);
+ck_assert(addr.isSolicitedNodeMulticastAddress(globalAddr) == true);
 
 
 #test isSolicitedNodeMulticastAddress_false
 IPv6Address globalAddr("2001:4860:4860::8888");
 IPv6Address addr;
-ck_assert(addr.isSolicitedNodeMulticastAddress(&globalAddr) == false);
+ck_assert(addr.isSolicitedNodeMulticastAddress(globalAddr) == false);
 
 
 #test equal

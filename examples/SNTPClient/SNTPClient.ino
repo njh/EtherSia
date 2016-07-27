@@ -32,16 +32,16 @@ void setup() {
     macAddress.println();
 
     // Start Ethernet
-    if (ether.begin(&macAddress) == false) {
+    if (ether.begin(macAddress) == false) {
         Serial.println("Failed to configure Ethernet");
     }
 
     Serial.print("Our global address is: ");
-    ether.getGlobalAddress()->println();
+    ether.getGlobalAddress().println();
 
     if (udp.setRemoteAddress("time.ethersia.aelius.com", NTP_PORT)) {
         Serial.print("SNTP Server address: ");
-        udp.getRemoteAddress()->println();
+        udp.getRemoteAddress().println();
     }
 
     Serial.println("Ready.");
@@ -55,7 +55,7 @@ void loop() {
         Serial.println("Received SNTP reply.");
 
         Serial.print("address=");
-        udp.packetSource()->println();
+        udp.packetSource().println();
         Serial.print("len=");
         Serial.println(udp.payloadLength(), DEC);
 

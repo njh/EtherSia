@@ -492,13 +492,13 @@ ENC28J60::reset(void)
 }
 /*---------------------------------------------------------------------------*/
 void
-ENC28J60::init(const MACAddress *address)
+ENC28J60::init(const MACAddress &address)
 {
     if(initialized) {
         return;
     }
 
-    this->encMacAddress = *address;
+    this->encMacAddress = address;
 
     reset();
 

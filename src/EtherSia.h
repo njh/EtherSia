@@ -64,7 +64,7 @@ public:
      * @param address The local MAC address for the Ethernet interface
      * @return Returns true if setting up the Ethernet interface was successful
      */
-    boolean begin(const MACAddress *address);
+    boolean begin(const MACAddress &address);
 
     /**
      * Set the size of the network packet buffer in bytes
@@ -97,7 +97,7 @@ public:
      * @note Call this before begin().
      * @param address The Global IP address for this Ethernet interface
      */
-    void setGlobalAddress(IPv6Address *address);
+    void setGlobalAddress(IPv6Address &address);
 
     /**
      * Manually set the global IPv6 address for the Ethernet Interface
@@ -115,7 +115,7 @@ public:
      *
      * @return The Global IP address as an IPv6Address object
      */
-    IPv6Address* getGlobalAddress();
+    IPv6Address& getGlobalAddress();
 
     /**
      * Get the link-local address of the Ethernet Interface
@@ -123,7 +123,7 @@ public:
      *
      * @return The Link-Local IP address as an IPv6Address object
      */
-    IPv6Address* getLinkLocalAddress();
+    IPv6Address& getLinkLocalAddress();
 
     /**
      * Check to see if an IPv6 address belongs to this Ethernet interface
@@ -131,21 +131,21 @@ public:
      * @param address the IPv6Addrss to check
      * @return ture if the
      */
-    uint8_t isOurAddress(const IPv6Address *address);
+    uint8_t isOurAddress(const IPv6Address &address);
 
     /**
      * Set the IPv6 address DNS server to use for hostname lookups
      *
      * @param address The DNS Server IP address
      */
-    void setDnsServerAddress(IPv6Address *address);
+    void setDnsServerAddress(IPv6Address &address);
 
     /**
      * Get the IPv6 address of the DNS server
      *
      * @return The DNS Server address as an IPv6Address object
      */
-    IPv6Address* getDnsServerAddress();
+    IPv6Address& getDnsServerAddress();
 
     /**
      * Check if there is an IPv6 packet waiting for us and fetch it.
@@ -202,8 +202,9 @@ public:
      * It is recommended that this method is called within setup(),
      * to avoid packets being lost within loop().
      *
+     * @note You probably don't need to call this function directly.
      * @param hostname The hostname to look up
-     * @return An IPv6 address or NULL if the lookup failed
+     * @return An pointer to a IPv6 address or NULL if the lookup failed
      */
     IPv6Address* getHostByName(const char* hostname);
 
@@ -238,7 +239,7 @@ protected:
      *
      * @param targetAddress The IPv6 address to be resolved
      */
-    void icmp6SendNS(IPv6Address *targetAddress);
+    void icmp6SendNS(IPv6Address &targetAddress);
 
     /**
      * Send a reply to a ICMPv6 Neighbour Solicitation (NS) request (if it is our address)

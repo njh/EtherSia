@@ -17,7 +17,7 @@ EtherSia::EtherSia(int8_t cs) : ENC28J60(cs)
 }
 
 
-boolean EtherSia::begin(const MACAddress *macAddress)
+boolean EtherSia::begin(const MACAddress &macAddress)
 {
     init(macAddress);
 
@@ -29,13 +29,13 @@ boolean EtherSia::begin(const MACAddress *macAddress)
     buffer = (uint8_t*)malloc(bufferSize);
 
     // Delay a 'random' amount to stop multiple nodes acting at the same time
-    delay((*macAddress)[5] ^ 0x55);
+    delay(macAddress[5] ^ 0x55);
 
     // Allow some extra time to let the Ethernet controller to get ready
     delay(500);
 
     // Send link local Neighbour Solicitation for Duplicate Address Detection
-    icmp6SendNS(&linkLocalAddress);
+    icmp6SendNS(linkLocalAddress);
 
     // Perform stateless auto-configuration
     boolean result = icmp6AutoConfigure();
@@ -56,9 +56,9 @@ uint16_t EtherSia::getBufferSize()
     return this->bufferSize;
 }
 
-void EtherSia::setGlobalAddress(IPv6Address *address)
+void EtherSia::setGlobalAddress(IPv6Address &address)
 {
-    globalAddress = *address;
+    globalAddress = address;
 }
 
 void EtherSia::setGlobalAddress(const char* address)
@@ -66,37 +66,37 @@ void EtherSia::setGlobalAddress(const char* address)
     globalAddress.fromString(address);
 }
 
-IPv6Address* EtherSia::getGlobalAddress()
+IPv6Address& EtherSia::getGlobalAddress()
 {
-    return &globalAddress;
+    return globalAddress;
 }
 
-IPv6Address* EtherSia::getLinkLocalAddress()
+IPv6Address& EtherSia::getLinkLocalAddress()
 {
-    return &linkLocalAddress;
+    return linkLocalAddress;
 }
 
-uint8_t EtherSia::isOurAddress(const IPv6Address *address)
+uint8_t EtherSia::isOurAddress(const IPv6Address &address)
 {
-    if (*address == linkLocalAddress) {
+    if (address == linkLocalAddress) {
         return ADDRESS_TYPE_LINK_LOCAL;
-    } else if (*address == globalAddress) {
+    } else if (address == globalAddress) {
         return ADDRESS_TYPE_GLOBAL;
-    } else if (address->isLinkLocalAllNodes() || address->isSolicitedNodeMulticastAddress(&linkLocalAddress)) {
+    } else if (address.isLinkLocalAllNodes() || address.isSolicitedNodeMulticastAddress(linkLocalAddress)) {
         return ADDRESS_TYPE_MULTICAST;
     } else {
         return 0;
     }
 }
 
-void EtherSia::setDnsServerAddress(IPv6Address *address)
+void EtherSia::setDnsServerAddress(IPv6Address &address)
 {
-    dnsServerAddress = *address;
+    dnsServerAddress = address;
 }
 
-IPv6Address* EtherSia::getDnsServerAddress()
+IPv6Address& EtherSia::getDnsServerAddress()
 {
-    return &dnsServerAddress;
+    return dnsServerAddress;
 }
 
 IPv6Packet* EtherSia::getPacket()
@@ -151,7 +151,7 @@ void EtherSia::prepareReply()
     IPv6Packet *packet = (IPv6Packet*)buffer;
     IPv6Address *replySourceAddress;
 
-    if (isOurAddress(&packet->destination) == ADDRESS_TYPE_GLOBAL) {
+    if (isOurAddress(packet->destination) == ADDRESS_TYPE_GLOBAL) {
         replySourceAddress = &globalAddress;
     } else {
         replySourceAddress = &linkLocalAddress;

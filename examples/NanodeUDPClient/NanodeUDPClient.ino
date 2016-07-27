@@ -57,13 +57,13 @@ void setup() {
     macAddress.println();
 
     // Start Ethernet
-    if (ether.begin(&macAddress) == false) {
+    if (ether.begin(macAddress) == false) {
         Serial.println("Failed to configure Ethernet");
     }
 
     if (udp.setRemoteAddress("2001:41c8:51:7cf::6", 1234)) {
         Serial.print("Remote address: ");
-        udp.getRemoteAddress()->println();
+        udp.getRemoteAddress().println();
     }
 
     Serial.println("Ready.");

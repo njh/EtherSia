@@ -66,7 +66,7 @@ public:
      * Must be called before sending or receiving Ethernet frames
      * @param encMacAddress the local MAC address
      */
-    void init(const MACAddress *encMacAddress);
+    void init(const MACAddress &encMacAddress);
 
     /**
      * Send an Ethernet frame

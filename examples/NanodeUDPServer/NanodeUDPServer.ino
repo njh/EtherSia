@@ -62,14 +62,14 @@ void setup() {
     macAddress.println();
 
     // Start Ethernet
-    if (ether.begin(&macAddress) == false) {
+    if (ether.begin(macAddress) == false) {
         Serial.println("Failed to configure Ethernet");
     }
 
     Serial.print("Our link-local address is: ");
-    ether.getLinkLocalAddress()->println();
+    ether.getLinkLocalAddress().println();
     Serial.print("Our global address is: ");
-    ether.getGlobalAddress()->println();
+    ether.getGlobalAddress().println();
 
     // Turn off the Red LED (it is connected to +5v)
     pinMode(NANODE_LED_PIN, OUTPUT);
@@ -83,7 +83,7 @@ void loop() {
 
     if (udp.havePacket()) {
         Serial.print("Received UDP from: ");
-        udp.packetSource()->println();
+        udp.packetSource().println();
 
         Serial.print("Packet length: ");
         Serial.println(udp.payloadLength(), DEC);

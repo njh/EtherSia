@@ -44,16 +44,16 @@ boolean IPv6Address::isZero() const
     return 1;
 }
 
-void IPv6Address::setEui64(const MACAddress *macAddress)
+void IPv6Address::setEui64(const MACAddress &macAddress)
 {
-    _address[8] = (*macAddress)[0] ^ 0x02;
-    _address[9] = (*macAddress)[1];
-    _address[10] = (*macAddress)[2];
+    _address[8] = macAddress[0] ^ 0x02;
+    _address[9] = macAddress[1];
+    _address[10] = macAddress[2];
     _address[11] = 0xff;
     _address[12] = 0xfe;
-    _address[13] = (*macAddress)[3];
-    _address[14] = (*macAddress)[4];
-    _address[15] = (*macAddress)[5];
+    _address[13] = macAddress[3];
+    _address[14] = macAddress[4];
+    _address[15] = macAddress[5];
 }
 
 void IPv6Address::setLinkLocalAllNodes()
@@ -87,20 +87,20 @@ boolean IPv6Address::isLinkLocalAllRouters() const
 }
 
 // See RFC4291 section 2.7.1.
-void IPv6Address::setSolicitedNodeMulticastAddress(const IPv6Address *address)
+void IPv6Address::setSolicitedNodeMulticastAddress(const IPv6Address &address)
 {
     setZero();
     _address[0] = 0xFF;
     _address[1] = 0x02;
     _address[11] = 0x01;
     _address[12] = 0xFF;
-    _address[13] = address->_address[13];
-    _address[14] = address->_address[14];
-    _address[15] = address->_address[15];
+    _address[13] = address._address[13];
+    _address[14] = address._address[14];
+    _address[15] = address._address[15];
 }
 
 // See RFC4291 section 2.7.1.
-boolean IPv6Address::isSolicitedNodeMulticastAddress(const IPv6Address *address) const
+boolean IPv6Address::isSolicitedNodeMulticastAddress(const IPv6Address &address) const
 {
     IPv6Address expected;
     expected.setSolicitedNodeMulticastAddress(address);

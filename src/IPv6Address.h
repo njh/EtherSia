@@ -117,14 +117,14 @@ public:
      * The first 64-bits are left unmodified.
      * @param macAddress The MAC address
      */
-    void setEui64(const MACAddress *macAddress);
+    void setEui64(const MACAddress &macAddress);
 
     /**
      * Set the address to a Solicited Node Multicast Address
      * For example the multicast address for fe80::2aa:ff:fe28:9c5a would be ff02::1:ff28:9c5a
      * @param address The IPv6 unicast address
      */
-    void setSolicitedNodeMulticastAddress(const IPv6Address *address);
+    void setSolicitedNodeMulticastAddress(const IPv6Address &address);
 
     /**
      * Check if address is a specific node multicast address
@@ -134,7 +134,7 @@ public:
      * @param address The IPv6 unicast address to calculate the multicast address from
      * @return true if address if the specific node multicast address
      */
-    boolean isSolicitedNodeMulticastAddress(const IPv6Address *address) const;
+    boolean isSolicitedNodeMulticastAddress(const IPv6Address &address) const;
 
     /**
      * Set the address to all-zeros (::)

@@ -24,7 +24,7 @@ void setup() {
     Serial.print("Our MAC is: ");
     macAddress.println();
 
-    if (ether.begin(&macAddress) == false) {
+    if (ether.begin(macAddress) == false) {
         Serial.println("Failed to configure Ethernet");
     }
 }

@@ -8,7 +8,7 @@ void EtherSia::icmp6NSReply()
     IPv6Packet *packet = getPacket();
 
     // Does the Neighbour Solicitation target belong to us?
-    uint8_t type = isOurAddress(&ICMP6_NS_HEADER_PTR->target);
+    uint8_t type = isOurAddress(ICMP6_NS_HEADER_PTR->target);
     if (type != ADDRESS_TYPE_LINK_LOCAL && type != ADDRESS_TYPE_GLOBAL) {
         return;
     }
@@ -37,7 +37,7 @@ void EtherSia::icmp6EchoReply()
     icmp6PacketSend();
 }
 
-void EtherSia::icmp6SendNS(IPv6Address *targetAddress)
+void EtherSia::icmp6SendNS(IPv6Address &targetAddress)
 {
     IPv6Packet *packet = getPacket();
 
@@ -52,7 +52,7 @@ void EtherSia::icmp6SendNS(IPv6Address *targetAddress)
     ICMP6_HEADER_PTR->code = 0;
 
     memset(ICMP6_NS_HEADER_PTR->reserved, 0, sizeof(ICMP6_NS_HEADER_PTR->reserved));
-    ICMP6_NS_HEADER_PTR->target = *targetAddress;
+    ICMP6_NS_HEADER_PTR->target = targetAddress;
 
     icmp6PacketSend();
 }
@@ -108,7 +108,7 @@ void EtherSia::icmp6ProcessPrefix(struct icmp6_prefix_information *pi)
     // Only set global address if there isn't one already set
     if (globalAddress.isZero()) {
         globalAddress = pi->prefix;
-        globalAddress.setEui64(&encMacAddress);
+        globalAddress.setEui64(encMacAddress);
     }
 
 }
@@ -141,7 +141,7 @@ void EtherSia::icmp6ProcessPacket()
 {
     IPv6Packet *packet = getPacket();
 
-    if (isOurAddress(&packet->destination) == 0) {
+    if (isOurAddress(packet->destination) == 0) {
         // Packet isn't addressed to us
         return;
     }
