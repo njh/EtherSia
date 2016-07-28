@@ -30,7 +30,7 @@ uint8_t* MACAddress::getPointer()
 MACAddress::operator uint8_t*()
 {
     return _address;
-};
+}
 
 // See RFC2464 section 7
 void MACAddress::setIPv6Multicast(const uint8_t *address)
@@ -77,7 +77,7 @@ boolean MACAddress::fromString(const char *macstr)
 uint8_t MACAddress::operator[](int index) const
 {
     return _address[index];
-};
+}
 
 void MACAddress::print(Print &p) const
 {

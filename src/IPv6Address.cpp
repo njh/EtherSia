@@ -115,7 +115,7 @@ uint8_t* IPv6Address::getPointer()
 IPv6Address::operator uint8_t*()
 {
     return _address;
-};
+}
 
 boolean IPv6Address::operator==(const IPv6Address& address) const
 {
