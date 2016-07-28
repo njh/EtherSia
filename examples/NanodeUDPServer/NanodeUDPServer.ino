@@ -42,7 +42,7 @@ const int NANODE_LED_PIN = 6;
 EtherSia ether(8);
 
 /** Define UDP socket and port number to listen on */
-UDPSocket udp(&ether, 1234);
+UDPSocket udp(ether, 1234);
 
 
 void setup() {

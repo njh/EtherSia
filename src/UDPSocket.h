@@ -24,7 +24,7 @@ public:
      *
      * @param ether The Ethernet interface to attach the socket to
      */
-    UDPSocket(EtherSia *ether);
+    UDPSocket(EtherSia &ether);
 
     /**
      * Construct a UDP socket, with a listening port defined
@@ -32,7 +32,7 @@ public:
      * @param ether The Ethernet interface to attach the socket to
      * @param localPort The local UDP port number to listen on
      */
-    UDPSocket(EtherSia *ether, uint16_t localPort);
+    UDPSocket(EtherSia &ether, uint16_t localPort);
 
     /**
      * Construct a UDP socket, with a remote address and port
@@ -41,7 +41,7 @@ public:
      * @param remoteAddress The IPv6 address to send to
      * @param remotePort The UDP port number to send to
      */
-    UDPSocket(EtherSia *ether, IPv6Address &remoteAddress, uint16_t remotePort);
+    UDPSocket(EtherSia &ether, IPv6Address &remoteAddress, uint16_t remotePort);
 
     /**
      * Set the remote address (as a string) and port to send packets to
@@ -209,7 +209,7 @@ protected:
     uint16_t packetChecksum();
 
 
-    EtherSia *ether;            ///< The Ethernet Interface that this UDP socket is attached to
+    EtherSia &ether;            ///< The Ethernet Interface that this UDP socket is attached to
     IPv6Address remoteAddress;  ///< The IPv6 remote address
     uint16_t remotePort;        ///< The IPv6 remote port number
     uint16_t localPort;         ///< The IPv6 local port number

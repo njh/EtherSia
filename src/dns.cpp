@@ -144,7 +144,7 @@ IPv6Address* EtherSia::getHostByName(const char* hostname)
     unsigned long nextRequest = millis();
     uint16_t id = random(65535);
     uint8_t requestCount = 0;
-    UDPSocket udp(this);
+    UDPSocket udp(*this);
 
     udp.setRemoteAddress(dnsServerAddress, DNS_PORT_NUMBER);
 

@@ -38,7 +38,7 @@
 EtherSia ether(8);
 
 /** Define UDP socket to send packets from */
-UDPSocket udp(&ether);
+UDPSocket udp(ether);
 
 void setup() {
     NanodeUNIO unio(NANODE_MAC_DEVICE);

@@ -15,7 +15,7 @@
 EtherSia ether(10);
 
 /** Define a UDP socket to send packets from */
-UDPSocket udp(&ether);
+UDPSocket udp(ether);
 
 /** The UDP port number to send NTP packets to */
 const uint8_t NTP_PORT = 123;
