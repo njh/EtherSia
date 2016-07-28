@@ -49,12 +49,12 @@ public:
     /**
      * Get a pointer to a 6-byte array of octets.
      */
-    uint8_t* getPtr();
+    uint8_t* getPointer();
 
     /**
      * Cast the MAC address to an array of octets.
      */
-    operator uint8_t*() { return getPtr(); };
+    operator uint8_t*();
 
     /**
      * Calculate the multicast MAC address for an IPv6 address.

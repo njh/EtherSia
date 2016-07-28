@@ -107,10 +107,15 @@ boolean IPv6Address::isSolicitedNodeMulticastAddress(const IPv6Address &address)
     return *this == expected;
 }
 
-uint8_t* IPv6Address::getPtr()
+uint8_t* IPv6Address::getPointer()
 {
     return _address;
 }
+
+IPv6Address::operator uint8_t*()
+{
+    return _address;
+};
 
 boolean IPv6Address::operator==(const IPv6Address& address) const
 {

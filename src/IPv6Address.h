@@ -57,7 +57,7 @@ public:
     /**
      * Get a pointer to a 16-byte array of octets.
      */
-    uint8_t* getPtr();
+    uint8_t* getPointer();
 
     /**
      * Get the IPv6 address type
@@ -68,7 +68,7 @@ public:
     /**
      * Cast the IPv6 address to an array of octets.
      */
-    operator uint8_t*() { return getPtr(); };
+    operator uint8_t*();
 
     /**
      * Check if the address equals another IPv6 address.

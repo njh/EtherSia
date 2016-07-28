@@ -22,10 +22,15 @@ MACAddress::MACAddress(const char *macstr)
     fromString(macstr);
 }
 
-uint8_t* MACAddress::getPtr()
+uint8_t* MACAddress::getPointer()
 {
     return _address;
 }
+
+MACAddress::operator uint8_t*()
+{
+    return _address;
+};
 
 // See RFC2464 section 7
 void MACAddress::setIPv6Multicast(const uint8_t *address)
