@@ -130,6 +130,15 @@ void EtherSia::icmp6ProcessRA()
                 (struct icmp6_prefix_information*)&ptr[2]
             );
             break;
+        case ICMP6_OPTION_RECURSIVE_DNS:
+            // Recursive DNS Server Option, see RFC6106 for the format
+            //    0: Type
+            //    1: Length (in units of 8 octets)
+            //  2-3: Reserved
+            //  4-7: Lifetime (unsigned 32-bit integer in seconds)
+            // 8-24: First DNS Server Address
+            dnsServerAddress = *((IPv6Address*)&ptr[8]);
+            break;
         }
 
         remaining -= (8 * ptr[1]);
