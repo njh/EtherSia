@@ -74,6 +74,11 @@ boolean MACAddress::fromString(const char *macstr)
     return 1;
 }
 
+uint8_t MACAddress::operator[](int index) const
+{
+    return _address[index];
+};
+
 void MACAddress::print(Print &p) const
 {
     for (uint8_t i = 0; i < 6; ++i) {
