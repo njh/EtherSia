@@ -176,7 +176,7 @@ boolean IPv6Address::fromString(const char *addrstr)
     return 1;
 }
 
-uint8_t IPv6Address::getType()
+uint8_t IPv6Address::type()
 {
     if (isMulticast()) {
         return ADDRESS_TYPE_MULTICAST;

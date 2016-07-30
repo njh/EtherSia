@@ -58,7 +58,7 @@ public:
      * Get the IPv6 address type
      * @return a value from the IPv6AddressType enumeration
      */
-    uint8_t getType();
+    uint8_t type();
 
     /**
      * Cast the IPv6 address to an array of octets.

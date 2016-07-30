@@ -214,17 +214,17 @@ IPv6Address zero;
 ck_assert(addr != zero);
 
 
-#test getType_global
+#test type_global
 IPv6Address addr("2001:4860:4860::8888");
-ck_assert_int_eq(addr.getType(), ADDRESS_TYPE_GLOBAL);
+ck_assert_int_eq(addr.type(), ADDRESS_TYPE_GLOBAL);
 
 
-#test getType_linkLocal
+#test type_linkLocal
 IPv6Address addr("fe80::0323:45ff:fe67:8910");
-ck_assert_int_eq(addr.getType(), ADDRESS_TYPE_LINK_LOCAL);
+ck_assert_int_eq(addr.type(), ADDRESS_TYPE_LINK_LOCAL);
 
 
-#test getType_multicast
+#test type_multicast
 IPv6Address addr("ff02::2");
-ck_assert_int_eq(addr.getType(), ADDRESS_TYPE_MULTICAST);
+ck_assert_int_eq(addr.type(), ADDRESS_TYPE_MULTICAST);
 
