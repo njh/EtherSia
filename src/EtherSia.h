@@ -151,8 +151,12 @@ public:
     /**
      * Get a reference to the packet buffer (the last packet sent or received).
      *
-     * @note Unlike receivePacket(), this method will never return NULL.
-     * @return A pointer to an IPv6Packet
+     * There is a single buffer that is use for both sending and receiving packets,
+     * so the packet returned may be in either state.
+     *
+     * It is also possible that it is an invalid or uninitialised packet.
+     *
+     * @return A reference to an IPv6Packet
      */
     IPv6Packet& packet();
 
