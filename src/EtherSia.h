@@ -211,7 +211,7 @@ protected:
     MACAddress _routerMac;
 
     /** The buffer that sent and received packets are stored in */
-    uint8_t _buffer[ETHERSIA_MAX_PACKET_SIZE];        
+    uint8_t _buffer[ETHERSIA_MAX_PACKET_SIZE];
 
 
     /**

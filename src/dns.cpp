@@ -102,7 +102,7 @@ IPv6Address* dnsProcessReply(const uint8_t* payload, uint16_t length, uint16_t r
         ptr = skipOverName(ptr);
         // Type and Class
         ptr += 4;
-        
+
         if (ptr > endPtr) {
             // We went beyond the end of the payload
             return NULL;
