@@ -169,3 +169,15 @@ packet.destination().fromString("fe80::34b4:40ff:fe75:3ba6");
 
 ck_assert_int_eq(sizeof(IPv6Packet), sizeof(expect));
 ck_assert(memcmp(&packet, expect, sizeof(IPv6Packet)) == 0);
+
+
+#test castReference
+uint8_t buffer[1024];
+memcpy(buffer, rs_buffer, sizeof(rs_buffer));
+
+IPv6Packet *packetRef = (IPv6Packet *)buffer;
+ck_assert(packetRef->isValid());
+
+IPv6Packet &packet = (IPv6Packet &)buffer;
+ck_assert(packet.isValid());
+
