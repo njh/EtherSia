@@ -52,7 +52,7 @@ enum dnsType {
     DNS_TYPE_TXT   = 16,
     DNS_TYPE_AAAA  = 28,
     DNS_TYPE_SRV   = 33,
-    DNS_TYPE_ANY   = 255,
+    DNS_TYPE_ANY   = 255
 };
 
 enum dnsClass {
