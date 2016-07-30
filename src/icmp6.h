@@ -29,7 +29,7 @@ struct icmp6_header {
 } __attribute__((__packed__));
 #define ICMP6_HEADER_LEN          (4)
 #define ICMP6_HEADER_OFFSET       (ETHER_HEADER_LEN + IP6_HEADER_LEN)
-#define ICMP6_HEADER_PTR          ((struct icmp6_header*)(buffer + ICMP6_HEADER_OFFSET))
+#define ICMP6_HEADER_PTR          ((struct icmp6_header*)(_buffer + ICMP6_HEADER_OFFSET))
 
 /* Verify that compiler gets the structure size correct */
 static_assert(sizeof(struct icmp6_header) == ICMP6_HEADER_LEN, "Size is not correct");
@@ -48,7 +48,7 @@ struct icmp6_rs_header {
 } __attribute__((__packed__));
 #define ICMP6_RS_HEADER_LEN       (12)
 #define ICMP6_RS_HEADER_OFFSET    (ICMP6_HEADER_OFFSET + ICMP6_HEADER_LEN)
-#define ICMP6_RS_HEADER_PTR       ((struct icmp6_rs_header*)(buffer + ICMP6_RS_HEADER_OFFSET))
+#define ICMP6_RS_HEADER_PTR       ((struct icmp6_rs_header*)(_buffer + ICMP6_RS_HEADER_OFFSET))
 
 /* Verify that compiler gets the structure size correct */
 static_assert(sizeof(struct icmp6_rs_header) == ICMP6_RS_HEADER_LEN, "Size is not correct");
@@ -67,7 +67,7 @@ struct icmp6_ra_header {
 } __attribute__((__packed__));
 #define ICMP6_RA_HEADER_LEN       (12)
 #define ICMP6_RA_HEADER_OFFSET    (ICMP6_HEADER_OFFSET + ICMP6_HEADER_LEN)
-#define ICMP6_RA_HEADER_PTR       ((struct icmp6_ra_header*)(buffer + ICMP6_RA_HEADER_OFFSET))
+#define ICMP6_RA_HEADER_PTR       ((struct icmp6_ra_header*)(_buffer + ICMP6_RA_HEADER_OFFSET))
 
 /* Verify that compiler gets the structure size correct */
 static_assert(sizeof(struct icmp6_ra_header) == ICMP6_RA_HEADER_LEN, "Size is not correct");
@@ -99,7 +99,7 @@ struct icmp6_ns_header {
 } __attribute__((__packed__));
 #define ICMP6_NS_HEADER_LEN       (20)
 #define ICMP6_NS_HEADER_OFFSET    (ICMP6_HEADER_OFFSET + ICMP6_HEADER_LEN)
-#define ICMP6_NS_HEADER_PTR       ((struct icmp6_ns_header*)(buffer + ICMP6_NS_HEADER_OFFSET))
+#define ICMP6_NS_HEADER_PTR       ((struct icmp6_ns_header*)(_buffer + ICMP6_NS_HEADER_OFFSET))
 
 /* Verify that compiler gets the structure size correct */
 static_assert(sizeof(struct icmp6_ns_header) == ICMP6_NS_HEADER_LEN, "Size is not correct");
@@ -120,7 +120,7 @@ struct icmp6_na_header {
 } __attribute__((__packed__));
 #define ICMP6_NA_HEADER_LEN       (28)
 #define ICMP6_NA_HEADER_OFFSET    (ICMP6_HEADER_OFFSET + ICMP6_HEADER_LEN)
-#define ICMP6_NA_HEADER_PTR       ((struct icmp6_na_header*)(buffer + ICMP6_NA_HEADER_OFFSET))
+#define ICMP6_NA_HEADER_PTR       ((struct icmp6_na_header*)(_buffer + ICMP6_NA_HEADER_OFFSET))
 
 /* Verify that compiler gets the structure size correct */
 static_assert(sizeof(struct icmp6_na_header) == ICMP6_NA_HEADER_LEN, "Size is not correct");

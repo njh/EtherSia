@@ -5,7 +5,7 @@
 
 void EtherSia::icmp6NSReply()
 {
-    IPv6Packet &packet = (IPv6Packet&)buffer;
+    IPv6Packet &packet = (IPv6Packet&)_buffer;
 
     // Does the Neighbour Solicitation target belong to us?
     uint8_t type = isOurAddress(ICMP6_NS_HEADER_PTR->target);
@@ -39,7 +39,7 @@ void EtherSia::icmp6EchoReply()
 
 void EtherSia::icmp6SendNS(IPv6Address &targetAddress)
 {
-    IPv6Packet &packet = (IPv6Packet&)buffer;
+    IPv6Packet &packet = (IPv6Packet&)_buffer;
 
     packet.init();
     packet.setPayloadLength(ICMP6_HEADER_LEN + ICMP6_NS_HEADER_LEN);
@@ -59,12 +59,12 @@ void EtherSia::icmp6SendNS(IPv6Address &targetAddress)
 
 void EtherSia::icmp6SendRS()
 {
-    IPv6Packet &packet = (IPv6Packet&)buffer;
+    IPv6Packet &packet = (IPv6Packet&)_buffer;
 
     packet.init();
     packet.setPayloadLength(ICMP6_HEADER_LEN + ICMP6_RS_HEADER_LEN);
     packet.setHopLimit(255);
-    packet.setSource(linkLocalAddress);
+    packet.setSource(_linkLocalAddress);
     packet.destination().setLinkLocalAllRouters();
     packet.etherDestination().setIPv6Multicast(packet.destination());
 
@@ -81,7 +81,7 @@ void EtherSia::icmp6SendRS()
 
 void EtherSia::icmp6PacketSend()
 {
-    IPv6Packet &packet = (IPv6Packet&)buffer;
+    IPv6Packet &packet = (IPv6Packet&)_buffer;
 
     packet.setProtocol(IP6_PROTO_ICMP6);
     ICMP6_HEADER_PTR->checksum = 0;
@@ -106,24 +106,24 @@ void EtherSia::icmp6ProcessPrefix(struct icmp6_prefix_information *pi)
     }
 
     // Only set global address if there isn't one already set
-    if (globalAddress.isZero()) {
-        globalAddress = pi->prefix;
-        globalAddress.setEui64(_encMacAddress);
+    if (_globalAddress.isZero()) {
+        _globalAddress = pi->prefix;
+        _globalAddress.setEui64(_encMacAddress);
     }
 
 }
 
 void EtherSia::icmp6ProcessRA()
 {
-    IPv6Packet &packet = (IPv6Packet&)buffer;
+    IPv6Packet &packet = (IPv6Packet&)_buffer;
     int16_t remaining = packet.payloadLength() - ICMP6_HEADER_LEN - ICMP6_RA_HEADER_LEN;
-    uint8_t *ptr = buffer + ICMP6_RA_HEADER_OFFSET + ICMP6_RA_HEADER_LEN;
+    uint8_t *ptr = _buffer + ICMP6_RA_HEADER_OFFSET + ICMP6_RA_HEADER_LEN;
 
     while(remaining > 0) {
         switch(ptr[0]) {
         case ICMP6_OPTION_SOURCE_LINK_ADDRESS:
             // Store the MAC address of the router
-            routerMac = *((MACAddress*)&ptr[2]);
+            _routerMac = *((MACAddress*)&ptr[2]);
             break;
         case ICMP6_OPTION_PREFIX_INFORMATION:
             icmp6ProcessPrefix(
@@ -137,7 +137,7 @@ void EtherSia::icmp6ProcessRA()
             //  2-3: Reserved
             //  4-7: Lifetime (unsigned 32-bit integer in seconds)
             // 8-24: First DNS Server Address
-            dnsServerAddress = *((IPv6Address*)&ptr[8]);
+            _dnsServerAddress = *((IPv6Address*)&ptr[8]);
             break;
         }
 
@@ -148,7 +148,7 @@ void EtherSia::icmp6ProcessRA()
 
 void EtherSia::icmp6ProcessPacket()
 {
-    IPv6Packet &packet = (IPv6Packet&)buffer;
+    IPv6Packet &packet = (IPv6Packet&)_buffer;
 
     if (isOurAddress(packet.destination()) == 0) {
         // Packet isn't addressed to us
@@ -178,7 +178,7 @@ boolean EtherSia::icmp6AutoConfigure()
 {
     unsigned long nextRouterSolicitation = millis();
     uint8_t count = 0;
-    while (globalAddress.isZero()) {
+    while (_globalAddress.isZero()) {
         receivePacket();
 
         if ((long)(millis() - nextRouterSolicitation) >= 0) {

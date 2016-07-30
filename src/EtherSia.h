@@ -210,14 +210,14 @@ public:
 
 
 protected:
-    IPv6Address linkLocalAddress;  /**< The IPv6 Link-local address of the Ethernet Interface */
-    IPv6Address globalAddress;     /**< The IPv6 Global address of the Ethernet Interface */
-    IPv6Address dnsServerAddress;  /**< The IPv6 address of the configured DNS server */
+    IPv6Address _linkLocalAddress;  /**< The IPv6 Link-local address of the Ethernet Interface */
+    IPv6Address _globalAddress;     /**< The IPv6 Global address of the Ethernet Interface */
+    IPv6Address _dnsServerAddress;  /**< The IPv6 address of the configured DNS server */
 
-    MACAddress routerMac;   /**< The MAC Address of the router to send packets outside of this subnet */
+    MACAddress _routerMac;   /**< The MAC Address of the router to send packets outside of this subnet */
 
-    uint8_t *buffer;        /**< The buffer that sent and received packets are stored in */
-    uint16_t bufferSize;    /**< The size of the packet buffer in bytes */
+    uint8_t* _buffer;        /**< The buffer that sent and received packets are stored in */
+    uint16_t _bufferSize;    /**< The size of the packet buffer in bytes */
 
 
     /**

@@ -209,10 +209,10 @@ protected:
     uint16_t packetChecksum();
 
 
-    EtherSia &ether;            ///< The Ethernet Interface that this UDP socket is attached to
-    IPv6Address remoteAddress;  ///< The IPv6 remote address
-    uint16_t remotePort;        ///< The IPv6 remote port number
-    uint16_t localPort;         ///< The IPv6 local port number
+    EtherSia &_ether;            ///< The Ethernet Interface that this UDP socket is attached to
+    IPv6Address _remoteAddress;  ///< The IPv6 remote address
+    uint16_t _remotePort;        ///< The IPv6 remote port number
+    uint16_t _localPort;         ///< The IPv6 local port number
 };
 
 
