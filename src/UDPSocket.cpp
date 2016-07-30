@@ -47,19 +47,19 @@ boolean UDPSocket::setRemoteAddress(IPv6Address &remoteAddress, uint16_t remoteP
     return true;
 }
 
-IPv6Address& UDPSocket::getRemoteAddress()
+IPv6Address& UDPSocket::remoteAddress()
 {
     return _remoteAddress;
 }
 
-uint16_t UDPSocket::getRemotePort()
+uint16_t UDPSocket::remotePort()
 {
     return _remotePort;
 }
 
 boolean UDPSocket::havePacket()
 {
-    IPv6Packet *packet = _ether.getPacket();
+    IPv6Packet *packet = _ether.packet();
 
     if (!packet->isValid()) {
         return 0;
@@ -111,7 +111,7 @@ void UDPSocket::send(const uint8_t *data, uint16_t len)
 
 void UDPSocket::send(uint16_t len)
 {
-    IPv6Packet *packet = _ether.getPacket();
+    IPv6Packet *packet = _ether.packet();
     struct udp_header *udpHeader = UDP_HEADER_PTR;
 
     // Setup the IPv6 packet header
@@ -146,7 +146,8 @@ void UDPSocket::sendReply(const uint8_t* data, uint16_t len)
 
 void UDPSocket::sendReply(uint16_t len)
 {
-    IPv6Packet *packet = _ether.getPacket();
+    IPv6Packet *packet = _ether.packet();
+
     struct udp_header *udpHeader = UDP_HEADER_PTR;
     uint16_t destinationPort = udpHeader->destinationPort;
     uint16_t sourcePort = udpHeader->sourcePort;
@@ -165,12 +166,12 @@ void UDPSocket::sendReply(uint16_t len)
 
 IPv6Address& UDPSocket::packetSource()
 {
-    return _ether.getPacket()->source();
+    return _ether.packet()->source();
 }
 
 IPv6Address& UDPSocket::packetDestination()
 {
-    return _ether.getPacket()->destination();
+    return _ether.packet()->destination();
 }
 
 uint16_t UDPSocket::packetSourcePort()
@@ -195,7 +196,7 @@ uint16_t UDPSocket::packetChecksum()
 
 uint8_t* UDPSocket::payload()
 {
-    return (uint8_t *)(_ether.getPacket()->payload()) + UDP_HEADER_LEN;
+    return (uint8_t *)(_ether.packet()->payload()) + UDP_HEADER_LEN;
 }
 
 uint16_t UDPSocket::payloadLength()

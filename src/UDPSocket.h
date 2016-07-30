@@ -67,13 +67,13 @@ public:
      * Get the remote address that packets are being sent to
      * @return the IPv6 remote address
      */
-    IPv6Address& getRemoteAddress();
+    IPv6Address& remoteAddress();
 
     /**
      * Get the remote UDP port number that packets are being sent to
      * @return the port number
      */
-    uint16_t getRemotePort();
+    uint16_t remotePort();
 
     /**
      * Check if a UDP packet is available to be processed on this socket

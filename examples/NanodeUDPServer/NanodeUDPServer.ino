@@ -67,9 +67,9 @@ void setup() {
     }
 
     Serial.print("Our link-local address is: ");
-    ether.getLinkLocalAddress().println();
+    ether.linkLocalAddress().println();
     Serial.print("Our global address is: ");
-    ether.getGlobalAddress().println();
+    ether.globalAddress().println();
 
     // Turn off the Red LED (it is connected to +5v)
     pinMode(NANODE_LED_PIN, OUTPUT);

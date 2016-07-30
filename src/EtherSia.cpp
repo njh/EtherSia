@@ -51,7 +51,7 @@ void EtherSia::setBufferSize(uint16_t size)
     _bufferSize = size;
 }
 
-uint16_t EtherSia::getBufferSize()
+uint16_t EtherSia::bufferSize()
 {
     return _bufferSize;
 }
@@ -66,12 +66,12 @@ void EtherSia::setGlobalAddress(const char* address)
     _globalAddress.fromString(address);
 }
 
-IPv6Address& EtherSia::getGlobalAddress()
+IPv6Address& EtherSia::globalAddress()
 {
     return _globalAddress;
 }
 
-IPv6Address& EtherSia::getLinkLocalAddress()
+IPv6Address& EtherSia::linkLocalAddress()
 {
     return _linkLocalAddress;
 }
@@ -94,12 +94,12 @@ void EtherSia::setDnsServerAddress(IPv6Address &address)
     _dnsServerAddress = address;
 }
 
-IPv6Address& EtherSia::getDnsServerAddress()
+IPv6Address& EtherSia::dnsServerAddress()
 {
     return _dnsServerAddress;
 }
 
-IPv6Packet* EtherSia::getPacket()
+IPv6Packet* EtherSia::packet()
 {
     return (IPv6Packet*)_buffer;
 }

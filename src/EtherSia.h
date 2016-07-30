@@ -86,7 +86,7 @@ public:
      *
      * @return The of the packet buffer (in bytes)
      */
-    uint16_t getBufferSize();
+    uint16_t bufferSize();
 
     /**
      * Manually set the global IPv6 address for the Ethernet Interface
@@ -115,7 +115,7 @@ public:
      *
      * @return The Global IP address as an IPv6Address object
      */
-    IPv6Address& getGlobalAddress();
+    IPv6Address& globalAddress();
 
     /**
      * Get the link-local address of the Ethernet Interface
@@ -123,7 +123,7 @@ public:
      *
      * @return The Link-Local IP address as an IPv6Address object
      */
-    IPv6Address& getLinkLocalAddress();
+    IPv6Address& linkLocalAddress();
 
     /**
      * Check to see if an IPv6 address belongs to this Ethernet interface
@@ -145,7 +145,7 @@ public:
      *
      * @return The DNS Server address as an IPv6Address object
      */
-    IPv6Address& getDnsServerAddress();
+    IPv6Address& dnsServerAddress();
 
     /**
      * Check if there is an IPv6 packet waiting for us and fetch it.
@@ -161,7 +161,7 @@ public:
      * @note Unlike receivePacket(), this method will never return NULL.
      * @return A pointer to an IPv6Packet
      */
-    IPv6Packet* getPacket();
+    IPv6Packet* packet();
 
     /**
      * Send the packet currently in the packet buffer.

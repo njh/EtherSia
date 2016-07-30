@@ -63,7 +63,7 @@ void setup() {
 
     if (udp.setRemoteAddress("2001:41c8:51:7cf::6", 1234)) {
         Serial.print("Remote address: ");
-        udp.getRemoteAddress().println();
+        udp.remoteAddress().println();
     }
 
     Serial.println("Ready.");
