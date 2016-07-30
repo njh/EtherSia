@@ -210,8 +210,8 @@ ck_assert((addr != addr2) == false);
 
 #test not_equal_zero
 IPv6Address addr("2001:4860:4860::8888");
-IPv6Address zero;
-ck_assert(addr != zero);
+IPv6Address zeroAddr;
+ck_assert(addr != zeroAddr);
 
 
 #test type_global
