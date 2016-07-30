@@ -207,8 +207,3 @@ boolean UDPSocket::payloadEquals(const char *str)
 {
     return strncmp((char*)payload(), str, payloadLength()) == 0;
 }
-
-IPv6Packet* UDPSocket::getPacket()
-{
-    return _ether.getPacket();
-}

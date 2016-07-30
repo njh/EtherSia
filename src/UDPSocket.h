@@ -187,14 +187,6 @@ public:
 protected:
 
     /**
-     * Get a pointer to the current packet in the EtherSia buffer.
-     *
-     * @note This method does not check if the packet is valid or for this socket or not
-     * @return A pointer to an IPv6Packet
-     */
-    IPv6Packet* getPacket();
-
-    /**
      * Get the length of the current packet in the buffer (including the UDP header)
      *
      * @return The packet payload length (in bytes)
@@ -238,7 +230,7 @@ struct udp_header {
  * Get the pointer to the UDP header from within EtherSia
  * @private
  */
-#define UDP_HEADER_PTR            ((struct udp_header*)(getPacket()->payload()))
+#define UDP_HEADER_PTR            ((struct udp_header*)(_ether.packet()->payload()))
 
 /* Verify that compiler gets the structure size correct */
 static_assert(sizeof(struct udp_header) == UDP_HEADER_LEN, "Size is not correct");
