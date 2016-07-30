@@ -106,24 +106,22 @@ IPv6Packet* EtherSia::getPacket()
 
 IPv6Packet* EtherSia::receivePacket()
 {
+    IPv6Packet &packet = (IPv6Packet&)buffer;
     int len = read(buffer, bufferSize);
 
     if (len) {
-        IPv6Packet *packet = getPacket();
-        if (!packet->isValid()) {
+        if (!packet.isValid()) {
             return NULL;
         }
 
-        if (packet->protocol() == IP6_PROTO_ICMP6) {
+        if (packet.protocol() == IP6_PROTO_ICMP6) {
             icmp6ProcessPacket();
         }
 
-        return packet;
+        return &packet;
     } else {
-        IPv6Packet *packet = getPacket();
-
         // We didn't receive anything; invalidate the buffer
-        packet->invalidate();
+        packet.invalidate();
     }
 
     return NULL;
