@@ -39,11 +39,6 @@ IPv6Address *addr = (IPv6Address *)expect;
 ck_assert(addr->isZero() == false);
 
 
-#test getPointer
-IPv6Address *addr = (IPv6Address *)zero;
-ck_assert_ptr_eq(zero, addr->getPointer());
-
-
 #test fromString_home
 uint8_t expect[16] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,

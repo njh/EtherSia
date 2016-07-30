@@ -22,11 +22,6 @@ MACAddress::MACAddress(const char *macstr)
     fromString(macstr);
 }
 
-uint8_t* MACAddress::getPointer()
-{
-    return _address;
-}
-
 MACAddress::operator uint8_t*()
 {
     return _address;

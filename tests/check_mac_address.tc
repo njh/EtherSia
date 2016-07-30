@@ -62,12 +62,6 @@ MACAddress addr;
 ck_assert(addr.fromString("foobar") == false);
 
 
-#test getPointer
-uint8_t bytes[] = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66};
-MACAddress *addr = (MACAddress*)bytes;
-ck_assert_ptr_eq(addr->getPointer(), bytes);
-
-
 #test setIPv6Multicast
 uint8_t v6addr[] = {
     0x20, 0x01, 0x48, 0x60, 0x48, 0x60, 0x00, 0x00,

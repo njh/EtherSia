@@ -55,11 +55,6 @@ public:
     boolean fromString(const char *addrstr);
 
     /**
-     * Get a pointer to a 16-byte array of octets.
-     */
-    uint8_t* getPointer();
-
-    /**
      * Get the IPv6 address type
      * @return a value from the IPv6AddressType enumeration
      */

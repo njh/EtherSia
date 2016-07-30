@@ -47,11 +47,6 @@ public:
     boolean fromString(const char *macstr);
 
     /**
-     * Get a pointer to a 6-byte array of octets.
-     */
-    uint8_t* getPointer();
-
-    /**
      * Cast the MAC address to an array of octets.
      */
     operator uint8_t*();
