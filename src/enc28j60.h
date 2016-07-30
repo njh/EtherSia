@@ -64,9 +64,9 @@ public:
     /**
      * Initialise the Ethernet controller
      * Must be called before sending or receiving Ethernet frames
-     * @param encMacAddress the local MAC address
+     * @param address the local MAC address for the Ethernet interface
      */
-    void init(const MACAddress &encMacAddress);
+    void init(const MACAddress &address);
 
     /**
      * Send an Ethernet frame
@@ -91,7 +91,7 @@ protected:
      * The MAC address of this Ethernet controller
      * @private
      */
-    MACAddress encMacAddress;
+    MACAddress _encMacAddress;
 
 private:
 

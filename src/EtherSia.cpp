@@ -138,7 +138,7 @@ void EtherSia::prepareSend()
         packet->setSource(globalAddress);
     }
 
-    packet->setEtherSource(encMacAddress);
+    packet->setEtherSource(_encMacAddress);
 
     // FIXME: this might be a link-local MAC
     packet->setEtherDestination(routerMac);
@@ -159,7 +159,7 @@ void EtherSia::prepareReply()
     packet->setSource(*replySourceAddress);
 
     packet->setEtherDestination(packet->etherSource());
-    packet->setEtherSource(encMacAddress);
+    packet->setEtherSource(_encMacAddress);
 }
 
 void EtherSia::send()

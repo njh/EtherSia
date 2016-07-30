@@ -449,12 +449,12 @@ ENC28J60::reset(void)
 
     /* Set MAC address */
     setregbank(MAADRX_BANK);
-    writereg(MAADR6, encMacAddress[5]);
-    writereg(MAADR5, encMacAddress[4]);
-    writereg(MAADR4, encMacAddress[3]);
-    writereg(MAADR3, encMacAddress[2]);
-    writereg(MAADR2, encMacAddress[1]);
-    writereg(MAADR1, encMacAddress[0]);
+    writereg(MAADR6, _encMacAddress[5]);
+    writereg(MAADR5, _encMacAddress[4]);
+    writereg(MAADR4, _encMacAddress[3]);
+    writereg(MAADR3, _encMacAddress[2]);
+    writereg(MAADR2, _encMacAddress[1]);
+    writereg(MAADR1, _encMacAddress[0]);
 
     /*
       6.6 PHY Initialization Settings
@@ -498,7 +498,7 @@ ENC28J60::init(const MACAddress &address)
         return;
     }
 
-    this->encMacAddress = address;
+    this->_encMacAddress = address;
 
     reset();
 
