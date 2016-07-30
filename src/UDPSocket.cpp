@@ -65,7 +65,7 @@ boolean UDPSocket::havePacket()
         return 0;
     }
 
-    if (packet->protocol != IP6_PROTO_UDP) {
+    if (packet->protocol() != IP6_PROTO_UDP) {
         // Wrong protocol
         return 0;
     }
@@ -115,13 +115,13 @@ void UDPSocket::send(uint16_t len)
     struct udp_header *udpHeader = UDP_HEADER_PTR;
 
     // Setup the IPv6 packet header
-    packet->length = htons(UDP_HEADER_LEN + len);
-    packet->protocol = IP6_PROTO_UDP;
-    packet->destination = remoteAddress;
+    packet->setPayloadLength(UDP_HEADER_LEN + len);
+    packet->setProtocol(IP6_PROTO_UDP);
+    packet->setDestination(remoteAddress);
     ether.prepareSend();
 
     // Set the UDP header
-    udpHeader->length = packet->length;
+    udpHeader->length = htons(UDP_HEADER_LEN + len);
     udpHeader->destinationPort = htons(remotePort);
     udpHeader->sourcePort = htons(localPort);
     udpHeader->checksum = 0;
@@ -151,10 +151,10 @@ void UDPSocket::sendReply(uint16_t len)
     uint16_t destinationPort = udpHeader->destinationPort;
     uint16_t sourcePort = udpHeader->sourcePort;
 
-    packet->length = htons(UDP_HEADER_LEN + len);
+    packet->setPayloadLength(UDP_HEADER_LEN + len);
     ether.prepareReply();
 
-    udpHeader->length = packet->length;
+    udpHeader->length = htons(UDP_HEADER_LEN + len);
     udpHeader->destinationPort = sourcePort;
     udpHeader->sourcePort = destinationPort;
     udpHeader->checksum = 0;
@@ -165,12 +165,12 @@ void UDPSocket::sendReply(uint16_t len)
 
 IPv6Address& UDPSocket::packetSource()
 {
-    return getPacket()->source;
+    return getPacket()->source();
 }
 
 IPv6Address& UDPSocket::packetDestination()
 {
-    return getPacket()->destination;
+    return getPacket()->destination();
 }
 
 uint16_t UDPSocket::packetSourcePort()

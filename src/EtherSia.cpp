@@ -114,7 +114,7 @@ IPv6Packet* EtherSia::receivePacket()
             return NULL;
         }
 
-        if (packet->protocol == IP6_PROTO_ICMP6) {
+        if (packet->protocol() == IP6_PROTO_ICMP6) {
             icmp6ProcessPacket();
         }
 
@@ -123,7 +123,7 @@ IPv6Packet* EtherSia::receivePacket()
         IPv6Packet *packet = getPacket();
 
         // We didn't receive anything; invalidate the buffer
-        packet->etherType = 0;
+        packet->invalidate();
     }
 
     return NULL;
@@ -134,16 +134,16 @@ void EtherSia::prepareSend()
     IPv6Packet *packet = (IPv6Packet*)buffer;
 
     packet->init();
-    if (packet->destination.isLinkLocal()) {
-        packet->source = linkLocalAddress;
+    if (packet->destination().isLinkLocal()) {
+        packet->setSource(linkLocalAddress);
     } else {
-        packet->source = globalAddress;
+        packet->setSource(globalAddress);
     }
 
-    packet->etherSource = encMacAddress;
+    packet->setEtherSource(encMacAddress);
 
     // FIXME: this might be a link-local MAC
-    packet->etherDestination = routerMac;
+    packet->setEtherDestination(routerMac);
 }
 
 void EtherSia::prepareReply()
@@ -151,22 +151,21 @@ void EtherSia::prepareReply()
     IPv6Packet *packet = (IPv6Packet*)buffer;
     IPv6Address *replySourceAddress;
 
-    if (isOurAddress(packet->destination) == ADDRESS_TYPE_GLOBAL) {
+    if (isOurAddress(packet->destination()) == ADDRESS_TYPE_GLOBAL) {
         replySourceAddress = &globalAddress;
     } else {
         replySourceAddress = &linkLocalAddress;
     }
 
-    packet->destination = packet->source;
-    packet->source = *replySourceAddress;
+    packet->setDestination(packet->source());
+    packet->setSource(*replySourceAddress);
 
-    packet->etherDestination = packet->etherSource;
-    packet->etherSource = encMacAddress;
+    packet->setEtherDestination(packet->etherSource());
+    packet->setEtherSource(encMacAddress);
 }
 
 void EtherSia::send()
 {
     IPv6Packet *packet = (IPv6Packet*)buffer;
-    uint16_t len = ETHER_HEADER_LEN + IP6_HEADER_LEN + ntohs(packet->length);
-    ENC28J60::send(buffer, len);
+    ENC28J60::send(buffer, packet->length());
 }

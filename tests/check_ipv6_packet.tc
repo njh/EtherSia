@@ -19,25 +19,16 @@ uint8_t rs_buffer[] = {
 #test new_packet
 IPv6Packet packet;
 uint8_t zeroMac[6] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-ck_assert(memcmp(packet.etherSource, zeroMac, 6) == 0);
-ck_assert(memcmp(packet.etherDestination, zeroMac, 6) == 0);
-ck_assert_int_eq(packet.etherType, htons(ETHER_TYPE_IPV6));
-ck_assert_int_eq(packet.ver_tc, 0x60);
-ck_assert_int_eq(packet.tc_fl, 0x00);
-ck_assert_int_eq(packet.flowLabel, 0);
-ck_assert_int_eq(packet.hopLimit, IP6_DEFAULT_HOP_LIMIT);
-
-#test etherType
-IPv6Packet *packet = (IPv6Packet *)rs_buffer;
-ck_assert_int_eq(packet->etherType, htons(ETHER_TYPE_IPV6));
-
-#test length
-IPv6Packet *packet = (IPv6Packet *)rs_buffer;
-ck_assert_int_eq(ntohs(packet->length), 16);
-
-#test protocol
-IPv6Packet *packet = (IPv6Packet *)rs_buffer;
-ck_assert_int_eq(packet->protocol, IP6_PROTO_ICMP6);
+uint8_t zeroAddress[16] = {
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+};
+ck_assert(memcmp(packet.etherSource(), zeroMac, 6) == 0);
+ck_assert(memcmp(packet.etherDestination(), zeroMac, 6) == 0);
+ck_assert_int_eq(packet.version(), 6);
+ck_assert_int_eq(packet.hopLimit(), IP6_DEFAULT_HOP_LIMIT);
+ck_assert(memcmp(packet.source(), zeroAddress, 16) == 0);
+ck_assert(memcmp(packet.destination(), zeroAddress, 16) == 0);
 
 #test isValid
 IPv6Packet *packet = (IPv6Packet *)rs_buffer;
@@ -52,19 +43,129 @@ ck_assert(packet->isValid() == false);
 #test isValid_wrong_version
 uint8_t buffer[128];
 memcpy(buffer, rs_buffer, sizeof(rs_buffer));
+buffer[14] = 0x40;
 IPv6Packet *packet = (IPv6Packet *)buffer;
-packet->ver_tc = 0x40;
 ck_assert(packet->isValid() == false);
 
 #test isValid_wrong_checksum
 uint8_t buffer[128];
 memcpy(buffer, rs_buffer, sizeof(rs_buffer));
+// Tamper with the source address
+buffer[22] = 0x00;
+buffer[23] = 0xFF;
 IPv6Packet *packet = (IPv6Packet *)buffer;
-packet->source[0] = 0x00;
-packet->source[1] = 0xFF;
 ck_assert(packet->isValid() == false);
+
+#test invalidate
+uint8_t buffer[128];
+memcpy(buffer, rs_buffer, sizeof(rs_buffer));
+IPv6Packet *packet = (IPv6Packet *)buffer;
+ck_assert(packet->isValid() == true);
+packet->invalidate();
+ck_assert(packet->isValid() == false);
+
+#test version
+IPv6Packet *packet = (IPv6Packet *)rs_buffer;
+ck_assert_int_eq(packet->version(), 6);
+
+#test length
+IPv6Packet *packet = (IPv6Packet *)rs_buffer;
+ck_assert_int_eq(packet->length(), 70);
+
+#test payloadLength
+IPv6Packet *packet = (IPv6Packet *)rs_buffer;
+ck_assert_int_eq(packet->payloadLength(), 16);
+
+#test setPayloadLength
+IPv6Packet packet;
+packet.setPayloadLength(256);
+ck_assert_int_eq(packet.payloadLength(), 256);
+
+#test protocol
+IPv6Packet *packet = (IPv6Packet *)rs_buffer;
+ck_assert_int_eq(packet->protocol(), IP6_PROTO_ICMP6);
+
+#test setProtocol
+IPv6Packet packet;
+packet.setProtocol(IP6_PROTO_TCP);
+ck_assert_int_eq(packet.protocol(), IP6_PROTO_TCP);
+
+#test hopLimit
+IPv6Packet *packet = (IPv6Packet *)rs_buffer;
+ck_assert_int_eq(packet->hopLimit(), 255);
+
+#test setHopLimit
+IPv6Packet packet;
+packet.setHopLimit(10);
+ck_assert_int_eq(packet.hopLimit(), 10);
+
+#test etherSource
+MACAddress expect("76:73:19:ba:b8:19");
+IPv6Packet *packet = (IPv6Packet *)rs_buffer;
+ck_assert(memcmp(packet->etherSource(), expect, 6) == 0);
+
+#test setEtherSource
+MACAddress addr("01:23:45:67:89:10");
+IPv6Packet packet;
+packet.setEtherSource(addr);
+ck_assert(memcmp(packet.etherSource(), addr, 6) == 0);
+
+#test etherDestination
+MACAddress expect("33:33:00:00:00:02");
+IPv6Packet *packet = (IPv6Packet *)rs_buffer;
+ck_assert(memcmp(packet->etherDestination(), expect, 6) == 0);
+
+#test setEtherDestination
+MACAddress addr("01:23:45:67:89:10");
+IPv6Packet packet;
+packet.setEtherDestination(addr);
+ck_assert(memcmp(packet.etherDestination(), addr, 6) == 0);
+
+#test source
+IPv6Address expect("fe80::7473:19ff:feba:b819");
+IPv6Packet *packet = (IPv6Packet *)rs_buffer;
+ck_assert(memcmp(packet->source(), expect, 16) == 0);
+
+#test setSource
+IPv6Address addr("fe80::c58e:e533:e358:7006");
+IPv6Packet packet;
+packet.setSource(addr);
+ck_assert(memcmp(packet.source(), addr, 16) == 0);
+
+#test destination
+IPv6Address expect("ff02::2");
+IPv6Packet *packet = (IPv6Packet *)rs_buffer;
+ck_assert(memcmp(packet->destination(), expect, 16) == 0);
+
+#test setDestination
+IPv6Address addr("2001:4860:4860::8888");
+IPv6Packet packet;
+packet.setDestination(addr);
+ck_assert(memcmp(packet.destination(), addr, 16) == 0);
 
 #test calculateChecksum
 IPv6Packet *packet = (IPv6Packet *)rs_buffer;
 // Calculation comes out as 0 because of the checksum field in the ICMP6 header
 ck_assert_int_eq(packet->calculateChecksum(), 0x0000);
+
+#test constructPacket
+uint8_t expect[] = {
+    0x36, 0xb4, 0x40, 0x75, 0x3b, 0xa6, 0xa6, 0x69,
+    0xc0, 0x80, 0xda, 0x3b, 0x86, 0xdd, 0x60, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0xfe, 0x40, 0xfe, 0x80,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xa4, 0x69,
+    0xc0, 0xff, 0xfe, 0x80, 0xda, 0x3b, 0xfe, 0x80,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x34, 0xb4,
+    0x40, 0xff, 0xfe, 0x75, 0x3b, 0xa6
+};
+
+IPv6Packet packet;
+packet.etherSource().fromString("a6:69:c0:80:da:3b");
+packet.etherDestination().fromString("36:b4:40:75:3b:a6");
+packet.setProtocol(254);
+packet.setPayloadLength(0);
+packet.source().fromString("fe80::a469:c0ff:fe80:da3b");
+packet.destination().fromString("fe80::34b4:40ff:fe75:3ba6");
+
+ck_assert_int_eq(sizeof(IPv6Packet), sizeof(expect));
+ck_assert(memcmp(&packet, expect, sizeof(IPv6Packet)) == 0);
