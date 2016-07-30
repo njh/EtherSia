@@ -206,7 +206,7 @@ public:
      * @param hostname The hostname to look up
      * @return An pointer to a IPv6 address or NULL if the lookup failed
      */
-    IPv6Address* getHostByName(const char* hostname);
+    IPv6Address* lookupHostname(const char* hostname);
 
 
 protected:

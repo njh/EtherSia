@@ -139,7 +139,7 @@ IPv6Address* dnsProcessReply(const uint8_t* payload, uint16_t length, uint16_t r
 }
 
 
-IPv6Address* EtherSia::getHostByName(const char* hostname)
+IPv6Address* EtherSia::lookupHostname(const char* hostname)
 {
     unsigned long nextRequest = millis();
     uint16_t id = random(65535);

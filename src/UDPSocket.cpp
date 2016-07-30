@@ -29,7 +29,7 @@ boolean UDPSocket::setRemoteAddress(const char *remoteAddress, uint16_t remotePo
         return _remoteAddress.fromString(remoteAddress);
     } else {
         // Lookup a hostname
-        IPv6Address *address = _ether.getHostByName(remoteAddress);
+        IPv6Address *address = _ether.lookupHostname(remoteAddress);
         if (address) {
             _remoteAddress = *address;
             return true;
