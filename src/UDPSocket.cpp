@@ -188,18 +188,6 @@ uint16_t UDPSocket::packetDestinationPort()
     return ntohs(UDP_HEADER_PTR->destinationPort);
 }
 
-uint16_t UDPSocket::packetLength()
-{
-    IPv6Packet& packet = _ether.packet();
-    return ntohs(UDP_HEADER_PTR->length);
-}
-
-uint16_t UDPSocket::packetChecksum()
-{
-    IPv6Packet& packet = _ether.packet();
-    return ntohs(UDP_HEADER_PTR->checksum);
-}
-
 uint8_t* UDPSocket::payload()
 {
     IPv6Packet& packet = _ether.packet();
@@ -208,7 +196,8 @@ uint8_t* UDPSocket::payload()
 
 uint16_t UDPSocket::payloadLength()
 {
-    return packetLength() - UDP_HEADER_LEN;
+    IPv6Packet& packet = _ether.packet();
+    return ntohs(UDP_HEADER_PTR->length) - UDP_HEADER_LEN;
 }
 
 boolean UDPSocket::payloadEquals(const char *str)

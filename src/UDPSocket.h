@@ -186,21 +186,6 @@ public:
 
 protected:
 
-    /**
-     * Get the length of the current packet in the buffer (including the UDP header)
-     *
-     * @return The packet payload length (in bytes)
-     */
-    uint16_t packetLength();
-
-    /**
-     * Get the 16-bit checksum the current packet in the buffer
-     *
-     * @return The checksum of the packet
-     */
-    uint16_t packetChecksum();
-
-
     EtherSia &_ether;            ///< The Ethernet Interface that this UDP socket is attached to
     IPv6Address _remoteAddress;  ///< The IPv6 remote address
     uint16_t _remotePort;        ///< The IPv6 remote port number
