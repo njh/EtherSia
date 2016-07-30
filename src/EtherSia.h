@@ -15,6 +15,19 @@
 #include "IPv6Packet.h"
 #include "UDPSocket.h"
 
+/**
+ * The maximum size (in bytes) of packet that can be received / sent
+ *
+ * This includes the Ethernet frame header and IPv6 header (54 bytes).
+ * The maximum Ethernet frame size (MTU/MRU) is typically 1500 bytes.
+ *
+ * The value is used to size the buffer that is used for both
+ * sending and receiving packets, so it should be bigger than the
+ * biggest packet you want to send or receive.
+ */
+#define ETHERSIA_MAX_PACKET_SIZE       500
+
+
 
 /** How often to send Router Solicitation (RS) packets */
 #define ROUTER_SOLICITATION_TIMEOUT    (3000)
@@ -67,28 +80,6 @@ public:
      * @return Returns true if setting up the Ethernet interface was successful
      */
     boolean begin(const MACAddress &address);
-
-    /**
-     * Set the size of the network packet buffer in bytes
-     *
-     * The buffer is used for both sending and receiving packets,
-     * so it should be bigger than the biggest packet you want to
-     * send or receive.
-     *
-     * If you don't call this method, the default size is 500 bytes.
-     *
-     * @note Call this before begin().
-     *       It is not possible to change the buffer size once it has been created.
-     * @param size The size to make the packet buffer
-     */
-    void setBufferSize(uint16_t size);
-
-    /**
-     * Get the size of the network packet buffer
-     *
-     * @return The of the packet buffer (in bytes)
-     */
-    uint16_t bufferSize();
 
     /**
      * Manually set the global IPv6 address for the Ethernet Interface
@@ -216,10 +207,11 @@ protected:
     IPv6Address _globalAddress;     /**< The IPv6 Global address of the Ethernet Interface */
     IPv6Address _dnsServerAddress;  /**< The IPv6 address of the configured DNS server */
 
-    MACAddress _routerMac;   /**< The MAC Address of the router to send packets outside of this subnet */
+    /** The MAC Address of the router to send packets outside of this subnet */
+    MACAddress _routerMac;
 
-    uint8_t* _buffer;        /**< The buffer that sent and received packets are stored in */
-    uint16_t _bufferSize;    /**< The size of the packet buffer in bytes */
+    /** The buffer that sent and received packets are stored in */
+    uint8_t _buffer[ETHERSIA_MAX_PACKET_SIZE];        
 
 
     /**

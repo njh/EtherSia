@@ -11,9 +11,6 @@ EtherSia::EtherSia(int8_t cs) : ENC28J60(cs)
 {
     // Use Google Public DNS by default
     memcpy_P(_dnsServerAddress, googlePublicDnsAddress, sizeof(googlePublicDnsAddress));
-
-    this->_buffer = NULL;
-    this->_bufferSize = 500;
 }
 
 
@@ -24,9 +21,6 @@ boolean EtherSia::begin(const MACAddress &macAddress)
     // Calculate our link local address
     _linkLocalAddress.setLinkLocalPrefix();
     _linkLocalAddress.setEui64(macAddress);
-
-    // Allocate memory for the packet buffer
-    _buffer = (uint8_t*)malloc(_bufferSize);
 
     // Delay a 'random' amount to stop multiple nodes acting at the same time
     delay(macAddress[5] ^ 0x55);
@@ -44,16 +38,6 @@ boolean EtherSia::begin(const MACAddress &macAddress)
     randomSeed(micros());
 
     return result;
-}
-
-void EtherSia::setBufferSize(uint16_t size)
-{
-    _bufferSize = size;
-}
-
-uint16_t EtherSia::bufferSize()
-{
-    return _bufferSize;
 }
 
 void EtherSia::setGlobalAddress(IPv6Address &address)
@@ -107,7 +91,7 @@ IPv6Packet* EtherSia::packet()
 IPv6Packet* EtherSia::receivePacket()
 {
     IPv6Packet &packet = (IPv6Packet&)_buffer;
-    int len = read(_buffer, _bufferSize);
+    int len = read(_buffer, sizeof(_buffer));
 
     if (len) {
         if (!packet.isValid()) {
