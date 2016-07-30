@@ -15,6 +15,14 @@
 #include "IPv6Packet.h"
 #include "UDPSocket.h"
 
+
+/** How often to send Router Solicitation (RS) packets */
+#define ROUTER_SOLICITATION_TIMEOUT    (3000)
+
+/** How many times to send Router Solicitation (RS) packets */
+#define ROUTER_SOLICITATION_ATTEMPTS   (4)
+
+
 /** Convert a 16-bit integer from host (little-endian) to network (big-endian) */
 #ifndef htons
 #define htons(x) ( (((x)<<8)&0xFF00) | (((x)>>8)&0x00FF) )
@@ -24,12 +32,6 @@
 #ifndef ntohs
 #define ntohs(x) htons(x)
 #endif
-
-/** How often to send Router Solicitation (RS) packets */
-#define ROUTER_SOLICITATION_TIMEOUT    (3000)
-
-/** How many times to send Router Solicitation (RS) packets */
-#define ROUTER_SOLICITATION_ATTEMPTS   (4)
 
 
 /**
