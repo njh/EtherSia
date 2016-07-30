@@ -83,71 +83,70 @@ IPv6Address& EtherSia::dnsServerAddress()
     return _dnsServerAddress;
 }
 
-IPv6Packet* EtherSia::packet()
+IPv6Packet& EtherSia::packet()
 {
-    return (IPv6Packet*)_buffer;
+    return (IPv6Packet&)_buffer;
 }
 
-IPv6Packet* EtherSia::receivePacket()
+uint16_t EtherSia::receivePacket()
 {
-    IPv6Packet &packet = (IPv6Packet&)_buffer;
-    int len = read(_buffer, sizeof(_buffer));
+    IPv6Packet& packet = (IPv6Packet&)_buffer;
+    uint16_t len = read(_buffer, sizeof(_buffer));
 
     if (len) {
         if (!packet.isValid()) {
-            return NULL;
+            return 0;
         }
 
         if (packet.protocol() == IP6_PROTO_ICMP6) {
             icmp6ProcessPacket();
         }
-
-        return &packet;
     } else {
         // We didn't receive anything; invalidate the buffer
         packet.invalidate();
+        return 0;
     }
 
-    return NULL;
+    return len;
 }
 
 void EtherSia::prepareSend()
 {
-    IPv6Packet *packet = (IPv6Packet*)_buffer;
+    IPv6Packet& packet = (IPv6Packet&)_buffer;
 
-    packet->init();
-    if (packet->destination().isLinkLocal()) {
-        packet->setSource(_linkLocalAddress);
+    packet.init();
+    if (packet.destination().isLinkLocal()) {
+        packet.setSource(_linkLocalAddress);
     } else {
-        packet->setSource(_globalAddress);
+        packet.setSource(_globalAddress);
     }
 
-    packet->setEtherSource(_encMacAddress);
+    packet.setEtherSource(_encMacAddress);
 
     // FIXME: this might be a link-local MAC
-    packet->setEtherDestination(_routerMac);
+    packet.setEtherDestination(_routerMac);
 }
 
 void EtherSia::prepareReply()
 {
-    IPv6Packet *packet = (IPv6Packet*)_buffer;
+    IPv6Packet& packet = (IPv6Packet&)_buffer;
     IPv6Address *replySourceAddress;
 
-    if (isOurAddress(packet->destination()) == ADDRESS_TYPE_GLOBAL) {
+    if (isOurAddress(packet.destination()) == ADDRESS_TYPE_GLOBAL) {
         replySourceAddress = &_globalAddress;
     } else {
         replySourceAddress = &_linkLocalAddress;
     }
 
-    packet->setDestination(packet->source());
-    packet->setSource(*replySourceAddress);
+    packet.setDestination(packet.source());
+    packet.setSource(*replySourceAddress);
 
-    packet->setEtherDestination(packet->etherSource());
-    packet->setEtherSource(_encMacAddress);
+    packet.setEtherDestination(packet.etherSource());
+    packet.setEtherSource(_encMacAddress);
 }
 
 void EtherSia::send()
 {
-    IPv6Packet *packet = (IPv6Packet*)_buffer;
-    ENC28J60::send(_buffer, packet->length());
+    IPv6Packet& packet = (IPv6Packet&)_buffer;
+    ENC28J60::send(_buffer, packet.length());
 }

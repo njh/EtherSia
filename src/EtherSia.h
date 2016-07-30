@@ -141,20 +141,20 @@ public:
     IPv6Address& dnsServerAddress();
 
     /**
-     * Check if there is an IPv6 packet waiting for us and fetch it.
-     * If there is no packet available this method returns NULL.
+     * Check if there is an IPv6 packet waiting for us and copy it into the buffer.
+     * If there is no packet available this method returns 0.
      *
-     * @return A pointer to an IPv6Packet, or NULL
+     * @return The length of the packet, or 0 if no packet was received
      */
-    IPv6Packet* receivePacket();
+    uint16_t receivePacket();
 
     /**
-     * Get a pointer to the packet buffer (the last packet sent or received).
+     * Get a reference to the packet buffer (the last packet sent or received).
      *
      * @note Unlike receivePacket(), this method will never return NULL.
      * @return A pointer to an IPv6Packet
      */
-    IPv6Packet* packet();
+    IPv6Packet& packet();
 
     /**
      * Send the packet currently in the packet buffer.

@@ -230,7 +230,7 @@ struct udp_header {
  * Get the pointer to the UDP header from within EtherSia
  * @private
  */
-#define UDP_HEADER_PTR            ((struct udp_header*)(_ether.packet()->payload()))
+#define UDP_HEADER_PTR            ((struct udp_header*)(packet.payload()))
 
 /* Verify that compiler gets the structure size correct */
 static_assert(sizeof(struct udp_header) == UDP_HEADER_LEN, "Size is not correct");

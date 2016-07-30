@@ -31,26 +31,26 @@ void setup() {
 
 
 void loop() {
-    IPv6Packet *packet = ether.receivePacket();
+    if (ether.receivePacket()) {
+        IPv6Packet& packet = ether.packet();
 
-    if (packet) {
         Serial.print("Source MAC: ");
-        packet->etherSource().println();
+        packet.etherSource().println();
 
         Serial.print("Destination MAC: ");
-        packet->etherDestination().println();
+        packet.etherDestination().println();
 
         Serial.print("Source Address: ");
-        packet->source().println();
+        packet.source().println();
 
         Serial.print("Destination Address: ");
-        packet->destination().println();
+        packet.destination().println();
 
         Serial.print("Protocol: ");
-        Serial.println(packet->protocol(), DEC);
+        Serial.println(packet.protocol(), DEC);
 
         Serial.print("Length: ");
-        Serial.println(packet->payloadLength(), DEC);
+        Serial.println(packet.payloadLength(), DEC);
 
         Serial.println();
     }
