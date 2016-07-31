@@ -70,21 +70,30 @@ void setup() {
     Serial.print("Our global address is: ");
     ether.globalAddress().println();
 
-    if (udp.setRemoteAddress("time.ethersia.aelius.com", NTP_PORT)) {
-        Serial.print("SNTP Server address: ");
-        udp.remoteAddress().println();
-    }
-
     Serial.println("Ready.");
 }
 
 // Time of the next NTP request
+boolean needNewServer = true;
 unsigned long nextRequest = millis();
 unsigned long pollingInterval = DEFAULT_POLLING_INTERVAL;
 
 void loop() {
     // process packets
     ether.receivePacket();
+
+    // Do we need to lookup the IP address of a new server?
+    if (needNewServer) {
+        if (udp.setRemoteAddress("time.ethersia.aelius.com", NTP_PORT)) {
+            Serial.print("SNTP Server address: ");
+            udp.remoteAddress().println();
+            needNewServer = false;
+        } else {
+            // Something went wrong, sleep for a minute, then try again
+            delay(60000);
+            return;
+        }
+    }
 
     if (udp.havePacket()) {
         Serial.println("Received SNTP reply.");
@@ -94,17 +103,30 @@ void loop() {
         Serial.print("len=");
         Serial.println(udp.payloadLength(), DEC);
 
-        // Extract the transmit timestamp from the packet
-        // this is NTP time (seconds since Jan 1 1900)
-        // The ntohl() function converts from network byte-order to native byte-order
+        // Convert the payload into the NTP structure above
         ntpType *ntpPacket = (ntpType*)udp.payload();
-        displayTime(
-            ntohl(ntpPacket->transmitTimestampSeconds)
-        );
 
-        // Success, server is working; reset the polling interval to default
-        pollingInterval = DEFAULT_POLLING_INTERVAL;
-        nextRequest = millis() + (pollingInterval * 1000);
+        Serial.print("Server stratum: ");
+        Serial.println(ntpPacket->stratum, DEC);
+
+        // If stratum value is 0, then it is a "Kiss-o'-Death" packet
+        if (ntpPacket->stratum == 0) {
+            // The server wants us to go away
+            Serial.println("Kiss-o'-Death!");
+            needNewServer = true;
+            return;
+        } else {
+            // Extract the transmit timestamp from the packet
+            // this is NTP time (seconds since Jan 1 1900)
+            // The ntohl() function converts from network byte-order to native byte-order
+            displayTime(
+                ntohl(ntpPacket->transmitTimestampSeconds)
+            );
+
+            // Success, server is working; reset the polling interval to default
+            pollingInterval = DEFAULT_POLLING_INTERVAL;
+            nextRequest = millis() + (pollingInterval * 1000);
+        }
     }
 
     if ((long)(millis() - nextRequest) >= 0) {
@@ -119,7 +141,7 @@ void loop() {
         udp.send(&ntpPacket, sizeof(ntpPacket));
 
         // Exponential back-off; double the polling interval
-        // This prevents the server from being overloaded if it is having problems 
+        // This prevents the server from being overloaded if it is having problems
         pollingInterval *= 2;
 
         // Set the time of the next request to: now + polling interval
