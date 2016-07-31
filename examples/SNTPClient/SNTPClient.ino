@@ -20,6 +20,7 @@
  */
 
 #include <EtherSia.h>
+#include "ntp.h"
 
 /** Ethernet Interface (with Chip Select connected to Pin 10) */
 EtherSia ether(10);
@@ -27,31 +28,8 @@ EtherSia ether(10);
 /** Define a UDP socket to send packets from */
 UDPSocket udp(ether);
 
-/** The UDP port number to send NTP packets to */
-const uint8_t NTP_PORT = 123;
-
 /** How often to send NTP packets - RFC4330 says this shouldn't be less than 15 seconds */
 const uint32_t DEFAULT_POLLING_INTERVAL = 15;
-
-/** Data structure for an NTP packet */
-typedef struct ntpStructure {
-    uint8_t flags;
-    uint8_t stratum;
-    uint8_t poll;
-    uint8_t precision;
-    uint32_t rootDelay;
-    uint32_t rootDispersion;
-    uint32_t referenceIdentifer;
-    uint32_t referenceTimestampSeconds;
-    uint32_t referenceTimestampFraction;
-    uint32_t originateTimestampSeconds;
-    uint32_t originateTimestampFraction;
-    uint32_t receiveTimestampSeconds;
-    uint32_t receiveTimestampFraction;
-    uint32_t transmitTimestampSeconds;
-    uint32_t transmitTimestampFraction;
-} __attribute__((__packed__)) ntpType;
-
 
 
 void setup() {
@@ -73,10 +51,15 @@ void setup() {
     Serial.println("Ready.");
 }
 
-// Time of the next NTP request
+/** Set to true when a DNS lookup needs to be performed */
 boolean needNewServer = true;
+
+/** The time that the next NTP request should be sent */
 unsigned long nextRequest = millis();
+
+/** How often (in seconds) that NTP requests should be sent */
 unsigned long pollingInterval = DEFAULT_POLLING_INTERVAL;
+
 
 void loop() {
     // process packets
