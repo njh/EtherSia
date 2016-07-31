@@ -102,7 +102,7 @@ public:
      * @param data A pointer to the data to send
      * @param length The length (in bytes) of the data to send
      */
-    void send(const uint8_t *data, uint16_t length);
+    void send(const void *data, uint16_t length);
 
     /**
      * Send a reply to the last packet received
@@ -125,7 +125,7 @@ public:
      * @param data A pointer to the data to send
      * @param length The length (in bytes) of the data to send
      */
-    void sendReply(const uint8_t *data, uint16_t length);
+    void sendReply(const void *data, uint16_t length);
 
     /**
      * Get the IPv6 source address of the last UDP packet received

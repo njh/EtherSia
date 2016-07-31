@@ -99,7 +99,7 @@ void UDPSocket::send(const char *data)
     send((const uint8_t *)data, strlen(data));
 }
 
-void UDPSocket::send(const uint8_t *data, uint16_t len)
+void UDPSocket::send(const void *data, uint16_t len)
 {
     IPv6Packet& packet = _ether.packet();
     struct udp_header *udpHeader = UDP_HEADER_PTR;
@@ -136,7 +136,7 @@ void UDPSocket::sendReply(const char *data)
     sendReply((const uint8_t*)data, strlen(data));
 }
 
-void UDPSocket::sendReply(const uint8_t* data, uint16_t len)
+void UDPSocket::sendReply(const void* data, uint16_t len)
 {
     IPv6Packet& packet = _ether.packet();
     struct udp_header *udpHeader = UDP_HEADER_PTR;
