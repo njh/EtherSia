@@ -1,7 +1,17 @@
 /**
  * SNTP Client - sends UDP requests to an IPv6 NTP Server and displays the current time
  *
- * Uses a static MAC address, please update with your own.
+ * SNTP is a simple subnet of the full NTP protocol.
+ *
+ * See RFC4330 for details of the protocol:
+ * - https://tools.ietf.org/html/rfc4330
+ *
+ * This example demonstrates of the basics of an SNTP client;
+ * A real-world client should enforce RFC4330 properly, such as 
+ * the randomised time before sending a query at startup.
+ *
+ *
+ * This example uses a static MAC address, please update with your own.
  *
  * Get your own Random Locally Administered MAC Address here:
  * https://www.hellion.org.uk/cgi-bin/randmac.pl
@@ -22,6 +32,10 @@ const uint8_t NTP_PORT = 123;
 
 /** The size of the NTP request packet */
 const uint8_t NTP_PACKET_SIZE = 48;
+
+/** How often to send NTP packets - RFC4330 says this shouldn't be less than 15 seconds */
+const uint32_t DEFAULT_POLLING_INTERVAL = 15;
+
 
 void setup() {
     MACAddress macAddress("76:73:19:ba:b8:19");
@@ -47,6 +61,10 @@ void setup() {
     Serial.println("Ready.");
 }
 
+// Time of the next NTP request
+unsigned long nextRequest = millis();
+unsigned long pollingInterval = DEFAULT_POLLING_INTERVAL;
+
 void loop() {
     // process packets
     ether.receivePacket();
@@ -66,20 +84,29 @@ void loop() {
         unsigned long lowWord = word(payload[42], payload[43]);
         unsigned long seconds = highWord << 16 | lowWord;
         displayTime(seconds);
+
+        // Success, server is working; reset the polling interval to default
+        pollingInterval = DEFAULT_POLLING_INTERVAL;
+        nextRequest = millis() + (pollingInterval * 1000);
     }
 
-    static unsigned long nextRequest = millis();
     if ((long)(millis() - nextRequest) >= 0) {
         Serial.println("Sending SNTP request.");
-        uint8_t ntpPacket[NTP_PACKET_SIZE];
 
+        // Set the NTP packet to all-zeros
+        uint8_t ntpPacket[NTP_PACKET_SIZE];
         memset(ntpPacket, 0, NTP_PACKET_SIZE);
 
-        // Set NTP header flags (Leap Indicator=Not Synced Version=4 Mode=Client)
+        // Set NTP header flags (Leap Indicator=Not Synced, Version=4, Mode=Client)
         ntpPacket[0] = 0xe3;
         udp.send(ntpPacket, NTP_PACKET_SIZE);
 
-        nextRequest = millis() + 15000;
+        // Exponential back-off; double the polling interval
+        // This prevents the server from being overloaded if it is having problems 
+        pollingInterval *= 2;
+
+        // Set the time of the next request to: now + polling interval
+        nextRequest = millis() + (pollingInterval * 1000);
     }
 }
 
