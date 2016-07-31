@@ -9,6 +9,7 @@
 #include <Arduino.h>
 #include <stdint.h>
 
+#include "endian.h"
 #include "enc28j60.h"
 #include "MACAddress.h"
 #include "IPv6Address.h"
@@ -34,17 +35,6 @@
 
 /** How many times to send Router Solicitation (RS) packets */
 #define ROUTER_SOLICITATION_ATTEMPTS   (4)
-
-
-/** Convert a 16-bit integer from host (little-endian) to network (big-endian) */
-#ifndef htons
-#define htons(x) ( (((x)<<8)&0xFF00) | (((x)>>8)&0x00FF) )
-#endif
-
-/** Convert a 16-bit integer from network (big-endian) to host (little-endian) */
-#ifndef ntohs
-#define ntohs(x) htons(x)
-#endif
 
 
 /**
