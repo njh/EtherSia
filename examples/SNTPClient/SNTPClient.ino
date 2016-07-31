@@ -30,11 +30,28 @@ UDPSocket udp(ether);
 /** The UDP port number to send NTP packets to */
 const uint8_t NTP_PORT = 123;
 
-/** The size of the NTP request packet */
-const uint8_t NTP_PACKET_SIZE = 48;
-
 /** How often to send NTP packets - RFC4330 says this shouldn't be less than 15 seconds */
 const uint32_t DEFAULT_POLLING_INTERVAL = 15;
+
+/** Data structure for an NTP packet */
+typedef struct ntpStructure {
+    uint8_t flags;
+    uint8_t stratum;
+    uint8_t poll;
+    uint8_t precision;
+    uint32_t rootDelay;
+    uint32_t rootDispersion;
+    uint32_t referenceIdentifer;
+    uint32_t referenceTimestampSeconds;
+    uint32_t referenceTimestampFraction;
+    uint32_t originateTimestampSeconds;
+    uint32_t originateTimestampFraction;
+    uint32_t receiveTimestampSeconds;
+    uint32_t receiveTimestampFraction;
+    uint32_t transmitTimestampSeconds;
+    uint32_t transmitTimestampFraction;
+} __attribute__((__packed__)) ntpType;
+
 
 
 void setup() {
@@ -77,13 +94,13 @@ void loop() {
         Serial.print("len=");
         Serial.println(udp.payloadLength(), DEC);
 
-        // combine the four bytes (two words) into a long integer
-        // this is NTP time (seconds since Jan 1 1900):
-        uint8_t *payload = udp.payload();
-        unsigned long highWord = word(payload[40], payload[41]);
-        unsigned long lowWord = word(payload[42], payload[43]);
-        unsigned long seconds = highWord << 16 | lowWord;
-        displayTime(seconds);
+        // Extract the transmit timestamp from the packet
+        // this is NTP time (seconds since Jan 1 1900)
+        // The ntohl() function converts from network byte-order to native byte-order
+        ntpType *ntpPacket = (ntpType*)udp.payload();
+        displayTime(
+            ntohl(ntpPacket->transmitTimestampSeconds)
+        );
 
         // Success, server is working; reset the polling interval to default
         pollingInterval = DEFAULT_POLLING_INTERVAL;
@@ -94,12 +111,12 @@ void loop() {
         Serial.println("Sending SNTP request.");
 
         // Set the NTP packet to all-zeros
-        uint8_t ntpPacket[NTP_PACKET_SIZE];
-        memset(ntpPacket, 0, NTP_PACKET_SIZE);
+        ntpType ntpPacket;
+        memset(&ntpPacket, 0, sizeof(ntpPacket));
 
         // Set NTP header flags (Leap Indicator=Not Synced, Version=4, Mode=Client)
-        ntpPacket[0] = 0xe3;
-        udp.send(ntpPacket, NTP_PACKET_SIZE);
+        ntpPacket.flags = 0xe3;
+        udp.send(&ntpPacket, sizeof(ntpPacket));
 
         // Exponential back-off; double the polling interval
         // This prevents the server from being overloaded if it is having problems 
