@@ -34,23 +34,22 @@
  *
  */
 
-#include "MACAddress.h"
-
 #ifndef ENC28J60_H
 #define ENC28J60_H
 
+#include "EtherSia.h"
 
 /**
  * Send and receive Ethernet frames directly using a ENC28J60 controller.
  */
-class ENC28J60 {
+class EtherSia_ENC28J60 : public EtherSia {
 
 public:
     /**
      * Constructor that uses the default hardware SPI pins
      * @param cs the Arduino Chip Select / Slave Select pin (default 10)
      */
-    ENC28J60(int8_t cs=10);
+    EtherSia_ENC28J60(int8_t cs=10);
 
     /**
      * Constructor for using software SPI, with custom set of pins
@@ -59,14 +58,14 @@ public:
      * @param mosi the SPI Master Out / Slave In pin
      * @param cs the Arduino Chip Select / Slave Select pin
      */
-    ENC28J60(int8_t clk, int8_t miso, int8_t mosi, int8_t cs);
+    EtherSia_ENC28J60(int8_t clk, int8_t miso, int8_t mosi, int8_t cs);
 
     /**
      * Initialise the Ethernet controller
      * Must be called before sending or receiving Ethernet frames
      * @param address the local MAC address for the Ethernet interface
      */
-    void init(const MACAddress &address);
+    boolean begin(const MACAddress &address);
 
     /**
      * Send an Ethernet frame
@@ -74,7 +73,7 @@ public:
      * @param datalen the length of the data in the packet
      * @return the number of bytes transmitted
      */
-    int send(const uint8_t *data, uint16_t datalen);
+    virtual uint16_t sendFrame(const uint8_t *data, uint16_t datalen);
 
     /**
      * Read an Ethernet frame
@@ -83,15 +82,7 @@ public:
      * @return the length of the received packet
      *         or 0 if no packet was received
      */
-    int read(uint8_t *buffer, uint16_t bufsize);
-
-protected:
-
-    /**
-     * The MAC address of this Ethernet controller
-     * @private
-     */
-    MACAddress _encMacAddress;
+    virtual uint16_t readFrame(uint8_t *buffer, uint16_t bufsize);
 
 private:
 
@@ -118,8 +109,6 @@ private:
     // Previously defined in contiki/core/sys/clock.h
     void clock_delay_usec(uint16_t dt);
 
-
-    uint8_t initialized;
     uint8_t bank;
 
     int8_t _cs, _clk, _mosi, _miso;

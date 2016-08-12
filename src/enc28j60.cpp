@@ -143,7 +143,7 @@ void serial_printf(const char *fmt, ...) {
 
 /*---------------------------------------------------------------------------*/
 uint8_t
-ENC28J60::is_mac_mii_reg(uint8_t reg)
+EtherSia_ENC28J60::is_mac_mii_reg(uint8_t reg)
 {
     /* MAC or MII register (otherwise, ETH register)? */
     switch(bank) {
@@ -159,7 +159,7 @@ ENC28J60::is_mac_mii_reg(uint8_t reg)
 }
 /*---------------------------------------------------------------------------*/
 uint8_t
-ENC28J60::readreg(uint8_t reg)
+EtherSia_ENC28J60::readreg(uint8_t reg)
 {
     uint8_t r;
     enc28j60_arch_spi_select();
@@ -174,7 +174,7 @@ ENC28J60::readreg(uint8_t reg)
 }
 /*---------------------------------------------------------------------------*/
 void
-ENC28J60::writereg(uint8_t reg, uint8_t data)
+EtherSia_ENC28J60::writereg(uint8_t reg, uint8_t data)
 {
     enc28j60_arch_spi_select();
     enc28j60_arch_spi_write(0x40 | (reg & 0x1f));
@@ -183,7 +183,7 @@ ENC28J60::writereg(uint8_t reg, uint8_t data)
 }
 /*---------------------------------------------------------------------------*/
 void
-ENC28J60::setregbitfield(uint8_t reg, uint8_t mask)
+EtherSia_ENC28J60::setregbitfield(uint8_t reg, uint8_t mask)
 {
     if(is_mac_mii_reg(reg)) {
         writereg(reg, readreg(reg) | mask);
@@ -196,7 +196,7 @@ ENC28J60::setregbitfield(uint8_t reg, uint8_t mask)
 }
 /*---------------------------------------------------------------------------*/
 void
-ENC28J60::clearregbitfield(uint8_t reg, uint8_t mask)
+EtherSia_ENC28J60::clearregbitfield(uint8_t reg, uint8_t mask)
 {
     if(is_mac_mii_reg(reg)) {
         writereg(reg, readreg(reg) & ~mask);
@@ -209,14 +209,14 @@ ENC28J60::clearregbitfield(uint8_t reg, uint8_t mask)
 }
 /*---------------------------------------------------------------------------*/
 void
-ENC28J60::setregbank(uint8_t new_bank)
+EtherSia_ENC28J60::setregbank(uint8_t new_bank)
 {
     writereg(ECON1, (readreg(ECON1) & 0xfc) | (new_bank & 0x03));
     bank = new_bank;
 }
 /*---------------------------------------------------------------------------*/
 void
-ENC28J60::writedata(const uint8_t *data, int datalen)
+EtherSia_ENC28J60::writedata(const uint8_t *data, int datalen)
 {
     int i;
     enc28j60_arch_spi_select();
@@ -229,13 +229,13 @@ ENC28J60::writedata(const uint8_t *data, int datalen)
 }
 /*---------------------------------------------------------------------------*/
 void
-ENC28J60::writedatabyte(uint8_t byte)
+EtherSia_ENC28J60::writedatabyte(uint8_t byte)
 {
     writedata(&byte, 1);
 }
 /*---------------------------------------------------------------------------*/
 int
-ENC28J60::readdata(uint8_t *buf, int len)
+EtherSia_ENC28J60::readdata(uint8_t *buf, int len)
 {
     int i;
     enc28j60_arch_spi_select();
@@ -249,7 +249,7 @@ ENC28J60::readdata(uint8_t *buf, int len)
 }
 /*---------------------------------------------------------------------------*/
 uint8_t
-ENC28J60::readdatabyte(void)
+EtherSia_ENC28J60::readdatabyte(void)
 {
     uint8_t r;
     readdata(&r, 1);
@@ -258,7 +258,7 @@ ENC28J60::readdatabyte(void)
 
 /*---------------------------------------------------------------------------*/
 void
-ENC28J60::softreset(void)
+EtherSia_ENC28J60::softreset(void)
 {
     enc28j60_arch_spi_select();
     /* The System Command (soft reset) is 1 1 1 1 1 1 1 1 */
@@ -270,7 +270,7 @@ ENC28J60::softreset(void)
 /*---------------------------------------------------------------------------*/
 #if DEBUG
 uint8_t
-ENC28J60::readrev(void)
+EtherSia_ENC28J60::readrev(void)
 {
     uint8_t rev;
     setregbank(MAADRX_BANK);
@@ -289,7 +289,7 @@ ENC28J60::readrev(void)
 /*---------------------------------------------------------------------------*/
 
 void
-ENC28J60::reset(void)
+EtherSia_ENC28J60::reset(void)
 {
     PRINTF("enc28j60: resetting chip\n");
 
@@ -449,12 +449,12 @@ ENC28J60::reset(void)
 
     /* Set MAC address */
     setregbank(MAADRX_BANK);
-    writereg(MAADR6, _encMacAddress[5]);
-    writereg(MAADR5, _encMacAddress[4]);
-    writereg(MAADR4, _encMacAddress[3]);
-    writereg(MAADR3, _encMacAddress[2]);
-    writereg(MAADR2, _encMacAddress[1]);
-    writereg(MAADR1, _encMacAddress[0]);
+    writereg(MAADR6, _localMac[5]);
+    writereg(MAADR5, _localMac[4]);
+    writereg(MAADR4, _localMac[3]);
+    writereg(MAADR3, _localMac[2]);
+    writereg(MAADR2, _localMac[1]);
+    writereg(MAADR1, _localMac[0]);
 
     /*
       6.6 PHY Initialization Settings
@@ -491,30 +491,24 @@ ENC28J60::reset(void)
     writereg(ECON1, ECON1_RXEN);
 }
 /*---------------------------------------------------------------------------*/
-void
-ENC28J60::init(const MACAddress &address)
+boolean
+EtherSia_ENC28J60::begin(const MACAddress &address)
 {
-    if(initialized) {
-        return;
-    }
-
-    this->_encMacAddress = address;
+    this->_localMac = address;
 
     reset();
 
     PRINTF("ENC28J60 rev. B%d\n", readrev());
 
-    initialized = 1;
+    return EtherSia::begin();
 }
+
 /*---------------------------------------------------------------------------*/
-int
-ENC28J60::send(const uint8_t *data, uint16_t datalen)
+
+uint16_t
+EtherSia_ENC28J60::sendFrame(const uint8_t *data, uint16_t datalen)
 {
     uint16_t dataend;
-
-    if(!initialized) {
-        return -1;
-    }
 
     /*
       1. Appropriately program the ETXST pointer to point to an unused
@@ -591,19 +585,17 @@ ENC28J60::send(const uint8_t *data, uint16_t datalen)
     //PRINTF("enc28j60: sent_packets %d\n", sent_packets);
     return datalen;
 }
+
 /*---------------------------------------------------------------------------*/
-int
-ENC28J60::read(uint8_t *buffer, uint16_t bufsize)
+
+uint16_t
+EtherSia_ENC28J60::readFrame(uint8_t *buffer, uint16_t bufsize)
 {
     int n, len, next, err;
 
     uint8_t nxtpkt[2];
     uint8_t status[2];
     uint8_t length[2];
-
-    if(!initialized) {
-        return -1;
-    }
 
     err = 0;
 
@@ -686,29 +678,27 @@ ENC28J60::read(uint8_t *buffer, uint16_t bufsize)
    ----------------------------------------
 */
 
-ENC28J60::ENC28J60(int8_t cs)
+EtherSia_ENC28J60::EtherSia_ENC28J60(int8_t cs)
 {
     _cs = cs;
     _clk = _mosi = _miso = -1;
 
-    initialized = 0;
     bank = ERXTX_BANK;
 }
 
-ENC28J60::ENC28J60(int8_t clk, int8_t miso, int8_t mosi, int8_t cs)
+EtherSia_ENC28J60::EtherSia_ENC28J60(int8_t clk, int8_t miso, int8_t mosi, int8_t cs)
 {
     _cs = cs;
     _clk = clk;
     _mosi = mosi;
     _miso = miso;
 
-    initialized = 0;
     bank = ERXTX_BANK;
 }
 
 
 void
-ENC28J60::enc28j60_arch_spi_init(void)
+EtherSia_ENC28J60::enc28j60_arch_spi_init(void)
 {
     pinMode(_cs, OUTPUT);
     digitalWrite(_cs, HIGH);
@@ -731,31 +721,31 @@ ENC28J60::enc28j60_arch_spi_init(void)
 }
 
 uint8_t
-ENC28J60::enc28j60_arch_spi_write(uint8_t data)
+EtherSia_ENC28J60::enc28j60_arch_spi_write(uint8_t data)
 {
     return SPI.transfer(data);
 }
 
 uint8_t
-ENC28J60::enc28j60_arch_spi_read(void)
+EtherSia_ENC28J60::enc28j60_arch_spi_read(void)
 {
     return SPI.transfer(0);
 }
 
 void
-ENC28J60::enc28j60_arch_spi_select(void)
+EtherSia_ENC28J60::enc28j60_arch_spi_select(void)
 {
     digitalWrite(_cs, LOW);
 }
 
 void
-ENC28J60::enc28j60_arch_spi_deselect(void)
+EtherSia_ENC28J60::enc28j60_arch_spi_deselect(void)
 {
     digitalWrite(_cs, HIGH);
 }
 
 void
-ENC28J60::clock_delay_usec(uint16_t dt)
+EtherSia_ENC28J60::clock_delay_usec(uint16_t dt)
 {
     delayMicroseconds(dt);
 }

@@ -14,7 +14,7 @@
 #include <EtherSia.h>
 
 /** Ethernet Interface */
-EtherSia ether;
+EtherSia_ENC28J60 ether;
 
 void setup() {
     MACAddress macAddress("3e:ad:93:36:7d:9d");

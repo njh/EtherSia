@@ -7,23 +7,21 @@ static const uint8_t googlePublicDnsAddress[16] PROGMEM = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x88, 0x88
 };
 
-EtherSia::EtherSia(int8_t cs) : ENC28J60(cs)
+EtherSia::EtherSia()
 {
     // Use Google Public DNS by default
     memcpy_P(_dnsServerAddress, googlePublicDnsAddress, sizeof(googlePublicDnsAddress));
 }
 
 
-boolean EtherSia::begin(const MACAddress &macAddress)
+boolean EtherSia::begin()
 {
-    init(macAddress);
-
     // Calculate our link local address
     _linkLocalAddress.setLinkLocalPrefix();
-    _linkLocalAddress.setEui64(macAddress);
+    _linkLocalAddress.setEui64(_localMac);
 
     // Delay a 'random' amount to stop multiple nodes acting at the same time
-    delay(macAddress[5] ^ 0x55);
+    delay(_localMac[5] ^ 0x55);
 
     // Allow some extra time to let the Ethernet controller to get ready
     delay(500);
@@ -91,7 +89,7 @@ IPv6Packet& EtherSia::packet()
 uint16_t EtherSia::receivePacket()
 {
     IPv6Packet& packet = (IPv6Packet&)_buffer;
-    uint16_t len = read(_buffer, sizeof(_buffer));
+    uint16_t len = readFrame(_buffer, sizeof(_buffer));
 
     if (len) {
         if (!packet.isValid()) {
@@ -121,7 +119,7 @@ void EtherSia::prepareSend()
         packet.setSource(_globalAddress);
     }
 
-    packet.setEtherSource(_encMacAddress);
+    packet.setEtherSource(_localMac);
 
     // FIXME: this might be a link-local MAC
     packet.setEtherDestination(_routerMac);
@@ -142,11 +140,11 @@ void EtherSia::prepareReply()
     packet.setSource(*replySourceAddress);
 
     packet.setEtherDestination(packet.etherSource());
-    packet.setEtherSource(_encMacAddress);
+    packet.setEtherSource(_localMac);
 }
 
 void EtherSia::send()
 {
     IPv6Packet& packet = (IPv6Packet&)_buffer;
-    ENC28J60::send(_buffer, packet.length());
+    sendFrame(_buffer, packet.length());
 }

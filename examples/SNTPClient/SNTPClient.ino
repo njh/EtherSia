@@ -23,7 +23,7 @@
 #include "ntp.h"
 
 /** Ethernet Interface (with Chip Select connected to Pin 10) */
-EtherSia ether(10);
+EtherSia_ENC28J60 ether(10);
 
 /** Define a UDP socket to send packets from */
 UDPSocket udp(ether);

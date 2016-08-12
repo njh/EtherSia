@@ -10,7 +10,6 @@
 #include <stdint.h>
 
 #include "endian.h"
-#include "enc28j60.h"
 #include "MACAddress.h"
 #include "IPv6Address.h"
 #include "IPv6Packet.h"
@@ -42,34 +41,13 @@
  *
  * Create an instance of this class for talking to your Ethernet Controller
  */
-class EtherSia : public ENC28J60 {
+class EtherSia {
 public:
     /**
      * Constructor that uses the default hardware SPI pins
      * @param cs the Arduino Chip Select / Slave Select pin (default 10)
      */
-    EtherSia(int8_t cs=10);
-
-    /**
-     * Constructor for using software SPI, with custom set of pins
-     * @param clk the SPI Clock pin
-     * @param miso the SPI Master In / Slave Out pin
-     * @param mosi the SPI Master Out / Slave In pin
-     * @param cs the Arduino Chip Select / Slave Select pin
-     */
-    EtherSia(int8_t clk, int8_t miso, int8_t mosi, int8_t cs);
-
-    /**
-     * Configure the Ethernet interface and get things ready
-     *
-     * If a IPv6 address has not already been set, then
-     * stateless auto-configuration will start - attempting to
-     * get an IP address and Router address using IGMP6.
-     *
-     * @param address The local MAC address for the Ethernet interface
-     * @return Returns true if setting up the Ethernet interface was successful
-     */
-    boolean begin(const MACAddress &address);
+    EtherSia();
 
     /**
      * Manually set the global IPv6 address for the Ethernet Interface
@@ -195,11 +173,42 @@ public:
      */
     IPv6Address* lookupHostname(const char* hostname);
 
+    /**
+     * Configure the Ethernet interface and get things ready
+     *
+     * If a IPv6 address has not already been set, then
+     * stateless auto-configuration will start - attempting to
+     * get an IP address and Router address using IGMP6.
+     *
+     * @param address The local MAC address for the Ethernet interface
+     * @return Returns true if setting up the Ethernet interface was successful
+     */
+    virtual boolean begin();
 
+    /**
+     * Send an Ethernet frame
+     * @param data a pointer to the data to send
+     * @param datalen the length of the data in the packet
+     * @return the number of bytes transmitted
+     */
+    virtual uint16_t sendFrame(const uint8_t *data, uint16_t datalen) = 0;
+
+    /**
+     * Read an Ethernet frame
+     * @param buffer a pointer to a buffer to write the packet to
+     * @param bufsize the available space in the buffer
+     * @return the length of the received packet
+     *         or 0 if no packet was received
+     */
+    virtual uint16_t readFrame(uint8_t *buffer, uint16_t bufsize) = 0;
+    
 protected:
     IPv6Address _linkLocalAddress;  /**< The IPv6 Link-local address of the Ethernet Interface */
     IPv6Address _globalAddress;     /**< The IPv6 Global address of the Ethernet Interface */
     IPv6Address _dnsServerAddress;  /**< The IPv6 address of the configured DNS server */
+
+    /** The MAC address of this Ethernet controller */
+    MACAddress _localMac;
 
     /** The MAC Address of the router to send packets outside of this subnet */
     MACAddress _routerMac;
@@ -262,5 +271,9 @@ protected:
      */
     void icmp6PacketSend();
 };
+
+
+#include "enc28j60.h"
+
 
 #endif

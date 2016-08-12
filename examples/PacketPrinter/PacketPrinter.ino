@@ -11,8 +11,8 @@
 
 #include <EtherSia.h>
 
-/** Ethernet Interface (with Chip Select connected to Pin 10) */
-EtherSia ether(10);
+/** Ethernet Interface with ENC28J60 (with Chip Select connected to Pin 10) */
+EtherSia_ENC28J60 ether(10);
 
 void setup() {
     MACAddress macAddress("e2:d7:66:39:6b:5e");

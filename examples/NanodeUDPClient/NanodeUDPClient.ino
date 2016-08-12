@@ -35,7 +35,7 @@
 #include <EtherSia.h>
 
 /** Ethernet Interface (with Chip Select connected to Pin 8) */
-EtherSia ether(8);
+EtherSia_ENC28J60 ether(8);
 
 /** Define UDP socket to send packets from */
 UDPSocket udp(ether);

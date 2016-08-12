@@ -38,8 +38,8 @@
 /** The pin number the Red LED on Nanode is connected to */
 const int NANODE_LED_PIN = 6;
 
-/** Ethernet Interface (with Chip Select connected to Pin 8) */
-EtherSia ether(8);
+/** ENC28J60 Interface (with Chip Select connected to Pin 8) */
+EtherSia_ENC28J60 ether(8);
 
 /** Define UDP socket and port number to listen on */
 UDPSocket udp(ether, 1234);
