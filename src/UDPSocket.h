@@ -192,6 +192,19 @@ public:
 
 protected:
 
+    /**
+     * Send a UDP packet, based on the contents of the buffer.
+     * This function:
+     * - sets the IP protocol number
+     * - sets the IP packet length
+     * - sets the UDP packet length
+     * - sets the UDP source port number
+     * - sets the UDP checksum
+     *
+     * @param length The length (in bytes) of the data to send
+     */
+    void sendInternal(uint16_t length);
+
     EtherSia &_ether;            ///< The Ethernet Interface that this UDP socket is attached to
     IPv6Address _remoteAddress;  ///< The IPv6 remote address
     uint16_t _remotePort;        ///< The IPv6 remote port number

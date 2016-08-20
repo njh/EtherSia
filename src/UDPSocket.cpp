@@ -120,20 +120,11 @@ void UDPSocket::send(uint16_t len)
     IPv6Packet& packet = _ether.packet();
     struct udp_header *udpHeader = UDP_HEADER_PTR;
 
-    // Setup the IPv6 packet header
-    packet.setPayloadLength(UDP_HEADER_LEN + len);
-    packet.setProtocol(IP6_PROTO_UDP);
     packet.setDestination(_remoteAddress);
+    udpHeader->destinationPort = htons(_remotePort);
     _ether.prepareSend();
 
-    // Set the UDP header
-    udpHeader->length = htons(UDP_HEADER_LEN + len);
-    udpHeader->destinationPort = htons(_remotePort);
-    udpHeader->sourcePort = htons(_localPort);
-    udpHeader->checksum = 0;
-    udpHeader->checksum = htons(packet.calculateChecksum());
-
-    _ether.send();
+    sendInternal(len);
 }
 
 void UDPSocket::sendReply(const char *data)
@@ -154,17 +145,25 @@ void UDPSocket::sendReply(const void* data, uint16_t len)
 void UDPSocket::sendReply(uint16_t len)
 {
     IPv6Packet& packet = _ether.packet();
-
     struct udp_header *udpHeader = UDP_HEADER_PTR;
-    uint16_t destinationPort = udpHeader->destinationPort;
-    uint16_t sourcePort = udpHeader->sourcePort;
 
-    packet.setPayloadLength(UDP_HEADER_LEN + len);
+    udpHeader->destinationPort = udpHeader->sourcePort;
     _ether.prepareReply();
 
-    udpHeader->length = htons(UDP_HEADER_LEN + len);
-    udpHeader->destinationPort = sourcePort;
-    udpHeader->sourcePort = destinationPort;
+    sendInternal(len);
+}
+
+void UDPSocket::sendInternal(uint16_t length)
+{
+    IPv6Packet& packet = _ether.packet();
+    struct udp_header *udpHeader = UDP_HEADER_PTR;
+    uint16_t totalLen = UDP_HEADER_LEN + length;
+
+    packet.setProtocol(IP6_PROTO_UDP);
+    packet.setPayloadLength(totalLen);
+
+    udpHeader->length = htons(totalLen);
+    udpHeader->sourcePort = ntohs(_localPort);
     udpHeader->checksum = 0;
     udpHeader->checksum = htons(packet.calculateChecksum());
 
