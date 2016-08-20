@@ -201,7 +201,7 @@ public:
      *         or 0 if no packet was received
      */
     virtual uint16_t readFrame(uint8_t *buffer, uint16_t bufsize) = 0;
-    
+
 protected:
     IPv6Address _linkLocalAddress;  /**< The IPv6 Link-local address of the Ethernet Interface */
     IPv6Address _globalAddress;     /**< The IPv6 Global address of the Ethernet Interface */
@@ -274,6 +274,10 @@ protected:
 
 
 #include "enc28j60.h"
+
+#ifndef ARDUINO
+#include "LinuxSocket.h"
+#endif
 
 
 #endif
