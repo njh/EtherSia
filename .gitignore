@@ -1,9 +1,9 @@
 *.o
+*.a
 
 docs/html
 docs/doxygen.log
 docs/examples.txt
 
-tests/*.a
 tests/check_*.cpp
 tests/check_*.cmd
