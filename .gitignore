@@ -1,6 +1,9 @@
 *.o
 *.a
 
+*.gcda
+*.gcno
+
 docs/html
 docs/doxygen.log
 docs/examples.txt
