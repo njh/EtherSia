@@ -42,15 +42,15 @@ Compatibility
 EtherSia should work on any Arduino board with [ENC28J60] based network interface.
 There are the results of boards I have tested with:
 
-| Board                           | Tested? | Select Pin (CS) | Hardware MAC Address |
-|---------------------------------|---------|-----------------|----------------------|
-| [Nanode v5]                     | Working | 8               | UNI/O 11AA02E48      |
-| [Nanode RF] / Classic           | -       | 8               | MCP79411             |
-| [Nano Shield]                   | Working | 10              | None                 |
-| Velleman [KA04]/[VMA04]         | -       | 10              | None                 |
-| [Ciseco Ethernet Shield] K016   | -       | 10 / Custom     | None                 |
-| [Snootlab Gate 0.5]             | -       | 10              | None                 |
-
+| Board                         | Class                  | Tested? | CS Pin | Hardware MAC Address |
+|-------------------------------|------------------------|---------|--------|----------------------|
+| [Nanode v5]                   | [EtherSia_ENC28J60]    | Working | 8      | UNI/O 11AA02E48      |
+| [Nanode RF] / Classic         | [EtherSia_ENC28J60]    | -       | 8      | MCP79411             |
+| [Nano Shield]                 | [EtherSia_ENC28J60]    | Working | 10     | None                 |
+| Velleman [KA04]/[VMA04]       | [EtherSia_ENC28J60]    | -       | 10     | None                 |
+| [Ciseco Ethernet Shield] K016 | [EtherSia_ENC28J60]    | -       | 10     | None                 |
+| [Snootlab Gate 0.5]           | [EtherSia_ENC28J60]    | -       | 10     | None                 |
+| _Testing on Linux_            | [EtherSia_LinuxSocket] | Working | -      | -                    |
 
 License: [3-clause BSD license]
 
@@ -62,6 +62,9 @@ License: [3-clause BSD license]
 [ENC28J60]:               http://www.microchip.com/ENC28J60
 [EtherCard]:              http://github.com/jcw/ethercard
 [3-clause BSD license]:   http://opensource.org/licenses/BSD-3-Clause
+
+[EtherSia_ENC28J60]:      http://www.aelius.com/njh/ethersia/class_ether_sia___e_n_c28_j60.html
+[EtherSia_LinuxSocket]:   http://www.aelius.com/njh/ethersia/class_ether_sia___linux_socket.html
 
 [Nanode v5]:              https://wiki.london.hackspace.org.uk/view/Project:Nanode
 [Nanode RF]:              http://ichilton.github.com/nanode/rf/build_guide.html
