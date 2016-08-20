@@ -76,6 +76,12 @@ public:
     uint16_t remotePort();
 
     /**
+     * Get the local UDP port number that packets are being sent to
+     * @return the port number
+     */
+    uint16_t localPort();
+
+    /**
      * Check if a UDP packet is available to be processed on this socket
      * @return true if there is a valid packet has been received for this socket
      */

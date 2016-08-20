@@ -57,6 +57,11 @@ uint16_t UDPSocket::remotePort()
     return _remotePort;
 }
 
+uint16_t UDPSocket::localPort()
+{
+    return _localPort;
+}
+
 boolean UDPSocket::havePacket()
 {
     IPv6Packet& packet = _ether.packet();
