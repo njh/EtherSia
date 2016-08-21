@@ -15,6 +15,7 @@
 #include "IPv6Address.h"
 #include "IPv6Packet.h"
 #include "UDPSocket.h"
+#include "Syslog.h"
 
 /**
  * The maximum size (in bytes) of packet that can be received / sent
