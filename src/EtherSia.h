@@ -44,8 +44,7 @@
 class EtherSia {
 public:
     /**
-     * Constructor that uses the default hardware SPI pins
-     * @param cs the Arduino Chip Select / Slave Select pin (default 10)
+     * Default Constructor
      */
     EtherSia();
 
@@ -180,7 +179,6 @@ public:
      * stateless auto-configuration will start - attempting to
      * get an IP address and Router address using IGMP6.
      *
-     * @param address The local MAC address for the Ethernet interface
      * @return Returns true if setting up the Ethernet interface was successful
      */
     virtual boolean begin();

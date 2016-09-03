@@ -29,9 +29,11 @@ public:
     using EtherSia::begin;
 
     /**
-     * Setup the raw socket ready to start communicating
+     * Initialise the Ethernet controller
      * Must be called before sending or receiving Ethernet frames
+     *
      * @param address the local MAC address for the Ethernet interface
+     * @return Returns true if setting up the Ethernet interface was successful
      */
     virtual boolean begin(const MACAddress &address);
 

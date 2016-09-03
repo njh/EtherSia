@@ -63,7 +63,9 @@ public:
     /**
      * Initialise the Ethernet controller
      * Must be called before sending or receiving Ethernet frames
+     *
      * @param address the local MAC address for the Ethernet interface
+     * @return Returns true if setting up the Ethernet interface was successful
      */
     boolean begin(const MACAddress &address);
 
