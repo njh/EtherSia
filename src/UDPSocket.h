@@ -76,6 +76,12 @@ public:
     uint16_t remotePort();
 
     /**
+     * Get the local UDP port number that packets are being sent to
+     * @return the port number
+     */
+    uint16_t localPort();
+
+    /**
      * Check if a UDP packet is available to be processed on this socket
      * @return true if there is a valid packet has been received for this socket
      */
@@ -185,6 +191,19 @@ public:
     boolean payloadEquals(const char *str);
 
 protected:
+
+    /**
+     * Send a UDP packet, based on the contents of the buffer.
+     * This function:
+     * - sets the IP protocol number
+     * - sets the IP packet length
+     * - sets the UDP packet length
+     * - sets the UDP source port number
+     * - sets the UDP checksum
+     *
+     * @param length The length (in bytes) of the data to send
+     */
+    void sendInternal(uint16_t length);
 
     EtherSia &_ether;            ///< The Ethernet Interface that this UDP socket is attached to
     IPv6Address _remoteAddress;  ///< The IPv6 remote address

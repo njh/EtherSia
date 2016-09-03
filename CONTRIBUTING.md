@@ -1,7 +1,7 @@
 Contributing to EtherSia
 ========================
 
-Contributions to the EtherCard codebase are welcome using the usual Github pull request workflow.
+Contributions to the EtherSia codebase are welcome using the usual Github pull request workflow.
 
 Please remember that memory, particularly RAM, is often limited on Arduino, so try and be efficient when adding new features.
 
