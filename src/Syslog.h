@@ -9,9 +9,6 @@
 #include "UDPSocket.h"
 #include <stdint.h>
 
-/** Default UDP port number to sent Syslog messages to */
-#define SYSLOG_PORT_NUMBER 514
-
 /** An enumeration of valid Syslog priority values */
 enum SyslogPriority {
     LOG_EMERG = 0,    ///< Emergency: System is unusable
@@ -56,6 +53,8 @@ enum SyslogFacility {
 class Syslog : public UDPSocket, public Print {
 
 public:
+    /** Default UDP port number to sent Syslog messages to */
+    const uint16_t SysLogPortNumber = 514;
 
     /**
      * Construct a Syslog socket

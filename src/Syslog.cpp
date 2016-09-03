@@ -31,7 +31,7 @@ uint8_t Syslog::facility()
 
 boolean Syslog::setRemoteAddress(const char *remoteAddress)
 {
-    UDPSocket::setRemoteAddress(remoteAddress, SYSLOG_PORT_NUMBER);
+    return UDPSocket::setRemoteAddress(remoteAddress, SysLogPortNumber);
 }
 
 size_t Syslog::write(uint8_t chr)
@@ -56,4 +56,6 @@ size_t Syslog::write(uint8_t chr)
 
         packetBuffer[_logLen++] = chr;
     }
+
+    return 1;
 }
