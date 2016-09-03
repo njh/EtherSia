@@ -29,7 +29,7 @@
  *
  */
 
-#ifndef ARDUINO
+#if !defined(ARDUINO) && defined(__linux__)
 
 #include <stdint.h>
 #include <stdio.h>
