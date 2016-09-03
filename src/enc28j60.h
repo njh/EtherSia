@@ -60,6 +60,9 @@ public:
      */
     EtherSia_ENC28J60(int8_t clk, int8_t miso, int8_t mosi, int8_t cs);
 
+    // Tell the compiler we want to use begin() from the base class
+    using EtherSia::begin;
+
     /**
      * Initialise the Ethernet controller
      * Must be called before sending or receiving Ethernet frames

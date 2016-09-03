@@ -54,6 +54,9 @@ public:
      */
     EtherSia_W5100(int8_t cs=SS);
 
+    // Tell the compiler we want to use begin() from the base class
+    using EtherSia::begin;
+
     /**
      * Initialise the Ethernet controller
      * Must be called before sending or receiving Ethernet frames
@@ -74,7 +77,7 @@ public:
      * @param datalen the length of the data in the packet
      * @return the number of bytes transmitted
      */
-    uint16_t sendFrame(const uint8_t *data, uint16_t datalen);
+    virtual uint16_t sendFrame(const uint8_t *data, uint16_t datalen);
 
     /**
      * Read an Ethernet frame
@@ -83,7 +86,7 @@ public:
      * @return the length of the received packet
      *         or 0 if no packet was received
      */
-    uint16_t readFrame(uint8_t *buffer, uint16_t bufsize);
+    virtual uint16_t readFrame(uint8_t *buffer, uint16_t bufsize);
 
 private:
     const uint16_t TxBufferAddress = 0x4000;  /* Internal Tx buffer address of the iinchip */
