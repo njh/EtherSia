@@ -16,7 +16,7 @@
 #include <EtherSia.h>
 
 /** Ethernet Interface (with Chip Select connected to Pin 10) */
-EtherSia ether;
+EtherSia_W5100 ether;
 
 /** Define the syslog UDP socket object */
 Syslog syslog(ether);
