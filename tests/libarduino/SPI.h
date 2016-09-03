@@ -27,6 +27,10 @@
 #define SPI_CLOCK_MASK 0x03
 #define SPI_2XCLOCK_MASK 0x01
 
+static const uint8_t SS   = 10;
+static const uint8_t MOSI = 11;
+static const uint8_t MISO = 12;
+static const uint8_t SCK  = 13;
 
 
 class SPIClass {
