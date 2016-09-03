@@ -1,5 +1,8 @@
 #include <stdint.h>
 
+#ifndef ARDUINO_SPI
+#define ARDUINO_SPI 1
+
 #ifndef LSBFIRST
 #define LSBFIRST 0
 #endif
@@ -40,3 +43,5 @@ public:
 };
 
 extern SPIClass SPI;
+
+#endif
