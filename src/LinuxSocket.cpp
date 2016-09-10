@@ -64,7 +64,7 @@ EtherSia_LinuxSocket::begin(const MACAddress &address)
     _localMac = address;
 
     ifindex = if_nametoindex(ifname);
-    if (ifindex < 0) {
+    if (ifindex <= 0) {
         perror("if_nametoindex");
         return false;
     }
