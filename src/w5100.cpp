@@ -220,7 +220,6 @@ boolean EtherSia_W5100::begin(const MACAddress &address)
     wizchip_sw_reset();
 
     setSHAR(_localMac);
-
     setS0_MR(S0_MR_MACRAW);
     setS0_CR(S0_CR_OPEN);
 
@@ -267,7 +266,14 @@ uint16_t EtherSia_W5100::readFrame(uint8_t *buffer, uint16_t bufsize)
         wizchip_recv_data(buffer, data_len );
         setS0_CR(S0_CR_RECV);
 
-        return data_len;
+        // W5100 doesn't have any built-in MAC address filtering
+        if ((buffer[0] & 0x01) || memcmp(&buffer[0], _localMac, 6) == 0)
+        {
+            // Addressed to an Ethernet multicast address or our unicast address
+            return data_len;
+        } else {
+            return 0;
+        }
     }
 
     return 0;
