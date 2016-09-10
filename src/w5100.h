@@ -192,16 +192,16 @@ private:
     void wizchip_recv_data(uint8_t *wizdata, uint16_t len);
 
     /**
-     * Get @ref Sn_TX_FSR register
-     * @return uint16_t. Value of @ref Sn_TX_FSR.
+     * Get @ref S0_TX_FSR register
+     * @return uint16_t. Value of @ref S0_TX_FSR.
      */
-    uint16_t getSn_TX_FSR();
+    uint16_t getS0_TX_FSR();
 
     /**
-     * Get @ref Sn_RX_RSR register
-     * @return uint16_t. Value of @ref Sn_RX_RSR.
+     * Get @ref S0_RX_RSR register
+     * @return uint16_t. Value of @ref S0_RX_RSR.
      */
-    uint16_t getSn_RX_RSR();
+    uint16_t getS0_RX_RSR();
 
 
     /** Common registers */
@@ -221,24 +221,24 @@ private:
 
     /** Socket 0 registers */
     enum {
-        Sn_MR = 0x0400,     ///< Socket Mode register(R/W)
-        Sn_CR = 0x0401,     ///< Socket command register (R/W)
-        Sn_IR = 0x0402,     ///< Socket interrupt register (R)
-        Sn_SR = 0x0403,     ///< Socket status register (R)
-        Sn_PORT = 0x0404,   ///< source port register (R/W)
-        Sn_DHAR = 0x0406,   ///< Peer MAC register address (R/W)
-        Sn_DIPR = 0x040C,   ///< Peer IP register address (R/W)
-        Sn_DPORT = 0x0410,  ///< Peer port register address (R/W)
-        Sn_MSSR = 0x0412,   ///< Maximum Segment Size(Sn_MSSR0) register address (R/W)
-        Sn_PROTO = 0x0414,  ///< IP Protocol(PROTO) Register (R/W)
-        Sn_TOS = 0x0415,    ///< IP Type of Service(TOS) Register (R/W)
-        Sn_TTL = 0x0416,    ///< IP Time to live(TTL) Register (R/W)
-        Sn_TX_FSR = 0x0420, ///< Transmit free memory size register (R)
-        Sn_TX_RD = 0x0422,  ///< Transmit memory read pointer register address (R)
-        Sn_TX_WR = 0x0424,  ///< Transmit memory write pointer register address (R/W)
-        Sn_RX_RSR = 0x0426, ///< Received data size register (R)
-        Sn_RX_RD = 0x0428,  ///< Read point of Receive memory (R/W)
-        Sn_RX_WR = 0x042A,  ///< Write point of Receive memory (R)
+        S0_MR = 0x0400,     ///< Socket Mode register(R/W)
+        S0_CR = 0x0401,     ///< Socket command register (R/W)
+        S0_IR = 0x0402,     ///< Socket interrupt register (R)
+        S0_SR = 0x0403,     ///< Socket status register (R)
+        S0_PORT = 0x0404,   ///< source port register (R/W)
+        S0_DHAR = 0x0406,   ///< Peer MAC register address (R/W)
+        S0_DIPR = 0x040C,   ///< Peer IP register address (R/W)
+        S0_DPORT = 0x0410,  ///< Peer port register address (R/W)
+        S0_MSSR = 0x0412,   ///< Maximum Segment Size(S0_MSSR0) register address (R/W)
+        S0_PROTO = 0x0414,  ///< IP Protocol(PROTO) Register (R/W)
+        S0_TOS = 0x0415,    ///< IP Type of Service(TOS) Register (R/W)
+        S0_TTL = 0x0416,    ///< IP Time to live(TTL) Register (R/W)
+        S0_TX_FSR = 0x0420, ///< Transmit free memory size register (R)
+        S0_TX_RD = 0x0422,  ///< Transmit memory read pointer register address (R)
+        S0_TX_WR = 0x0424,  ///< Transmit memory write pointer register address (R/W)
+        S0_RX_RSR = 0x0426, ///< Received data size register (R)
+        S0_RX_RD = 0x0428,  ///< Read point of Receive memory (R/W)
+        S0_RX_WR = 0x042A,  ///< Write point of Receive memory (R)
     };
 
     /** Mode register values */
@@ -249,29 +249,29 @@ private:
         MR_IND = 0x01,    ///< Indirect Bus Interface mode
     };
 
-    /** Sn_MR register values */
+    /** S0_MR register values */
     enum {
-        Sn_MR_CLOSE = 0x00,  ///< Unused socket
-        Sn_MR_TCP = 0x01,    ///< TCP
-        Sn_MR_UDP = 0x02,    ///< UDP
-        Sn_MR_IPRAW = 0x03,  ///< IP LAYER RAW SOCK
-        Sn_MR_MACRAW = 0x04, ///< MAC LAYER RAW SOCK
-        Sn_MR_ND = 0x20,     ///< No Delayed Ack(TCP) flag
-        Sn_MR_MF = 0x40,     ///< Use MAC filter
-        Sn_MR_MULTI = 0x80,  ///< support multicating
+        S0_MR_CLOSE = 0x00,  ///< Unused socket
+        S0_MR_TCP = 0x01,    ///< TCP
+        S0_MR_UDP = 0x02,    ///< UDP
+        S0_MR_IPRAW = 0x03,  ///< IP LAYER RAW SOCK
+        S0_MR_MACRAW = 0x04, ///< MAC LAYER RAW SOCK
+        S0_MR_ND = 0x20,     ///< No Delayed Ack(TCP) flag
+        S0_MR_MF = 0x40,     ///< Use MAC filter
+        S0_MR_MULTI = 0x80,  ///< support multicating
     };
 
-    /** Sn_CR register values */
+    /** S0_CR register values */
     enum {
-        Sn_CR_OPEN = 0x01,      ///< Initialise or open socket
-        Sn_CR_CLOSE = 0x10,     ///< Close socket
-        Sn_CR_SEND = 0x20,      ///< Update TX buffer pointer and send data
-        Sn_CR_SEND_MAC = 0x21,  ///< Send data with MAC address, so without ARP process
-        Sn_CR_SEND_KEEP = 0x22, ///< Send keep alive message
-        Sn_CR_RECV = 0x40,      ///< Update RX buffer pointer and receive data
+        S0_CR_OPEN = 0x01,      ///< Initialise or open socket
+        S0_CR_CLOSE = 0x10,     ///< Close socket
+        S0_CR_SEND = 0x20,      ///< Update TX buffer pointer and send data
+        S0_CR_SEND_MAC = 0x21,  ///< Send data with MAC address, so without ARP process
+        S0_CR_SEND_KEEP = 0x22, ///< Send keep alive message
+        S0_CR_RECV = 0x40,      ///< Update RX buffer pointer and receive data
     };
 
-    /** Sn_SR register values */
+    /** S0_SR register values */
     enum {
         SOCK_CLOSED = 0x00,      ///< Closed
         SOCK_INIT = 0x13,        ///< Initiate state
@@ -289,13 +289,13 @@ private:
         SOCK_MACRAW = 0x42,      ///< MAC raw mode socket
     };
 
-    /** Sn_IR register values */
+    /** S0_IR register values */
     enum {
-        Sn_IR_CON = 0x01,      ///< CON Interrupt
-        Sn_IR_DISCON = 0x02,   ///< DISCON Interrupt
-        Sn_IR_RECV = 0x04,     ///< RECV Interrupt
-        Sn_IR_TIMEOUT = 0x08,  ///< TIMEOUT Interrupt
-        Sn_IR_SENDOK = 0x10,   ///< SEND_OK Interrupt
+        S0_IR_CON = 0x01,      ///< CON Interrupt
+        S0_IR_DISCON = 0x02,   ///< DISCON Interrupt
+        S0_IR_RECV = 0x04,     ///< RECV Interrupt
+        S0_IR_TIMEOUT = 0x08,  ///< TIMEOUT Interrupt
+        S0_IR_SENDOK = 0x10,   ///< SEND_OK Interrupt
     };
 
     /**
@@ -335,20 +335,20 @@ private:
     }
 
     /**
-     * Set @ref Sn_TXMEM_SIZE register
-     * @param (uint8_t)txmemsize Value to set \ref Sn_TXMEM_SIZE
-     * @sa getSn_TXMEM_SIZE()
+     * Set @ref S0_TXMEM_SIZE register
+     * @param (uint8_t)txmemsize Value to set \ref S0_TXMEM_SIZE
+     * @sa getS0_TXMEM_SIZE()
      */
-    inline uint16_t getSn_TXMEM_SIZE() {
+    inline uint16_t getS0_TXMEM_SIZE() {
         return wizchip_read(TMSR) & 0x03;
     }
 
     /**
-     * Get @ref Sn_RXMEM_SIZE register
-     * @return uint8_t. Value of @ref Sn_RXMEM.
-     * @sa setSn_RXMEM_SIZE()
+     * Get @ref S0_RXMEM_SIZE register
+     * @return uint8_t. Value of @ref S0_RXMEM.
+     * @sa setS0_RXMEM_SIZE()
      */
-    inline uint16_t getSn_RXMEM_SIZE() {
+    inline uint16_t getS0_RXMEM_SIZE() {
         return wizchip_read(RMSR) & 0x03;
     }
 
@@ -356,128 +356,128 @@ private:
      * Get the max RX buffer size of socket sn
      * @return uint16_t. Max buffer size
      */
-    inline uint16_t getSn_RxMAX() {
-        return (uint16_t)(1 << getSn_RXMEM_SIZE()) << 10;
+    inline uint16_t getS0_RxMAX() {
+        return (uint16_t)(1 << getS0_RXMEM_SIZE()) << 10;
     }
 
     /**
      * Get the max TX buffer size of socket sn
      * @return uint16_t. Max buffer size
      */
-    inline uint16_t getSn_TxMAX() {
-        return (uint16_t)(1 << getSn_TXMEM_SIZE()) << 10;
+    inline uint16_t getS0_TxMAX() {
+        return (uint16_t)(1 << getS0_TXMEM_SIZE()) << 10;
     }
 
     /**
      * Get the mask of socket sn RX buffer.
      * @return uint16_t. Mask value
      */
-    inline uint16_t getSn_RxMASK() {
-        return getSn_RxMAX() - 1;
+    inline uint16_t getS0_RxMASK() {
+        return getS0_RxMAX() - 1;
     }
 
     /**
      * Get the mask of socket sn TX buffer
      * @return uint16_t. Mask value
      */
-    inline uint16_t getSn_TxMASK() {
-        return getSn_TxMAX() - 1;
+    inline uint16_t getS0_TxMASK() {
+        return getS0_TxMAX() - 1;
     }
 
     /**
-     * Set @ref Sn_TX_WR register
-     * @param (uint16_t)txwr Value to set @ref Sn_TX_WR
-     * @sa GetSn_TX_WR()
+     * Set @ref S0_TX_WR register
+     * @param (uint16_t)txwr Value to set @ref S0_TX_WR
+     * @sa GetS0_TX_WR()
      */
-    inline uint16_t getSn_TX_WR() {
-        return wizchip_read_word(Sn_TX_WR);
+    inline uint16_t getS0_TX_WR() {
+        return wizchip_read_word(S0_TX_WR);
     }
 
     /**
-     * Set @ref Sn_TX_WR register
-     * @param (uint16_t)txwr Value to set @ref Sn_TX_WR
-     * @sa GetSn_TX_WR()
+     * Set @ref S0_TX_WR register
+     * @param (uint16_t)txwr Value to set @ref S0_TX_WR
+     * @sa GetS0_TX_WR()
      */
-    inline void setSn_TX_WR(uint16_t txwr) {
-        wizchip_write_word(Sn_TX_WR, txwr);
+    inline void setS0_TX_WR(uint16_t txwr) {
+        wizchip_write_word(S0_TX_WR, txwr);
     }
 
     /**
-     * Get @ref Sn_RX_RD register
-     * @regurn uint16_t. Value of @ref Sn_RX_RD.
-     * @sa setSn_RX_RD()
+     * Get @ref S0_RX_RD register
+     * @regurn uint16_t. Value of @ref S0_RX_RD.
+     * @sa setS0_RX_RD()
      */
-    inline uint16_t getSn_RX_RD() {
-        return wizchip_read_word(Sn_RX_RD);
+    inline uint16_t getS0_RX_RD() {
+        return wizchip_read_word(S0_RX_RD);
     }
 
     /**
-     * Set @ref Sn_RX_RD register
-     * @param (uint16_t)rxrd Value to set @ref Sn_RX_RD
-     * @sa getSn_RX_RD()
+     * Set @ref S0_RX_RD register
+     * @param (uint16_t)rxrd Value to set @ref S0_RX_RD
+     * @sa getS0_RX_RD()
      */
-    inline void setSn_RX_RD(uint16_t rxrd) {
-        wizchip_write_word(Sn_RX_RD, rxrd);
+    inline void setS0_RX_RD(uint16_t rxrd) {
+        wizchip_write_word(S0_RX_RD, rxrd);
     }
 
     /**
-     * Set @ref Sn_MR register
-     * @param mr Value to set @ref Sn_MR
-     * @sa getSn_MR()
+     * Set @ref S0_MR register
+     * @param mr Value to set @ref S0_MR
+     * @sa getS0_MR()
      */
-    inline void setSn_MR(uint8_t mr) {
-        wizchip_write(Sn_MR, mr);
+    inline void setS0_MR(uint8_t mr) {
+        wizchip_write(S0_MR, mr);
     }
 
     /**
-     * Get @ref Sn_MR register
-     * @return Value of @ref Sn_MR.
-     * @sa setSn_MR()
+     * Get @ref S0_MR register
+     * @return Value of @ref S0_MR.
+     * @sa setS0_MR()
      */
-    inline uint8_t getSn_MR() {
-        return wizchip_read(Sn_MR);
+    inline uint8_t getS0_MR() {
+        return wizchip_read(S0_MR);
     }
 
     /**
-     * Set @ref Sn_CR register, then wait for the command to execute
-     * @param (uint8_t)cr Value to set @ref Sn_CR
-     * @sa getSn_CR()
+     * Set @ref S0_CR register, then wait for the command to execute
+     * @param (uint8_t)cr Value to set @ref S0_CR
+     * @sa getS0_CR()
      */
-    void setSn_CR(uint8_t cr);
+    void setS0_CR(uint8_t cr);
 
     /**
-     * Get @ref Sn_CR register
-     * @return uint8_t. Value of @ref Sn_CR.
-     * @sa setSn_CR()
+     * Get @ref S0_CR register
+     * @return uint8_t. Value of @ref S0_CR.
+     * @sa setS0_CR()
      */
-    inline uint8_t getSn_CR() {
-        return wizchip_read(Sn_CR);
+    inline uint8_t getS0_CR() {
+        return wizchip_read(S0_CR);
     }
 
     /**
-     * Get @ref Sn_SR register
-     * @return uint8_t. Value of @ref Sn_SR.
+     * Get @ref S0_SR register
+     * @return uint8_t. Value of @ref S0_SR.
      */
-    inline uint8_t getSn_SR() {
-        return wizchip_read(Sn_SR);
+    inline uint8_t getS0_SR() {
+        return wizchip_read(S0_SR);
     }
 
     /**
-     * Get @ref Sn_IR register
-     * @return uint8_t. Value of @ref Sn_IR.
-     * @sa setSn_IR()
+     * Get @ref S0_IR register
+     * @return uint8_t. Value of @ref S0_IR.
+     * @sa setS0_IR()
      */
-    inline uint8_t getSn_IR() {
-        return wizchip_read(Sn_IR);
+    inline uint8_t getS0_IR() {
+        return wizchip_read(S0_IR);
     }
 
     /**
-     * Set @ref Sn_IR register
-     * @param (uint8_t)ir Value to set @ref Sn_IR
-     * @sa getSn_IR()
+     * Set @ref S0_IR register
+     * @param (uint8_t)ir Value to set @ref S0_IR
+     * @sa getS0_IR()
      */
-    inline void setSn_IR(uint8_t ir) {
-        wizchip_write(Sn_IR, ir);
+    inline void setS0_IR(uint8_t ir) {
+        wizchip_write(S0_IR, ir);
     }
 
 
