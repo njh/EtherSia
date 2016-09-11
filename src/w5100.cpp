@@ -199,6 +199,15 @@ void EtherSia_W5100::wizchip_recv_data(uint8_t *wizdata, uint16_t len)
     setS0_RX_RD(ptr);
 }
 
+void EtherSia_W5100::wizchip_recv_ignore(uint16_t len)
+{
+    uint16_t ptr;
+
+    ptr = getS0_RX_RD();
+    ptr += len;
+    setS0_RX_RD(ptr);
+}
+
 
 EtherSia_W5100::EtherSia_W5100(int8_t cs)
 {
@@ -260,10 +269,12 @@ uint16_t EtherSia_W5100::readFrame(uint8_t *buffer, uint16_t bufsize)
         if(data_len > bufsize)
         {
             //Serial.println("Packet is bigger than buffer");
+            wizchip_recv_ignore(data_len);
+            setS0_CR(S0_CR_RECV);
             return 0;
         }
 
-        wizchip_recv_data(buffer, data_len );
+        wizchip_recv_data(buffer, data_len);
         setS0_CR(S0_CR_RECV);
 
         // W5100 doesn't have any built-in MAC address filtering

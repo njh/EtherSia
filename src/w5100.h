@@ -192,6 +192,14 @@ private:
     void wizchip_recv_data(uint8_t *wizdata, uint16_t len);
 
     /**
+     * It discard the received data in RX memory.
+     *
+     * @details It discards the data of the length of <i>len(variable)</i> bytes in internal RX memory.
+     * @param len Data length
+     */
+    void wizchip_recv_ignore(uint16_t len);
+
+    /**
      * Get @ref S0_TX_FSR register
      * @return uint16_t. Value of @ref S0_TX_FSR.
      */
