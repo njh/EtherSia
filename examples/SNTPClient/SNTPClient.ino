@@ -22,8 +22,8 @@
 #include <EtherSia.h>
 #include "ntp.h"
 
-/** Ethernet Interface (with Chip Select connected to Pin 10) */
-EtherSia_ENC28J60 ether(10);
+/** Wiznet W5100 ethernet interface (with Chip Select connected to Pin 10) */
+EtherSia_W5100 ether(10);
 
 /** Define a UDP socket to send packets from */
 UDPSocket udp(ether);
@@ -36,7 +36,7 @@ void setup() {
     MACAddress macAddress("76:73:19:ba:b8:19");
 
     // Setup serial port
-    Serial.begin(38400);
+    Serial.begin(115200);
     Serial.println("[EtherSia SNTPClient]");
     macAddress.println();
 
