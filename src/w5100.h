@@ -229,11 +229,11 @@ private:
 
     /** Socket 0 registers */
     enum {
-        S0_MR = 0x0400,     ///< Socket Mode register(R/W)
-        S0_CR = 0x0401,     ///< Socket command register (R/W)
-        S0_IR = 0x0402,     ///< Socket interrupt register (R)
-        S0_SR = 0x0403,     ///< Socket status register (R)
-        S0_PORT = 0x0404,   ///< source port register (R/W)
+        S0_MR = 0x0400,     ///< Socket 0 Mode register(R/W)
+        S0_CR = 0x0401,     ///< Socket 0 command register (R/W)
+        S0_IR = 0x0402,     ///< Socket 0 interrupt register (R)
+        S0_SR = 0x0403,     ///< Socket 0 status register (R)
+        S0_PORT = 0x0404,   ///< Socket 0 source port register (R/W)
         S0_DHAR = 0x0406,   ///< Peer MAC register address (R/W)
         S0_DIPR = 0x040C,   ///< Peer IP register address (R/W)
         S0_DPORT = 0x0410,  ///< Peer port register address (R/W)
@@ -257,7 +257,7 @@ private:
         MR_IND = 0x01,    ///< Indirect Bus Interface mode
     };
 
-    /** S0_MR register values */
+    /** Socket 0 Mode Register values @ref S0_MR */
     enum {
         S0_MR_CLOSE = 0x00,  ///< Unused socket
         S0_MR_TCP = 0x01,    ///< TCP
@@ -269,7 +269,7 @@ private:
         S0_MR_MULTI = 0x80,  ///< support multicating
     };
 
-    /** S0_CR register values */
+    /** Socket 0 Command Register values @ref S0_CR */
     enum {
         S0_CR_OPEN = 0x01,      ///< Initialise or open socket
         S0_CR_CLOSE = 0x10,     ///< Close socket
@@ -279,7 +279,16 @@ private:
         S0_CR_RECV = 0x40,      ///< Update RX buffer pointer and receive data
     };
 
-    /** S0_SR register values */
+    /** Socket 0 Interrupt register values @ref S0_IR */
+    enum {
+        S0_IR_CON = 0x01,      ///< CON Interrupt
+        S0_IR_DISCON = 0x02,   ///< DISCON Interrupt
+        S0_IR_RECV = 0x04,     ///< RECV Interrupt
+        S0_IR_TIMEOUT = 0x08,  ///< TIMEOUT Interrupt
+        S0_IR_SENDOK = 0x10,   ///< SEND_OK Interrupt
+    };
+
+    /** Socket 0 Status register values @ref S0_SR */
     enum {
         SOCK_CLOSED = 0x00,      ///< Closed
         SOCK_INIT = 0x13,        ///< Initiate state
@@ -295,15 +304,6 @@ private:
         SOCK_UDP = 0x22,         ///< UDP socket
         SOCK_IPRAW = 0x32,       ///< IP raw mode socket
         SOCK_MACRAW = 0x42,      ///< MAC raw mode socket
-    };
-
-    /** S0_IR register values */
-    enum {
-        S0_IR_CON = 0x01,      ///< CON Interrupt
-        S0_IR_DISCON = 0x02,   ///< DISCON Interrupt
-        S0_IR_RECV = 0x04,     ///< RECV Interrupt
-        S0_IR_TIMEOUT = 0x08,  ///< TIMEOUT Interrupt
-        S0_IR_SENDOK = 0x10,   ///< SEND_OK Interrupt
     };
 
     /**
