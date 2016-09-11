@@ -292,16 +292,10 @@ uint16_t EtherSia_W5100::readFrame(uint8_t *buffer, uint16_t bufsize)
 
 uint16_t EtherSia_W5100::sendFrame(const uint8_t *buf, uint16_t len)
 {
-    uint16_t freesize = 0;
-
-    // check size not to exceed MAX size.
-    freesize = getS0_TxMAX();
-    if (len > freesize) len = freesize;
-
     // Wait for space in the transmit buffer
     while(1)
     {
-        freesize = getS0_TX_FSR();
+        uint16_t freesize = getS0_TX_FSR();
         if(getS0_SR() == SOCK_CLOSED) {
             return -1;
         }
