@@ -91,6 +91,12 @@ public:
 private:
     const uint16_t TxBufferAddress = 0x4000;  /* Internal Tx buffer address of the iinchip */
     const uint16_t RxBufferAddress = 0x6000;  /* Internal Rx buffer address of the iinchip */
+    const uint8_t TxBufferSize = 0x3; /* Buffer size configuration: 0=1kb, 1=2kB, 2=4kB, 3=8kB */
+    const uint8_t RxBufferSize = 0x3; /* Buffer size configuration: 0=1kb, 1=2kB, 2=4kB, 3=8kB */
+    const uint16_t TxBufferLength = (1 << TxBufferSize) << 10; /* Length of Tx buffer in bytes */
+    const uint16_t RxBufferLength = (1 << RxBufferSize) << 10; /* Length of Rx buffer in bytes */
+    const uint16_t TxBufferMask = TxBufferLength - 1;
+    const uint16_t RxBufferMask = RxBufferLength - 1;
 
     /**
      * Default function to select chip.
@@ -343,57 +349,7 @@ private:
     }
 
     /**
-     * Set @ref S0_TXMEM_SIZE register
-     * @param (uint8_t)txmemsize Value to set \ref S0_TXMEM_SIZE
-     * @sa getS0_TXMEM_SIZE()
-     */
-    inline uint16_t getS0_TXMEM_SIZE() {
-        return wizchip_read(TMSR) & 0x03;
-    }
-
-    /**
-     * Get @ref S0_RXMEM_SIZE register
-     * @return uint8_t. Value of @ref S0_RXMEM.
-     * @sa setS0_RXMEM_SIZE()
-     */
-    inline uint16_t getS0_RXMEM_SIZE() {
-        return wizchip_read(RMSR) & 0x03;
-    }
-
-    /**
-     * Get the max RX buffer size of socket sn
-     * @return uint16_t. Max buffer size
-     */
-    inline uint16_t getS0_RxMAX() {
-        return (uint16_t)(1 << getS0_RXMEM_SIZE()) << 10;
-    }
-
-    /**
-     * Get the max TX buffer size of socket sn
-     * @return uint16_t. Max buffer size
-     */
-    inline uint16_t getS0_TxMAX() {
-        return (uint16_t)(1 << getS0_TXMEM_SIZE()) << 10;
-    }
-
-    /**
-     * Get the mask of socket sn RX buffer.
-     * @return uint16_t. Mask value
-     */
-    inline uint16_t getS0_RxMASK() {
-        return getS0_RxMAX() - 1;
-    }
-
-    /**
-     * Get the mask of socket sn TX buffer
-     * @return uint16_t. Mask value
-     */
-    inline uint16_t getS0_TxMASK() {
-        return getS0_TxMAX() - 1;
-    }
-
-    /**
-     * Set @ref S0_TX_WR register
+     * Get @ref S0_TX_WR register
      * @param (uint16_t)txwr Value to set @ref S0_TX_WR
      * @sa GetS0_TX_WR()
      */

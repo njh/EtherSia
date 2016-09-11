@@ -145,12 +145,12 @@ void EtherSia_W5100::wizchip_send_data(const uint8_t *wizdata, uint16_t len)
 
     ptr = getS0_TX_WR();
 
-    dst_mask = ptr & getS0_TxMASK();
+    dst_mask = ptr & TxBufferMask;
     dst_ptr = TxBufferAddress + dst_mask;
 
-    if (dst_mask + len > getS0_TxMAX())
+    if (dst_mask + len > TxBufferLength)
     {
-        size = getS0_TxMAX() - dst_mask;
+        size = TxBufferLength - dst_mask;
         wizchip_write_buf(dst_ptr, wizdata, size);
         wizdata += size;
         size = len - size;
@@ -176,13 +176,13 @@ void EtherSia_W5100::wizchip_recv_data(uint8_t *wizdata, uint16_t len)
 
     ptr = getS0_RX_RD();
 
-    src_mask = ptr & getS0_RxMASK();
+    src_mask = ptr & RxBufferMask;
     src_ptr = RxBufferAddress + src_mask;
 
 
-    if( (src_mask + len) > getS0_RxMAX() )
+    if( (src_mask + len) > RxBufferLength )
     {
-        size = getS0_RxMAX() - src_mask;
+        size = RxBufferLength - src_mask;
         wizchip_read_buf(src_ptr, wizdata, size);
         wizdata += size;
         size = len - size;
@@ -228,10 +228,16 @@ boolean EtherSia_W5100::begin(const MACAddress &address)
 
     wizchip_sw_reset();
 
+    // Set the size of the Rx and Tx buffers
+    wizchip_write(RMSR, RxBufferSize);
+    wizchip_write(TMSR, TxBufferSize);
+
+    // Set our local MAC address
     setSHAR(_localMac);
+
+    // Open Socket 0 in MACRaw mode
     setS0_MR(S0_MR_MACRAW);
     setS0_CR(S0_CR_OPEN);
-
     if (getS0_SR() != SOCK_MACRAW) {
         // Failed to put socket 0 into MACRaw mode
         return false;
