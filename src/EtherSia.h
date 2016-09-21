@@ -274,6 +274,7 @@ protected:
 
 #include "enc28j60.h"
 #include "w5100.h"
+#include "w5500.h"
 
 #ifndef ARDUINO
 #include "LinuxSocket.h"

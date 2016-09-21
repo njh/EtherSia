@@ -45,6 +45,7 @@ There are the results of boards I have tested with:
 | Board                         | Class                  | Tested? | CS Pin | Hardware MAC Address |
 |-------------------------------|------------------------|---------|--------|----------------------|
 | [Arduino Ethernet Shield]     | [EtherSia_W5100]       | Working | 10     | None                 |
+| [Arduino Ethernet Shield 2]   | [EtherSia_W5500]       | Working | 10     | None                 |
 | [Nanode v5]                   | [EtherSia_ENC28J60]    | Working | 8      | UNI/O 11AA02E48      |
 | [Nanode v5]                   | [EtherSia_ENC28J60]    | Working | 8      | UNI/O 11AA02E48      |
 | [Nanode RF] / Classic         | [EtherSia_ENC28J60]    | -       | 8      | MCP79411             |
@@ -70,11 +71,12 @@ License: [3-clause BSD license]
 [EtherSia_LinuxSocket]:    http://www.aelius.com/njh/ethersia/class_ether_sia___linux_socket.html
 [EtherSia_W5100]:          http://www.aelius.com/njh/ethersia/class_ether_sia___w5100.html
 
-[Arduino Ethernet Shield]: https://www.arduino.cc/en/Main/ArduinoEthernetShield
-[Nanode v5]:               https://wiki.london.hackspace.org.uk/view/Project:Nanode
-[Nanode RF]:               http://ichilton.github.com/nanode/rf/build_guide.html
-[Nano Shield]:             http://www.tweaking4all.com/hardware/arduino/arduino-enc28j60-ethernet/
-[KA04]:                    http://www.vellemanprojects.eu/products/view/?id=412244
-[VMA04]:                   http://www.vellemanprojects.eu/products/view/?id=412540
-[Ciseco Ethernet Shield]:  http://openmicros.org/articles/88-ciseco-product-documentation/178-enc28j60-ethernet-shield-how-to-build
-[Snootlab Gate 0.5]:       http://shop.snootlab.com/ethernet/85-gate.html
+[Arduino Ethernet Shield]:   https://www.arduino.cc/en/Main/ArduinoEthernetShield
+[Arduino Ethernet Shield 2]: http://www.arduino.org/products/shields/arduino-ethernet-shield-2
+[Nanode v5]:                 https://wiki.london.hackspace.org.uk/view/Project:Nanode
+[Nanode RF]:                 http://ichilton.github.com/nanode/rf/build_guide.html
+[Nano Shield]:               http://www.tweaking4all.com/hardware/arduino/arduino-enc28j60-ethernet/
+[KA04]:                      http://www.vellemanprojects.eu/products/view/?id=412244
+[VMA04]:                     http://www.vellemanprojects.eu/products/view/?id=412540
+[Ciseco Ethernet Shield]:    http://openmicros.org/articles/88-ciseco-product-documentation/178-enc28j60-ethernet-shield-how-to-build
+[Snootlab Gate 0.5]:         http://shop.snootlab.com/ethernet/85-gate.html
