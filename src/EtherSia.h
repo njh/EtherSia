@@ -13,6 +13,8 @@
 #include "MACAddress.h"
 #include "IPv6Address.h"
 #include "IPv6Packet.h"
+#include "TCPServer.h"
+#include "HTTPServer.h"
 #include "UDPSocket.h"
 #include "Syslog.h"
 
@@ -26,7 +28,7 @@
  * sending and receiving packets, so it should be bigger than the
  * biggest packet you want to send or receive.
  */
-#define ETHERSIA_MAX_PACKET_SIZE       500
+#define ETHERSIA_MAX_PACKET_SIZE       600
 
 
 
