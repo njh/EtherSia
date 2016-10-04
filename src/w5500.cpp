@@ -181,7 +181,7 @@ void EtherSia_W5500::wizchip_recv_ignore(uint16_t len)
     setSn_RX_RD(ptr);
 }
 
-void EtherSia_W5500::wizchip_sw_reset(void)
+void EtherSia_W5500::wizchip_sw_reset()
 {
     setMR(MR_RST);
     getMR(); // for delay
@@ -189,7 +189,7 @@ void EtherSia_W5500::wizchip_sw_reset(void)
     setSHAR(_mac_address);
 }
 
-int8_t EtherSia_W5500::wizphy_getphylink(void)
+int8_t EtherSia_W5500::wizphy_getphylink()
 {
     int8_t tmp;
     if(getPHYCFGR() & PHYCFGR_LNK_ON)
@@ -199,7 +199,7 @@ int8_t EtherSia_W5500::wizphy_getphylink(void)
     return tmp;
 }
 
-int8_t EtherSia_W5500::wizphy_getphypmode(void)
+int8_t EtherSia_W5500::wizphy_getphypmode()
 {
     int8_t tmp = 0;
     if(getPHYCFGR() & PHYCFGR_OPMDC_PDOWN)
@@ -209,7 +209,7 @@ int8_t EtherSia_W5500::wizphy_getphypmode(void)
     return tmp;
 }
 
-void EtherSia_W5500::wizphy_reset(void)
+void EtherSia_W5500::wizphy_reset()
 {
     uint8_t tmp = getPHYCFGR();
     tmp &= PHYCFGR_RST;

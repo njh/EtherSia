@@ -138,7 +138,7 @@ private:
      * @note This function help not to access wrong address. If you do not describe this function or register any functions,
      * null function is called.
      */
-    inline uint8_t wizchip_spi_read_byte(void)
+    inline uint8_t wizchip_spi_read_byte()
     {
         return SPI.transfer(0);
     }
