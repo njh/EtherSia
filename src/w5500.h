@@ -155,7 +155,7 @@ private:
 
 
     /**
-     * It reads 1 byte value from a register.
+     * Read a 1 byte value from a register.
      * @param address Register address
      * @return The value of register
      */
@@ -163,7 +163,7 @@ private:
 
     /**
      * Reads a 2 byte value from a register.
-     * @param AddrSel Register address
+     * @param address Register address
      * @return The value of register
      */
     uint16_t wizchip_read_word(uint8_t block, uint16_t address);
@@ -177,7 +177,7 @@ private:
     void wizchip_read_buf(uint8_t block, uint16_t address, uint8_t* pBuf, uint16_t len);
 
     /**
-     * It writes 1 byte value to a register.
+     * Write a 1 byte value to a register.
      * @param address Register address
      * @param wb Write data
      * @return void
@@ -185,8 +185,8 @@ private:
     void wizchip_write(uint8_t block, uint16_t address, uint8_t wb);
 
     /**
-     * Writes a 2 byte value to a register.
-     * @param AddrSel Register address
+     * Write a 2 byte value to a register.
+     * @param address Register address
      * @param wb Write data
      * @return void
      */
@@ -216,12 +216,12 @@ private:
     /**
      * Reset WIZCHIP by softly.
      */
-    void wizchip_sw_reset(void);
+    void wizchip_sw_reset();
 
     /**
      * Get the link status of phy in WIZCHIP
      */
-    int8_t wizphy_getphylink(void);
+    int8_t wizphy_getphylink();
 
     /**
      * Get the power mode of PHY in WIZCHIP
@@ -249,7 +249,7 @@ private:
      *
      * @param wizdata Pointer buffer to write data
      * @param len Data length
-     * @sa wiz_recv_data()
+     * @sa wizchip_recv_data()
      */
     void wizchip_send_data(const uint8_t *wizdata, uint16_t len);
 
@@ -263,7 +263,7 @@ private:
      *
      * @param wizdata Pointer buffer to read data
      * @param len Data length
-     * @sa wiz_send_data()
+     * @sa wizchip_send_data()
      */
     void wizchip_recv_data(uint8_t *wizdata, uint16_t len);
 
@@ -274,6 +274,8 @@ private:
      */
     void wizchip_recv_ignore(uint16_t len);
 
+
+
     /** Common registers */
     enum {
         MR = 0x0000,        ///< Mode Register address (R/W)
@@ -283,7 +285,7 @@ private:
         _IMR_ = 0x0016,     ///< Interrupt mask register (R/W)
         SIR = 0x0017,       ///< Socket Interrupt Register (R/W)
         SIMR = 0x0018,      ///< Socket Interrupt Mask Register (R/W)
-        _RTR_ = 0x0019,     ///< Timeout register address( 1 is 100us) (R/W)
+        _RTR_ = 0x0019,     ///< Timeout register address (1 is 100us) (R/W)
         _RCR_ = 0x001B,     ///< Retry count register (R/W)
         UIPR = 0x0028,      ///< Unreachable IP register address in UDP mode (R)
         UPORTR = 0x002C,    ///< Unreachable Port register address in UDP mode (R)
@@ -293,7 +295,7 @@ private:
 
     /** Socket registers */
     enum {
-        Sn_MR = 0x0000,          ///< socket Mode register (R/W)
+        Sn_MR = 0x0000,          ///< Socket Mode register (R/W)
         Sn_CR = 0x0001,          ///< Socket command register (R/W)
         Sn_IR = 0x0002,          ///< Socket interrupt register (R)
         Sn_SR = 0x0003,          ///< Socket status register (R)
@@ -342,7 +344,7 @@ private:
         IM_IR4 = 0x10,   ///< Magic Packet Interrupt Mask
     };
 
-    /** Socket Mode Register values */
+    /** Socket Mode Register values @ref Sn_MR */
     enum {
         Sn_MR_CLOSE = 0x00,  ///< Unused socket
         Sn_MR_TCP = 0x01,    ///< TCP
@@ -434,8 +436,8 @@ private:
      * @param (uint8_t)mr The value to be set.
      * @sa getMR()
      */
-    inline void setMR(uint8_t mr) {
-        wizchip_write(BlockSelectCReg, MR, mr);
+    inline void setMR(uint8_t mode) {
+        wizchip_write(BlockSelectCReg, MR, mode);
     }
 
     /**
