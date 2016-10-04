@@ -271,16 +271,8 @@ boolean EtherSia_W5500::begin(const MACAddress &address)
     setSHAR(_mac_address);
 
     // Open Socket 0 in MACRaw mode
-    setSn_MR(
-        Sn_MR_MACRAW //|
-        //Sn_MR_MFEN    // Enable MAC Filtering
-        // Disable Broadcast Blocking (Sn_MR_BCASTB)
-        // Disable Multicast Blocking (Sn_MR_MMB)
-        // Disable IPv6 Blocking (Sn_MR_MIP6B)
-    );
-
+    setSn_MR(Sn_MR_MACRAW);
     setSn_CR(Sn_CR_OPEN);
-
     if (getSn_SR() != SOCK_MACRAW) {
         // Failed to put socket 0 into MACRaw mode
         return false;
@@ -327,8 +319,9 @@ uint16_t EtherSia_W5500::readFrame(uint8_t *buffer, uint16_t bufsize)
         wizchip_recv_data(buffer, data_len);
         setSn_CR(Sn_CR_RECV);
 
-        // W5500 MAC filtering seems a bit weird/broken - doing it in software instead
-        if ((buffer[0] & 0x01) || memcmp(&buffer[0], _localMac, 6) == 0)
+        // Had problems with W5500 MAC address filtering (the Sn_MR_MFEN option)
+        // Do it in software instead:
+        if ((buffer[0] & 0x01) || memcmp(&buffer[0], _mac_address, 6) == 0)
         {
             // Addressed to an Ethernet multicast address or our unicast address
             return data_len;
