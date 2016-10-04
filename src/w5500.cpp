@@ -317,13 +317,9 @@ uint16_t EtherSia_W5500::readFrame(uint8_t *buffer, uint16_t bufsize)
         data_len = (data_len<<8) + head[1];
         data_len -= 2;
 
-        Serial.print("data_len=");
-        Serial.println(data_len, DEC);
-
         if (data_len > bufsize)
         {
             // Packet is bigger than buffer - drop the packet
-            Serial.println("Packet is too big");
             wizchip_recv_ignore(data_len);
             setSn_CR(Sn_CR_RECV);
             return 0;
