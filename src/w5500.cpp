@@ -162,7 +162,7 @@ void EtherSia_W5500::wizchip_send_data(const uint8_t *wizdata, uint16_t len)
 
 void EtherSia_W5500::wizchip_recv_data(uint8_t *wizdata, uint16_t len)
 {
-    uint16_t ptr = 0;
+    uint16_t ptr;
 
     if(len == 0) return;
     ptr = getSn_RX_RD();
@@ -172,10 +172,9 @@ void EtherSia_W5500::wizchip_recv_data(uint8_t *wizdata, uint16_t len)
     setSn_RX_RD(ptr);
 }
 
-
 void EtherSia_W5500::wizchip_recv_ignore(uint16_t len)
 {
-    uint16_t ptr = 0;
+    uint16_t ptr;
 
     ptr = getSn_RX_RD();
     ptr += len;
