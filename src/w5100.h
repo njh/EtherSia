@@ -119,11 +119,6 @@ private:
     }
 
     /**
-     * Reset WIZCHIP by softly.
-     */
-    void wizchip_sw_reset(void);
-
-    /**
      * Reads a 1 byte value from a register.
      * @param address Register address
      * @return The value of register
@@ -168,6 +163,12 @@ private:
      * @param len Data length
      */
     void wizchip_write_buf(uint16_t address, const uint8_t* pBuf, uint16_t len);
+
+
+    /**
+     * Reset WIZCHIP by softly.
+     */
+    void wizchip_sw_reset(void);
 
     /**
      * It copies data to internal TX memory

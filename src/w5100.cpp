@@ -33,15 +33,6 @@
 #include "w5100.h"
 
 
-void EtherSia_W5100::wizchip_sw_reset()
-{
-    setMR(MR_RST);
-    getMR(); // for delay
-
-    setSHAR(_localMac);
-}
-
-
 void EtherSia_W5100::wizchip_write(uint16_t address, uint8_t wb )
 {
     wizchip_cs_select();
@@ -206,6 +197,14 @@ void EtherSia_W5100::wizchip_recv_ignore(uint16_t len)
     ptr = getSn_RX_RD();
     ptr += len;
     setSn_RX_RD(ptr);
+}
+
+void EtherSia_W5100::wizchip_sw_reset()
+{
+    setMR(MR_RST);
+    getMR(); // for delay
+
+    setSHAR(_localMac);
 }
 
 
