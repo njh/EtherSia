@@ -70,7 +70,7 @@ public:
      * Shut down the Ethernet controlled
      */
     void end();
-  
+
     /**
      * Send an Ethernet frame
      * @param data a pointer to the data to send
@@ -336,7 +336,7 @@ private:
      * @param (uint8_t*)shar Pointer variable to set local MAC address. It should be allocated 6 bytes.
      * @sa getSHAR()
      */
-    inline void setSHAR(const uint8_t* macaddr)  {
+    inline void setSHAR(const uint8_t* macaddr) {
         wizchip_write_buf(SHAR, macaddr, 6);
     }
 
@@ -451,6 +451,3 @@ private:
 };
 
 #endif //_W5100_H_
-
-
-

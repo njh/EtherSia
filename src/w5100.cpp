@@ -254,7 +254,8 @@ void EtherSia_W5100::end()
 uint16_t EtherSia_W5100::readFrame(uint8_t *buffer, uint16_t bufsize)
 {
     uint16_t len = getSn_RX_RSR();
-    if ( len > 0 )
+
+    if (len > 0)
     {
         uint8_t head[2];
         uint16_t data_len=0;
@@ -266,7 +267,7 @@ uint16_t EtherSia_W5100::readFrame(uint8_t *buffer, uint16_t bufsize)
         data_len = (data_len<<8) + head[1];
         data_len -= 2;
 
-        if(data_len > bufsize)
+        if (data_len > bufsize)
         {
             // Packet is bigger than buffer - drop the packet
             wizchip_recv_ignore(data_len);
