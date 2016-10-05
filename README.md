@@ -70,6 +70,7 @@ License: [3-clause BSD license]
 [EtherSia_ENC28J60]:       http://www.aelius.com/njh/ethersia/class_ether_sia___e_n_c28_j60.html
 [EtherSia_LinuxSocket]:    http://www.aelius.com/njh/ethersia/class_ether_sia___linux_socket.html
 [EtherSia_W5100]:          http://www.aelius.com/njh/ethersia/class_ether_sia___w5100.html
+[EtherSia_W5500]:          http://www.aelius.com/njh/ethersia/class_ether_sia___w5500.html
 
 [Arduino Ethernet Shield]:   https://www.arduino.cc/en/Main/ArduinoEthernetShield
 [Arduino Ethernet Shield 2]: http://www.arduino.org/products/shields/arduino-ethernet-shield-2
