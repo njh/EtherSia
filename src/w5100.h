@@ -70,7 +70,7 @@ public:
      * Shut down the Ethernet controlled
      */
     void end();
-  
+
     /**
      * Send an Ethernet frame
      * @param data a pointer to the data to send
@@ -89,14 +89,17 @@ public:
     virtual uint16_t readFrame(uint8_t *buffer, uint16_t bufsize);
 
 private:
-    const uint16_t TxBufferAddress = 0x4000;  /* Internal Tx buffer address of the iinchip */
-    const uint16_t RxBufferAddress = 0x6000;  /* Internal Rx buffer address of the iinchip */
-    const uint8_t TxBufferSize = 0x3; /* Buffer size configuration: 0=1kb, 1=2kB, 2=4kB, 3=8kB */
-    const uint8_t RxBufferSize = 0x3; /* Buffer size configuration: 0=1kb, 1=2kB, 2=4kB, 3=8kB */
-    const uint16_t TxBufferLength = (1 << TxBufferSize) << 10; /* Length of Tx buffer in bytes */
-    const uint16_t RxBufferLength = (1 << RxBufferSize) << 10; /* Length of Rx buffer in bytes */
-    const uint16_t TxBufferMask = TxBufferLength - 1;
-    const uint16_t RxBufferMask = RxBufferLength - 1;
+    static const uint16_t TxBufferAddress = 0x4000;  /* Internal Tx buffer address of the iinchip */
+    static const uint16_t RxBufferAddress = 0x6000;  /* Internal Rx buffer address of the iinchip */
+    static const uint8_t TxBufferSize = 0x3; /* Buffer size configuration: 0=1kb, 1=2kB, 2=4kB, 3=8kB */
+    static const uint8_t RxBufferSize = 0x3; /* Buffer size configuration: 0=1kb, 1=2kB, 2=4kB, 3=8kB */
+    static const uint16_t TxBufferLength = (1 << TxBufferSize) << 10; /* Length of Tx buffer in bytes */
+    static const uint16_t RxBufferLength = (1 << RxBufferSize) << 10; /* Length of Rx buffer in bytes */
+    static const uint16_t TxBufferMask = TxBufferLength - 1;
+    static const uint16_t RxBufferMask = RxBufferLength - 1;
+
+
+    int8_t _cs;
 
     /**
      * Default function to select chip.
@@ -119,55 +122,56 @@ private:
     }
 
     /**
-     * Reset WIZCHIP by softly.
-     */
-    void wizchip_sw_reset(void);
-
-    /**
-     * Reads a 1 byte value from a register.
-     * @param AddrSel Register address
+     * Read a 1 byte value from a register.
+     * @param address Register address
      * @return The value of register
      */
-    uint8_t wizchip_read(uint16_t AddrSel);
+    uint8_t wizchip_read(uint16_t address);
 
     /**
      * Reads a 2 byte value from a register.
-     * @param AddrSel Register address
+     * @param address Register address
      * @return The value of register
      */
-    uint16_t wizchip_read_word(uint16_t AddrSel);
-
-    /**
-     * Writes a 1 byte value to a register.
-     * @param AddrSel Register address
-     * @param wb Write data
-     * @return void
-     */
-    void wizchip_write(uint16_t AddrSel, uint8_t wb);
-
-    /**
-     * Writes a 2 byte value to a register.
-     * @param AddrSel Register address
-     * @param wb Write data
-     * @return void
-     */
-    void wizchip_write_word(uint16_t AddrSel, uint16_t word);
+    uint16_t wizchip_read_word(uint16_t address);
 
     /**
      * It reads sequence data from registers.
-     * @param AddrSel Register address
+     * @param address Register address
      * @param pBuf Pointer buffer to read data
      * @param len Data length
      */
-    void wizchip_read_buf(uint16_t AddrSel, uint8_t* pBuf, uint16_t len);
+    void wizchip_read_buf(uint16_t address, uint8_t* pBuf, uint16_t len);
+
+    /**
+     * Write a 1 byte value to a register.
+     * @param address Register address
+     * @param wb Write data
+     * @return void
+     */
+    void wizchip_write(uint16_t address, uint8_t wb);
+
+    /**
+     * Write a 2 byte value to a register.
+     * @param address Register address
+     * @param wb Write data
+     * @return void
+     */
+    void wizchip_write_word(uint16_t address, uint16_t word);
 
     /**
      * It writes sequence data to registers.
-     * @param AddrSel Register address
+     * @param address Register address
      * @param pBuf Pointer buffer to write data
      * @param len Data length
      */
-    void wizchip_write_buf(uint16_t AddrSel, const uint8_t* pBuf, uint16_t len);
+    void wizchip_write_buf(uint16_t address, const uint8_t* pBuf, uint16_t len);
+
+
+    /**
+     * Reset WIZCHIP by softly.
+     */
+    void wizchip_sw_reset(void);
 
     /**
      * It copies data to internal TX memory
@@ -179,7 +183,7 @@ private:
      *
      * @param wizdata Pointer buffer to write data
      * @param len Data length
-     * @sa recv_data()
+     * @sa wizchip_recv_data()
      */
     void wizchip_send_data(const uint8_t *wizdata, uint16_t len);
 
@@ -193,66 +197,65 @@ private:
      *
      * @param wizdata Pointer buffer to read data
      * @param len Data length
-     * @sa wiz_send_data()
+     * @sa wizchip_send_data()
      */
     void wizchip_recv_data(uint8_t *wizdata, uint16_t len);
 
     /**
      * It discard the received data in RX memory.
-     *
      * @details It discards the data of the length of <i>len(variable)</i> bytes in internal RX memory.
      * @param len Data length
      */
     void wizchip_recv_ignore(uint16_t len);
 
     /**
-     * Get @ref S0_TX_FSR register
-     * @return uint16_t. Value of @ref S0_TX_FSR.
+     * Get @ref Sn_TX_FSR register
+     * @return uint16_t. Value of @ref Sn_TX_FSR.
      */
-    uint16_t getS0_TX_FSR();
+    uint16_t getSn_TX_FSR();
 
     /**
-     * Get @ref S0_RX_RSR register
-     * @return uint16_t. Value of @ref S0_RX_RSR.
+     * Get @ref Sn_RX_RSR register
+     * @return uint16_t. Value of @ref Sn_RX_RSR.
      */
-    uint16_t getS0_RX_RSR();
+    uint16_t getSn_RX_RSR();
 
 
     /** Common registers */
     enum {
-        MR = 0x0000,    // Mode Register address (R/W)
-        GAR = 0x0001,   // Gateway IP Register address(R/W)
-        SUBR = 0x0005,  // Subnet mask Register address(R/W)
-        SHAR = 0x0009,  // Source MAC Register address(R/W)
-        SIPR = 0x000F,  // Source IP Register address(R/W)
-        IR = 0x0015,    // Interrupt Register(R/W)
-        IMR = 0x0016,   // Socket Interrupt Mask Register(R/W)
-        RTR = 0x0017,   // Timeout register address( 1 is 100us )(R/W)
-        RCR = 0x0019,   // Retry count register(R/W)
-        RMSR = 0x001A,  // Receive Memory Size
-        TMSR = 0x001B,  // Transmit Memory Size
+        MR = 0x0000,        ///< Mode Register address (R/W)
+        GAR = 0x0001,       ///< Gateway IP Register address (R/W)
+        SUBR = 0x0005,      ///< Subnet mask Register address (R/W)
+        SHAR = 0x0009,      ///< Source MAC Register address (R/W)
+        SIPR = 0x000F,      ///< Source IP Register address (R/W)
+        IR = 0x0015,        ///< Interrupt Register (R/W)
+        IMR = 0x0016,       ///< Socket Interrupt Mask Register (R/W)
+        RTR = 0x0017,       ///< Timeout register address (1 is 100us) (R/W)
+        RCR = 0x0019,       ///< Retry count register (R/W)
+        RMSR = 0x001A,      ///< Receive Memory Size
+        TMSR = 0x001B,      ///< Transmit Memory Size
     };
 
-    /** Socket 0 registers */
+    /** Socket registers */
     enum {
-        S0_MR = 0x0400,     ///< Socket 0 Mode register(R/W)
-        S0_CR = 0x0401,     ///< Socket 0 command register (R/W)
-        S0_IR = 0x0402,     ///< Socket 0 interrupt register (R)
-        S0_SR = 0x0403,     ///< Socket 0 status register (R)
-        S0_PORT = 0x0404,   ///< Socket 0 source port register (R/W)
-        S0_DHAR = 0x0406,   ///< Peer MAC register address (R/W)
-        S0_DIPR = 0x040C,   ///< Peer IP register address (R/W)
-        S0_DPORT = 0x0410,  ///< Peer port register address (R/W)
-        S0_MSSR = 0x0412,   ///< Maximum Segment Size(S0_MSSR0) register address (R/W)
-        S0_PROTO = 0x0414,  ///< IP Protocol(PROTO) Register (R/W)
-        S0_TOS = 0x0415,    ///< IP Type of Service(TOS) Register (R/W)
-        S0_TTL = 0x0416,    ///< IP Time to live(TTL) Register (R/W)
-        S0_TX_FSR = 0x0420, ///< Transmit free memory size register (R)
-        S0_TX_RD = 0x0422,  ///< Transmit memory read pointer register address (R)
-        S0_TX_WR = 0x0424,  ///< Transmit memory write pointer register address (R/W)
-        S0_RX_RSR = 0x0426, ///< Received data size register (R)
-        S0_RX_RD = 0x0428,  ///< Read point of Receive memory (R/W)
-        S0_RX_WR = 0x042A,  ///< Write point of Receive memory (R)
+        Sn_MR = 0x0400,     ///< Socket Mode register(R/W)
+        Sn_CR = 0x0401,     ///< Socket command register (R/W)
+        Sn_IR = 0x0402,     ///< Socket interrupt register (R)
+        Sn_SR = 0x0403,     ///< Socket status register (R)
+        Sn_PORT = 0x0404,   ///< Source port register (R/W)
+        Sn_DHAR = 0x0406,   ///< Peer MAC register address (R/W)
+        Sn_DIPR = 0x040C,   ///< Peer IP register address (R/W)
+        Sn_DPORT = 0x0410,  ///< Peer port register address (R/W)
+        Sn_MSSR = 0x0412,   ///< Maximum Segment Size(Sn_MSSR0) register address (R/W)
+        Sn_PROTO = 0x0414,  ///< IP Protocol(PROTO) Register (R/W)
+        Sn_TOS = 0x0415,    ///< IP Type of Service(TOS) Register (R/W)
+        Sn_TTL = 0x0416,    ///< IP Time to live(TTL) Register (R/W)
+        Sn_TX_FSR = 0x0420, ///< Transmit free memory size register (R)
+        Sn_TX_RD = 0x0422,  ///< Transmit memory read pointer register address (R)
+        Sn_TX_WR = 0x0424,  ///< Transmit memory write pointer register address (R/W)
+        Sn_RX_RSR = 0x0426, ///< Received data size register (R)
+        Sn_RX_RD = 0x0428,  ///< Read point of Receive memory (R/W)
+        Sn_RX_WR = 0x042A,  ///< Write point of Receive memory (R)
     };
 
     /** Mode register values */
@@ -263,38 +266,38 @@ private:
         MR_IND = 0x01,    ///< Indirect Bus Interface mode
     };
 
-    /** Socket 0 Mode Register values @ref S0_MR */
+    /** Socket Mode Register values @ref Sn_MR */
     enum {
-        S0_MR_CLOSE = 0x00,  ///< Unused socket
-        S0_MR_TCP = 0x01,    ///< TCP
-        S0_MR_UDP = 0x02,    ///< UDP
-        S0_MR_IPRAW = 0x03,  ///< IP LAYER RAW SOCK
-        S0_MR_MACRAW = 0x04, ///< MAC LAYER RAW SOCK
-        S0_MR_ND = 0x20,     ///< No Delayed Ack(TCP) flag
-        S0_MR_MF = 0x40,     ///< Use MAC filter
-        S0_MR_MULTI = 0x80,  ///< support multicating
+        Sn_MR_CLOSE = 0x00,  ///< Unused socket
+        Sn_MR_TCP = 0x01,    ///< TCP
+        Sn_MR_UDP = 0x02,    ///< UDP
+        Sn_MR_IPRAW = 0x03,  ///< IP LAYER RAW SOCK
+        Sn_MR_MACRAW = 0x04, ///< MAC LAYER RAW SOCK
+        Sn_MR_ND = 0x20,     ///< No Delayed Ack(TCP) flag
+        Sn_MR_MF = 0x40,     ///< Use MAC filter
+        Sn_MR_MULTI = 0x80,  ///< support multicating
     };
 
-    /** Socket 0 Command Register values @ref S0_CR */
+    /** Socket Command Register values */
     enum {
-        S0_CR_OPEN = 0x01,      ///< Initialise or open socket
-        S0_CR_CLOSE = 0x10,     ///< Close socket
-        S0_CR_SEND = 0x20,      ///< Update TX buffer pointer and send data
-        S0_CR_SEND_MAC = 0x21,  ///< Send data with MAC address, so without ARP process
-        S0_CR_SEND_KEEP = 0x22, ///< Send keep alive message
-        S0_CR_RECV = 0x40,      ///< Update RX buffer pointer and receive data
+        Sn_CR_OPEN = 0x01,      ///< Initialise or open socket
+        Sn_CR_CLOSE = 0x10,     ///< Close socket
+        Sn_CR_SEND = 0x20,      ///< Update TX buffer pointer and send data
+        Sn_CR_SEND_MAC = 0x21,  ///< Send data with MAC address, so without ARP process
+        Sn_CR_SEND_KEEP = 0x22, ///< Send keep alive message
+        Sn_CR_RECV = 0x40,      ///< Update RX buffer pointer and receive data
     };
 
-    /** Socket 0 Interrupt register values @ref S0_IR */
+    /** Socket Interrupt register values */
     enum {
-        S0_IR_CON = 0x01,      ///< CON Interrupt
-        S0_IR_DISCON = 0x02,   ///< DISCON Interrupt
-        S0_IR_RECV = 0x04,     ///< RECV Interrupt
-        S0_IR_TIMEOUT = 0x08,  ///< TIMEOUT Interrupt
-        S0_IR_SENDOK = 0x10,   ///< SEND_OK Interrupt
+        Sn_IR_CON = 0x01,      ///< CON Interrupt
+        Sn_IR_DISCON = 0x02,   ///< DISCON Interrupt
+        Sn_IR_RECV = 0x04,     ///< RECV Interrupt
+        Sn_IR_TIMEOUT = 0x08,  ///< TIMEOUT Interrupt
+        Sn_IR_SENDOK = 0x10,   ///< SEND_OK Interrupt
     };
 
-    /** Socket 0 Status register values @ref S0_SR */
+    /** Socket Status Register values */
     enum {
         SOCK_CLOSED = 0x00,      ///< Closed
         SOCK_INIT = 0x13,        ///< Initiate state
@@ -322,7 +325,7 @@ private:
     }
 
     /**
-     * Get @ref MR.
+     * Get Mode Register
      * @return uint8_t. The value of Mode register.
      * @sa setMR()
      */
@@ -331,16 +334,16 @@ private:
     }
 
     /**
-     * Set @ref SHAR.
+     * Set local MAC address
      * @param (uint8_t*)shar Pointer variable to set local MAC address. It should be allocated 6 bytes.
      * @sa getSHAR()
      */
-    inline void setSHAR(const uint8_t* macaddr)  {
+    inline void setSHAR(const uint8_t* macaddr) {
         wizchip_write_buf(SHAR, macaddr, 6);
     }
 
     /**
-     * Get @ref SHAR.
+     * Get local MAC address
      * @param (uint8_t*)shar Pointer variable to get local MAC address. It should be allocated 6 bytes.
      * @sa setSHAR()
      */
@@ -349,107 +352,100 @@ private:
     }
 
     /**
-     * Get @ref S0_TX_WR register
-     * @param (uint16_t)txwr Value to set @ref S0_TX_WR
-     * @sa GetS0_TX_WR()
+     * Get @ref Sn_TX_WR register
+     * @param (uint16_t)txwr Value to set @ref Sn_TX_WR
+     * @sa GetSn_TX_WR()
      */
-    inline uint16_t getS0_TX_WR() {
-        return wizchip_read_word(S0_TX_WR);
+    inline uint16_t getSn_TX_WR() {
+        return wizchip_read_word(Sn_TX_WR);
     }
 
     /**
-     * Set @ref S0_TX_WR register
-     * @param (uint16_t)txwr Value to set @ref S0_TX_WR
-     * @sa GetS0_TX_WR()
+     * Set @ref Sn_TX_WR register
+     * @param (uint16_t)txwr Value to set @ref Sn_TX_WR
+     * @sa GetSn_TX_WR()
      */
-    inline void setS0_TX_WR(uint16_t txwr) {
-        wizchip_write_word(S0_TX_WR, txwr);
+    inline void setSn_TX_WR(uint16_t txwr) {
+        wizchip_write_word(Sn_TX_WR, txwr);
     }
 
     /**
-     * Get @ref S0_RX_RD register
-     * @regurn uint16_t. Value of @ref S0_RX_RD.
-     * @sa setS0_RX_RD()
+     * Get @ref Sn_RX_RD register
+     * @regurn uint16_t. Value of @ref Sn_RX_RD.
+     * @sa setSn_RX_RD()
      */
-    inline uint16_t getS0_RX_RD() {
-        return wizchip_read_word(S0_RX_RD);
+    inline uint16_t getSn_RX_RD() {
+        return wizchip_read_word(Sn_RX_RD);
     }
 
     /**
-     * Set @ref S0_RX_RD register
-     * @param (uint16_t)rxrd Value to set @ref S0_RX_RD
-     * @sa getS0_RX_RD()
+     * Set @ref Sn_RX_RD register
+     * @param (uint16_t)rxrd Value to set @ref Sn_RX_RD
+     * @sa getSn_RX_RD()
      */
-    inline void setS0_RX_RD(uint16_t rxrd) {
-        wizchip_write_word(S0_RX_RD, rxrd);
+    inline void setSn_RX_RD(uint16_t rxrd) {
+        wizchip_write_word(Sn_RX_RD, rxrd);
     }
 
     /**
-     * Set @ref S0_MR register
-     * @param mr Value to set @ref S0_MR
-     * @sa getS0_MR()
+     * Set @ref Sn_MR register
+     * @param (uint8_t)mr Value to set @ref Sn_MR
+     * @sa getSn_MR()
      */
-    inline void setS0_MR(uint8_t mr) {
-        wizchip_write(S0_MR, mr);
+    inline void setSn_MR(uint8_t mr) {
+        wizchip_write(Sn_MR, mr);
     }
 
     /**
-     * Get @ref S0_MR register
-     * @return Value of @ref S0_MR.
-     * @sa setS0_MR()
+     * Get @ref Sn_MR register
+     * @return uint8_t. Value of @ref Sn_MR.
+     * @sa setSn_MR()
      */
-    inline uint8_t getS0_MR() {
-        return wizchip_read(S0_MR);
+    inline uint8_t getSn_MR() {
+        return wizchip_read(Sn_MR);
     }
 
     /**
-     * Set @ref S0_CR register, then wait for the command to execute
-     * @param (uint8_t)cr Value to set @ref S0_CR
-     * @sa getS0_CR()
+     * Set @ref Sn_CR register, then wait for the command to execute
+     * @param (uint8_t)cr Value to set @ref Sn_CR
+     * @sa getSn_CR()
      */
-    void setS0_CR(uint8_t cr);
+    void setSn_CR(uint8_t cr);
 
     /**
-     * Get @ref S0_CR register
-     * @return uint8_t. Value of @ref S0_CR.
-     * @sa setS0_CR()
+     * Get @ref Sn_CR register
+     * @return uint8_t. Value of @ref Sn_CR.
+     * @sa setSn_CR()
      */
-    inline uint8_t getS0_CR() {
-        return wizchip_read(S0_CR);
+    inline uint8_t getSn_CR() {
+        return wizchip_read(Sn_CR);
     }
 
     /**
-     * Get @ref S0_SR register
-     * @return uint8_t. Value of @ref S0_SR.
+     * Get @ref Sn_SR register
+     * @return uint8_t. Value of @ref Sn_SR.
      */
-    inline uint8_t getS0_SR() {
-        return wizchip_read(S0_SR);
+    inline uint8_t getSn_SR() {
+        return wizchip_read(Sn_SR);
     }
 
     /**
-     * Get @ref S0_IR register
-     * @return uint8_t. Value of @ref S0_IR.
-     * @sa setS0_IR()
+     * Get @ref Sn_IR register
+     * @return uint8_t. Value of @ref Sn_IR.
+     * @sa setSn_IR()
      */
-    inline uint8_t getS0_IR() {
-        return wizchip_read(S0_IR);
+    inline uint8_t getSn_IR() {
+        return wizchip_read(Sn_IR);
     }
 
     /**
-     * Set @ref S0_IR register
-     * @param (uint8_t)ir Value to set @ref S0_IR
-     * @sa getS0_IR()
+     * Set @ref Sn_IR register
+     * @param (uint8_t)ir Value to set @ref Sn_IR
+     * @sa getSn_IR()
      */
-    inline void setS0_IR(uint8_t ir) {
-        wizchip_write(S0_IR, ir);
+    inline void setSn_IR(uint8_t ir) {
+        wizchip_write(Sn_IR, ir);
     }
-
-
-    int8_t _cs;
-
 };
 
-#endif //_W5100_H_
-
-
-
+#endif //ETHERSIA_W5100_H

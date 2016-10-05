@@ -32,6 +32,7 @@ void pinMode(uint8_t, uint8_t);
 void digitalWrite(uint8_t, uint8_t);
 int digitalRead(uint8_t);
 
+long random();
 long random(long);
 long random(long, long);
 void randomSeed(unsigned long);

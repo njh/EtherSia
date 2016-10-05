@@ -6,6 +6,8 @@
 
 class Stream : public Print {
 
+public:
+    void begin(int baud);
 };
 
 extern Stream Serial;

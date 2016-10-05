@@ -162,7 +162,7 @@ void EtherSia_W5500::wizchip_send_data(const uint8_t *wizdata, uint16_t len)
 
 void EtherSia_W5500::wizchip_recv_data(uint8_t *wizdata, uint16_t len)
 {
-    uint16_t ptr = 0;
+    uint16_t ptr;
 
     if(len == 0) return;
     ptr = getSn_RX_RD();
@@ -172,17 +172,16 @@ void EtherSia_W5500::wizchip_recv_data(uint8_t *wizdata, uint16_t len)
     setSn_RX_RD(ptr);
 }
 
-
 void EtherSia_W5500::wizchip_recv_ignore(uint16_t len)
 {
-    uint16_t ptr = 0;
+    uint16_t ptr;
 
     ptr = getSn_RX_RD();
     ptr += len;
     setSn_RX_RD(ptr);
 }
 
-void EtherSia_W5500::wizchip_sw_reset(void)
+void EtherSia_W5500::wizchip_sw_reset()
 {
     setMR(MR_RST);
     getMR(); // for delay
@@ -190,7 +189,7 @@ void EtherSia_W5500::wizchip_sw_reset(void)
     setSHAR(_mac_address);
 }
 
-int8_t EtherSia_W5500::wizphy_getphylink(void)
+int8_t EtherSia_W5500::wizphy_getphylink()
 {
     int8_t tmp;
     if(getPHYCFGR() & PHYCFGR_LNK_ON)
@@ -200,7 +199,7 @@ int8_t EtherSia_W5500::wizphy_getphylink(void)
     return tmp;
 }
 
-int8_t EtherSia_W5500::wizphy_getphypmode(void)
+int8_t EtherSia_W5500::wizphy_getphypmode()
 {
     int8_t tmp = 0;
     if(getPHYCFGR() & PHYCFGR_OPMDC_PDOWN)
@@ -210,7 +209,7 @@ int8_t EtherSia_W5500::wizphy_getphypmode(void)
     return tmp;
 }
 
-void EtherSia_W5500::wizphy_reset(void)
+void EtherSia_W5500::wizphy_reset()
 {
     uint8_t tmp = getPHYCFGR();
     tmp &= PHYCFGR_RST;
@@ -272,16 +271,8 @@ boolean EtherSia_W5500::begin(const MACAddress &address)
     setSHAR(_mac_address);
 
     // Open Socket 0 in MACRaw mode
-    setSn_MR(
-        Sn_MR_MACRAW //|
-        //Sn_MR_MFEN    // Enable MAC Filtering
-        // Disable Broadcast Blocking (Sn_MR_BCASTB)
-        // Disable Multicast Blocking (Sn_MR_MMB)
-        // Disable IPv6 Blocking (Sn_MR_MIP6B)
-    );
-
+    setSn_MR(Sn_MR_MACRAW);
     setSn_CR(Sn_CR_OPEN);
-
     if (getSn_SR() != SOCK_MACRAW) {
         // Failed to put socket 0 into MACRaw mode
         return false;
@@ -317,13 +308,9 @@ uint16_t EtherSia_W5500::readFrame(uint8_t *buffer, uint16_t bufsize)
         data_len = (data_len<<8) + head[1];
         data_len -= 2;
 
-        Serial.print("data_len=");
-        Serial.println(data_len, DEC);
-
         if (data_len > bufsize)
         {
             // Packet is bigger than buffer - drop the packet
-            Serial.println("Packet is too big");
             wizchip_recv_ignore(data_len);
             setSn_CR(Sn_CR_RECV);
             return 0;
@@ -332,8 +319,9 @@ uint16_t EtherSia_W5500::readFrame(uint8_t *buffer, uint16_t bufsize)
         wizchip_recv_data(buffer, data_len);
         setSn_CR(Sn_CR_RECV);
 
-        // W5500 MAC filtering seems a bit weird/broken - doing it in software instead
-        if ((buffer[0] & 0x01) || memcmp(&buffer[0], _localMac, 6) == 0)
+        // Had problems with W5500 MAC address filtering (the Sn_MR_MFEN option)
+        // Do it in software instead:
+        if ((buffer[0] & 0x01) || memcmp(&buffer[0], _mac_address, 6) == 0)
         {
             // Addressed to an Ethernet multicast address or our unicast address
             return data_len;

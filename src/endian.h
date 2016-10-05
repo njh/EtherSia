@@ -11,10 +11,10 @@
 /** Convert a 32-bit integer from host (little-endian) to network (big-endian) */
 #ifndef htonl
 #define htonl(x) (           \
-    ((x>>24) & 0x000000ff) | \
-    ((x<<8)  & 0x00ff0000) | \
-    ((x>>8)  & 0x0000ff00) | \
-    ((x<<24) & 0xff000000)   \
+    (((x)>>24) & 0x000000ff) | \
+    (((x)<<8)  & 0x00ff0000) | \
+    (((x)>>8)  & 0x0000ff00) | \
+    (((x)<<24) & 0xff000000)   \
 )
 #endif
 

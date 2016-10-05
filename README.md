@@ -15,7 +15,7 @@ Design Decisions
 ----------------
 1. Optimised for Arduino - not a general purpose library
 2. Should be easy to use - this is what Arduino is all about
-3. Should work within the constrains of an [Uno] - 32k ROM and 2k RAM
+3. Should work within the constraints of an [Uno] - 32k ROM and 2k RAM
 4. Should follow the [Style Guide] and avoid using complex C features like Pointers and Callbacks
 5. Decouple the core from protocols where possible, to allow for program size optimisations
 
@@ -70,6 +70,7 @@ License: [3-clause BSD license]
 [EtherSia_ENC28J60]:       http://www.aelius.com/njh/ethersia/class_ether_sia___e_n_c28_j60.html
 [EtherSia_LinuxSocket]:    http://www.aelius.com/njh/ethersia/class_ether_sia___linux_socket.html
 [EtherSia_W5100]:          http://www.aelius.com/njh/ethersia/class_ether_sia___w5100.html
+[EtherSia_W5500]:          http://www.aelius.com/njh/ethersia/class_ether_sia___w5500.html
 
 [Arduino Ethernet Shield]:   https://www.arduino.cc/en/Main/ArduinoEthernetShield
 [Arduino Ethernet Shield 2]: http://www.arduino.org/products/shields/arduino-ethernet-shield-2

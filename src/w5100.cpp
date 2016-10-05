@@ -33,104 +33,90 @@
 #include "w5100.h"
 
 
-void EtherSia_W5100::wizchip_sw_reset()
-{
-    setMR(MR_RST);
-    getMR(); // for delay
-
-    setSHAR(_localMac);
-}
-
-
-void EtherSia_W5100::wizchip_write(uint16_t AddrSel, uint8_t wb )
-{
-    wizchip_cs_select();
-    SPI.transfer(0xF0);
-    SPI.transfer((AddrSel & 0xFF00) >>  8);
-    SPI.transfer((AddrSel & 0x00FF) >>  0);
-    SPI.transfer(wb);    // Data write (write 1byte data)
-    wizchip_cs_deselect();
-}
-
-void EtherSia_W5100::wizchip_write_word(uint16_t AddrSel, uint16_t word)
-{
-    wizchip_write(AddrSel,   (uint8_t)(word>>8));
-    wizchip_write(AddrSel+1, (uint8_t) word);
-}
-
-uint8_t EtherSia_W5100::wizchip_read(uint16_t AddrSel)
+uint8_t EtherSia_W5100::wizchip_read(uint16_t address)
 {
     uint8_t ret;
 
     wizchip_cs_select();
     SPI.transfer(0x0F);
-    SPI.transfer((AddrSel & 0xFF00) >>  8);
-    SPI.transfer((AddrSel & 0x00FF) >>  0);
+    SPI.transfer((address & 0xFF00) >>  8);
+    SPI.transfer((address & 0x00FF) >>  0);
     ret = SPI.transfer(0);
     wizchip_cs_deselect();
 
     return ret;
 }
 
-uint16_t EtherSia_W5100::wizchip_read_word(uint16_t AddrSel)
+uint16_t EtherSia_W5100::wizchip_read_word(uint16_t address)
 {
-    return ((uint16_t)wizchip_read(AddrSel) << 8) + wizchip_read(AddrSel + 1);
+    return ((uint16_t)wizchip_read(address) << 8) + wizchip_read(address + 1);
 }
 
 
-void EtherSia_W5100::wizchip_write_buf(uint16_t AddrSel, const uint8_t* pBuf, uint16_t len)
-{
-    for(uint16_t i = 0; i < len; i++)
-    {
-        wizchip_write(AddrSel + i, pBuf[i]);
-    }
-}
-
-
-void EtherSia_W5100::wizchip_read_buf(uint16_t AddrSel, uint8_t* pBuf, uint16_t len)
+void EtherSia_W5100::wizchip_read_buf(uint16_t address, uint8_t* pBuf, uint16_t len)
 {
     for(uint16_t i = 0; i < len; i++)
     {
-        pBuf[i] = wizchip_read(AddrSel + i);
+        pBuf[i] = wizchip_read(address + i);
     }
 }
 
-void EtherSia_W5100::setS0_CR(uint8_t cr) {
+void EtherSia_W5100::wizchip_write(uint16_t address, uint8_t wb)
+{
+    wizchip_cs_select();
+    SPI.transfer(0xF0);
+    SPI.transfer((address & 0xFF00) >>  8);
+    SPI.transfer((address & 0x00FF) >>  0);
+    SPI.transfer(wb);    // Data write (write 1byte data)
+    wizchip_cs_deselect();
+}
+
+void EtherSia_W5100::wizchip_write_word(uint16_t address, uint16_t word)
+{
+    wizchip_write(address,   (uint8_t)(word>>8));
+    wizchip_write(address+1, (uint8_t) word);
+}
+
+void EtherSia_W5100::wizchip_write_buf(uint16_t address, const uint8_t* pBuf, uint16_t len)
+{
+    for(uint16_t i = 0; i < len; i++)
+    {
+        wizchip_write(address + i, pBuf[i]);
+    }
+}
+
+void EtherSia_W5100::setSn_CR(uint8_t cr) {
     // Write the command to the Command Register
-    wizchip_write(S0_CR, cr);
+    wizchip_write(Sn_CR, cr);
 
     // Now wait for the command to complete
-    while( wizchip_read(S0_CR) );
+    while( wizchip_read(Sn_CR) );
 }
 
-uint16_t EtherSia_W5100::getS0_TX_FSR()
+uint16_t EtherSia_W5100::getSn_TX_FSR()
 {
     uint16_t val=0,val1=0;
     do
     {
-        val1 = wizchip_read(S0_TX_FSR);
-        val1 = (val1 << 8) + wizchip_read(S0_TX_FSR + 1);
+        val1 = wizchip_read_word(Sn_TX_FSR);
         if (val1 != 0)
         {
-            val = wizchip_read(S0_TX_FSR);
-            val = (val << 8) + wizchip_read(S0_TX_FSR + 1);
+            val = wizchip_read_word(Sn_TX_FSR);
         }
     } while (val != val1);
     return val;
 }
 
 
-uint16_t EtherSia_W5100::getS0_RX_RSR()
+uint16_t EtherSia_W5100::getSn_RX_RSR()
 {
     uint16_t val=0,val1=0;
     do
     {
-        val1 = wizchip_read(S0_RX_RSR);
-        val1 = (val1 << 8) + wizchip_read(S0_RX_RSR + 1);
+        val1 = wizchip_read_word(Sn_RX_RSR);
         if (val1 != 0)
         {
-            val = wizchip_read(S0_RX_RSR);
-            val = (val << 8) + wizchip_read(S0_RX_RSR + 1);
+            val = wizchip_read_word(Sn_RX_RSR);
         }
     } while (val != val1);
     return val;
@@ -143,7 +129,7 @@ void EtherSia_W5100::wizchip_send_data(const uint8_t *wizdata, uint16_t len)
     uint16_t dst_mask;
     uint16_t dst_ptr;
 
-    ptr = getS0_TX_WR();
+    ptr = getSn_TX_WR();
 
     dst_mask = ptr & TxBufferMask;
     dst_ptr = TxBufferAddress + dst_mask;
@@ -164,7 +150,7 @@ void EtherSia_W5100::wizchip_send_data(const uint8_t *wizdata, uint16_t len)
 
     ptr += len;
 
-    setS0_TX_WR(ptr);
+    setSn_TX_WR(ptr);
 }
 
 void EtherSia_W5100::wizchip_recv_data(uint8_t *wizdata, uint16_t len)
@@ -174,7 +160,7 @@ void EtherSia_W5100::wizchip_recv_data(uint8_t *wizdata, uint16_t len)
     uint16_t src_mask;
     uint16_t src_ptr;
 
-    ptr = getS0_RX_RD();
+    ptr = getSn_RX_RD();
 
     src_mask = ptr & RxBufferMask;
     src_ptr = RxBufferAddress + src_mask;
@@ -196,16 +182,24 @@ void EtherSia_W5100::wizchip_recv_data(uint8_t *wizdata, uint16_t len)
 
     ptr += len;
 
-    setS0_RX_RD(ptr);
+    setSn_RX_RD(ptr);
 }
 
 void EtherSia_W5100::wizchip_recv_ignore(uint16_t len)
 {
     uint16_t ptr;
 
-    ptr = getS0_RX_RD();
+    ptr = getSn_RX_RD();
     ptr += len;
-    setS0_RX_RD(ptr);
+    setSn_RX_RD(ptr);
+}
+
+void EtherSia_W5100::wizchip_sw_reset()
+{
+    setMR(MR_RST);
+    getMR(); // for delay
+
+    setSHAR(_localMac);
 }
 
 
@@ -236,9 +230,9 @@ boolean EtherSia_W5100::begin(const MACAddress &address)
     setSHAR(_localMac);
 
     // Open Socket 0 in MACRaw mode
-    setS0_MR(S0_MR_MACRAW);
-    setS0_CR(S0_CR_OPEN);
-    if (getS0_SR() != SOCK_MACRAW) {
+    setSn_MR(Sn_MR_MACRAW);
+    setSn_CR(Sn_CR_OPEN);
+    if (getSn_SR() != SOCK_MACRAW) {
         // Failed to put socket 0 into MACRaw mode
         return false;
     }
@@ -248,40 +242,41 @@ boolean EtherSia_W5100::begin(const MACAddress &address)
 
 void EtherSia_W5100::end()
 {
-    setS0_CR(S0_CR_CLOSE);
+    setSn_CR(Sn_CR_CLOSE);
 
     // clear all interrupt of the socket
-    setS0_IR(0xFF);
+    setSn_IR(0xFF);
 
     // Wait for socket to change to closed
-    while(getS0_SR() != SOCK_CLOSED);
+    while(getSn_SR() != SOCK_CLOSED);
 }
 
 uint16_t EtherSia_W5100::readFrame(uint8_t *buffer, uint16_t bufsize)
 {
-    uint16_t len = getS0_RX_RSR();
-    if ( len > 0 )
+    uint16_t len = getSn_RX_RSR();
+
+    if (len > 0)
     {
         uint8_t head[2];
         uint16_t data_len=0;
 
         wizchip_recv_data(head, 2);
-        setS0_CR(S0_CR_RECV);
+        setSn_CR(Sn_CR_RECV);
 
         data_len = head[0];
         data_len = (data_len<<8) + head[1];
         data_len -= 2;
 
-        if(data_len > bufsize)
+        if (data_len > bufsize)
         {
             // Packet is bigger than buffer - drop the packet
             wizchip_recv_ignore(data_len);
-            setS0_CR(S0_CR_RECV);
+            setSn_CR(Sn_CR_RECV);
             return 0;
         }
 
         wizchip_recv_data(buffer, data_len);
-        setS0_CR(S0_CR_RECV);
+        setSn_CR(Sn_CR_RECV);
 
         // W5100 doesn't have any built-in MAC address filtering
         if ((buffer[0] & 0x01) || memcmp(&buffer[0], _localMac, 6) == 0)
@@ -301,28 +296,28 @@ uint16_t EtherSia_W5100::sendFrame(const uint8_t *buf, uint16_t len)
     // Wait for space in the transmit buffer
     while(1)
     {
-        uint16_t freesize = getS0_TX_FSR();
-        if(getS0_SR() == SOCK_CLOSED) {
+        uint16_t freesize = getSn_TX_FSR();
+        if(getSn_SR() == SOCK_CLOSED) {
             return -1;
         }
         if (len <= freesize) break;
     };
 
     wizchip_send_data(buf, len);
-    setS0_CR(S0_CR_SEND);
+    setSn_CR(Sn_CR_SEND);
 
     while(1)
     {
-        uint8_t tmp = getS0_IR();
-        if (tmp & S0_IR_SENDOK)
+        uint8_t tmp = getSn_IR();
+        if (tmp & Sn_IR_SENDOK)
         {
-            setS0_IR(S0_IR_SENDOK);
+            setSn_IR(Sn_IR_SENDOK);
             // Packet sent ok
             break;
         }
-        else if (tmp & S0_IR_TIMEOUT)
+        else if (tmp & Sn_IR_TIMEOUT)
         {
-            setS0_IR(S0_IR_TIMEOUT);
+            setSn_IR(Sn_IR_TIMEOUT);
             // There was a timeout
             return -1;
         }
