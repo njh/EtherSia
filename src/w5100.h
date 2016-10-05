@@ -98,6 +98,9 @@ private:
     static const uint16_t TxBufferMask = TxBufferLength - 1;
     static const uint16_t RxBufferMask = RxBufferLength - 1;
 
+
+    int8_t _cs;
+
     /**
      * Default function to select chip.
      * @note This function help not to access wrong address. If you do not describe this function or register any functions,
@@ -444,10 +447,6 @@ private:
     inline void setSn_IR(uint8_t ir) {
         wizchip_write(Sn_IR, ir);
     }
-
-
-    int8_t _cs;
-
 };
 
 #endif //_W5100_H_
