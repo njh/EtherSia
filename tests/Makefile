@@ -2,7 +2,7 @@ CFLAGS = -std=c++11 -Wall -Wextra -pedantic
 CFLAGS += -I../src -I./libarduino
 
 # FIXME: work out how to apply this to the clang compiler only
-# CFLAGS += -Werror -Wno-gnu-zero-variadic-macro-arguments -Wno-constant-conversion -Wno-tautological-constant-out-of-range-compare
+CFLAGS += -Werror -Wno-gnu-zero-variadic-macro-arguments
 
 CHECK_CFLAGS = $(shell pkg-config --cflags check)
 CHECK_LIBS = $(shell pkg-config --libs check)
