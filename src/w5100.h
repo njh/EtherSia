@@ -220,17 +220,17 @@ private:
 
     /** Common registers */
     enum {
-        MR = 0x0000,    // Mode Register address (R/W)
-        GAR = 0x0001,   // Gateway IP Register address(R/W)
-        SUBR = 0x0005,  // Subnet mask Register address(R/W)
-        SHAR = 0x0009,  // Source MAC Register address(R/W)
-        SIPR = 0x000F,  // Source IP Register address(R/W)
-        IR = 0x0015,    // Interrupt Register(R/W)
-        IMR = 0x0016,   // Socket Interrupt Mask Register(R/W)
-        RTR = 0x0017,   // Timeout register address( 1 is 100us )(R/W)
-        RCR = 0x0019,   // Retry count register(R/W)
-        RMSR = 0x001A,  // Receive Memory Size
-        TMSR = 0x001B,  // Transmit Memory Size
+        MR = 0x0000,        ///< Mode Register address (R/W)
+        GAR = 0x0001,       ///< Gateway IP Register address (R/W)
+        SUBR = 0x0005,      ///< Subnet mask Register address (R/W)
+        SHAR = 0x0009,      ///< Source MAC Register address (R/W)
+        SIPR = 0x000F,      ///< Source IP Register address (R/W)
+        IR = 0x0015,        ///< Interrupt Register (R/W)
+        IMR = 0x0016,       ///< Socket Interrupt Mask Register (R/W)
+        RTR = 0x0017,       ///< Timeout register address (1 is 100us) (R/W)
+        RCR = 0x0019,       ///< Retry count register (R/W)
+        RMSR = 0x001A,      ///< Receive Memory Size
+        TMSR = 0x001B,      ///< Transmit Memory Size
     };
 
     /** Socket registers */
