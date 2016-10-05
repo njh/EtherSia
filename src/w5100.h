@@ -122,7 +122,7 @@ private:
     }
 
     /**
-     * Reads a 1 byte value from a register.
+     * Read a 1 byte value from a register.
      * @param address Register address
      * @return The value of register
      */
@@ -152,7 +152,7 @@ private:
     void wizchip_write(uint16_t address, uint8_t wb);
 
     /**
-     * Writes a 2 byte value to a register.
+     * Write a 2 byte value to a register.
      * @param address Register address
      * @param wb Write data
      * @return void
@@ -183,7 +183,7 @@ private:
      *
      * @param wizdata Pointer buffer to write data
      * @param len Data length
-     * @sa recv_data()
+     * @sa wizchip_recv_data()
      */
     void wizchip_send_data(const uint8_t *wizdata, uint16_t len);
 
@@ -197,13 +197,12 @@ private:
      *
      * @param wizdata Pointer buffer to read data
      * @param len Data length
-     * @sa wiz_send_data()
+     * @sa wizchip_send_data()
      */
     void wizchip_recv_data(uint8_t *wizdata, uint16_t len);
 
     /**
      * It discard the received data in RX memory.
-     *
      * @details It discards the data of the length of <i>len(variable)</i> bytes in internal RX memory.
      * @param len Data length
      */
@@ -326,7 +325,7 @@ private:
     }
 
     /**
-     * Get @ref MR.
+     * Get Mode Register
      * @return uint8_t. The value of Mode register.
      * @sa setMR()
      */
@@ -335,7 +334,7 @@ private:
     }
 
     /**
-     * Set @ref SHAR.
+     * Set local MAC address
      * @param (uint8_t*)shar Pointer variable to set local MAC address. It should be allocated 6 bytes.
      * @sa getSHAR()
      */
@@ -344,7 +343,7 @@ private:
     }
 
     /**
-     * Get @ref SHAR.
+     * Get local MAC address
      * @param (uint8_t*)shar Pointer variable to get local MAC address. It should be allocated 6 bytes.
      * @sa setSHAR()
      */
@@ -390,7 +389,7 @@ private:
 
     /**
      * Set @ref Sn_MR register
-     * @param mr Value to set @ref Sn_MR
+     * @param (uint8_t)mr Value to set @ref Sn_MR
      * @sa getSn_MR()
      */
     inline void setSn_MR(uint8_t mr) {
@@ -399,7 +398,7 @@ private:
 
     /**
      * Get @ref Sn_MR register
-     * @return Value of @ref Sn_MR.
+     * @return uint8_t. Value of @ref Sn_MR.
      * @sa setSn_MR()
      */
     inline uint8_t getSn_MR() {
@@ -449,4 +448,4 @@ private:
     }
 };
 
-#endif //_W5100_H_
+#endif //ETHERSIA_W5100_H
