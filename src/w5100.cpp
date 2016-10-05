@@ -98,12 +98,10 @@ uint16_t EtherSia_W5100::getSn_TX_FSR()
     uint16_t val=0,val1=0;
     do
     {
-        val1 = wizchip_read(Sn_TX_FSR);
-        val1 = (val1 << 8) + wizchip_read(Sn_TX_FSR + 1);
+        val1 = wizchip_read_word(Sn_TX_FSR);
         if (val1 != 0)
         {
-            val = wizchip_read(Sn_TX_FSR);
-            val = (val << 8) + wizchip_read(Sn_TX_FSR + 1);
+            val = wizchip_read_word(Sn_TX_FSR);
         }
     } while (val != val1);
     return val;
@@ -115,12 +113,10 @@ uint16_t EtherSia_W5100::getSn_RX_RSR()
     uint16_t val=0,val1=0;
     do
     {
-        val1 = wizchip_read(Sn_RX_RSR);
-        val1 = (val1 << 8) + wizchip_read(Sn_RX_RSR + 1);
+        val1 = wizchip_read_word(Sn_RX_RSR);
         if (val1 != 0)
         {
-            val = wizchip_read(Sn_RX_RSR);
-            val = (val << 8) + wizchip_read(Sn_RX_RSR + 1);
+            val = wizchip_read_word(Sn_RX_RSR);
         }
     } while (val != val1);
     return val;
