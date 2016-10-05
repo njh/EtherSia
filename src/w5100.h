@@ -89,14 +89,14 @@ public:
     virtual uint16_t readFrame(uint8_t *buffer, uint16_t bufsize);
 
 private:
-    const uint16_t TxBufferAddress = 0x4000;  /* Internal Tx buffer address of the iinchip */
-    const uint16_t RxBufferAddress = 0x6000;  /* Internal Rx buffer address of the iinchip */
-    const uint8_t TxBufferSize = 0x3; /* Buffer size configuration: 0=1kb, 1=2kB, 2=4kB, 3=8kB */
-    const uint8_t RxBufferSize = 0x3; /* Buffer size configuration: 0=1kb, 1=2kB, 2=4kB, 3=8kB */
-    const uint16_t TxBufferLength = (1 << TxBufferSize) << 10; /* Length of Tx buffer in bytes */
-    const uint16_t RxBufferLength = (1 << RxBufferSize) << 10; /* Length of Rx buffer in bytes */
-    const uint16_t TxBufferMask = TxBufferLength - 1;
-    const uint16_t RxBufferMask = RxBufferLength - 1;
+    static const uint16_t TxBufferAddress = 0x4000;  /* Internal Tx buffer address of the iinchip */
+    static const uint16_t RxBufferAddress = 0x6000;  /* Internal Rx buffer address of the iinchip */
+    static const uint8_t TxBufferSize = 0x3; /* Buffer size configuration: 0=1kb, 1=2kB, 2=4kB, 3=8kB */
+    static const uint8_t RxBufferSize = 0x3; /* Buffer size configuration: 0=1kb, 1=2kB, 2=4kB, 3=8kB */
+    static const uint16_t TxBufferLength = (1 << TxBufferSize) << 10; /* Length of Tx buffer in bytes */
+    static const uint16_t RxBufferLength = (1 << RxBufferSize) << 10; /* Length of Rx buffer in bytes */
+    static const uint16_t TxBufferMask = TxBufferLength - 1;
+    static const uint16_t RxBufferMask = RxBufferLength - 1;
 
     /**
      * Default function to select chip.
