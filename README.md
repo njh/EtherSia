@@ -15,7 +15,7 @@ Design Decisions
 ----------------
 1. Optimised for Arduino - not a general purpose library
 2. Should be easy to use - this is what Arduino is all about
-3. Should work within the constrains of an [Uno] - 32k ROM and 2k RAM
+3. Should work within the constraints of an [Uno] - 32k ROM and 2k RAM
 4. Should follow the [Style Guide] and avoid using complex C features like Pointers and Callbacks
 5. Decouple the core from protocols where possible, to allow for program size optimisations
 
