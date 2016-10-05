@@ -42,56 +42,56 @@ void EtherSia_W5100::wizchip_sw_reset()
 }
 
 
-void EtherSia_W5100::wizchip_write(uint16_t AddrSel, uint8_t wb )
+void EtherSia_W5100::wizchip_write(uint16_t address, uint8_t wb )
 {
     wizchip_cs_select();
     SPI.transfer(0xF0);
-    SPI.transfer((AddrSel & 0xFF00) >>  8);
-    SPI.transfer((AddrSel & 0x00FF) >>  0);
+    SPI.transfer((address & 0xFF00) >>  8);
+    SPI.transfer((address & 0x00FF) >>  0);
     SPI.transfer(wb);    // Data write (write 1byte data)
     wizchip_cs_deselect();
 }
 
-void EtherSia_W5100::wizchip_write_word(uint16_t AddrSel, uint16_t word)
+void EtherSia_W5100::wizchip_write_word(uint16_t address, uint16_t word)
 {
-    wizchip_write(AddrSel,   (uint8_t)(word>>8));
-    wizchip_write(AddrSel+1, (uint8_t) word);
+    wizchip_write(address,   (uint8_t)(word>>8));
+    wizchip_write(address+1, (uint8_t) word);
 }
 
-uint8_t EtherSia_W5100::wizchip_read(uint16_t AddrSel)
+uint8_t EtherSia_W5100::wizchip_read(uint16_t address)
 {
     uint8_t ret;
 
     wizchip_cs_select();
     SPI.transfer(0x0F);
-    SPI.transfer((AddrSel & 0xFF00) >>  8);
-    SPI.transfer((AddrSel & 0x00FF) >>  0);
+    SPI.transfer((address & 0xFF00) >>  8);
+    SPI.transfer((address & 0x00FF) >>  0);
     ret = SPI.transfer(0);
     wizchip_cs_deselect();
 
     return ret;
 }
 
-uint16_t EtherSia_W5100::wizchip_read_word(uint16_t AddrSel)
+uint16_t EtherSia_W5100::wizchip_read_word(uint16_t address)
 {
-    return ((uint16_t)wizchip_read(AddrSel) << 8) + wizchip_read(AddrSel + 1);
+    return ((uint16_t)wizchip_read(address) << 8) + wizchip_read(address + 1);
 }
 
 
-void EtherSia_W5100::wizchip_write_buf(uint16_t AddrSel, const uint8_t* pBuf, uint16_t len)
+void EtherSia_W5100::wizchip_write_buf(uint16_t address, const uint8_t* pBuf, uint16_t len)
 {
     for(uint16_t i = 0; i < len; i++)
     {
-        wizchip_write(AddrSel + i, pBuf[i]);
+        wizchip_write(address + i, pBuf[i]);
     }
 }
 
 
-void EtherSia_W5100::wizchip_read_buf(uint16_t AddrSel, uint8_t* pBuf, uint16_t len)
+void EtherSia_W5100::wizchip_read_buf(uint16_t address, uint8_t* pBuf, uint16_t len)
 {
     for(uint16_t i = 0; i < len; i++)
     {
-        pBuf[i] = wizchip_read(AddrSel + i);
+        pBuf[i] = wizchip_read(address + i);
     }
 }
 

@@ -125,49 +125,49 @@ private:
 
     /**
      * Reads a 1 byte value from a register.
-     * @param AddrSel Register address
+     * @param address Register address
      * @return The value of register
      */
-    uint8_t wizchip_read(uint16_t AddrSel);
+    uint8_t wizchip_read(uint16_t address);
 
     /**
      * Reads a 2 byte value from a register.
-     * @param AddrSel Register address
+     * @param address Register address
      * @return The value of register
      */
-    uint16_t wizchip_read_word(uint16_t AddrSel);
+    uint16_t wizchip_read_word(uint16_t address);
 
     /**
      * Writes a 1 byte value to a register.
-     * @param AddrSel Register address
+     * @param address Register address
      * @param wb Write data
      * @return void
      */
-    void wizchip_write(uint16_t AddrSel, uint8_t wb);
+    void wizchip_write(uint16_t address, uint8_t wb);
 
     /**
      * Writes a 2 byte value to a register.
-     * @param AddrSel Register address
+     * @param address Register address
      * @param wb Write data
      * @return void
      */
-    void wizchip_write_word(uint16_t AddrSel, uint16_t word);
+    void wizchip_write_word(uint16_t address, uint16_t word);
 
     /**
      * It reads sequence data from registers.
-     * @param AddrSel Register address
+     * @param address Register address
      * @param pBuf Pointer buffer to read data
      * @param len Data length
      */
-    void wizchip_read_buf(uint16_t AddrSel, uint8_t* pBuf, uint16_t len);
+    void wizchip_read_buf(uint16_t address, uint8_t* pBuf, uint16_t len);
 
     /**
      * It writes sequence data to registers.
-     * @param AddrSel Register address
+     * @param address Register address
      * @param pBuf Pointer buffer to write data
      * @param len Data length
      */
-    void wizchip_write_buf(uint16_t AddrSel, const uint8_t* pBuf, uint16_t len);
+    void wizchip_write_buf(uint16_t address, const uint8_t* pBuf, uint16_t len);
 
     /**
      * It copies data to internal TX memory
