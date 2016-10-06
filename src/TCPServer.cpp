@@ -83,13 +83,12 @@ void TCPServer::sendReply(const void* data, uint16_t len)
     IPv6Packet& packet = _ether.packet();
     struct tcp_header *tcpHeader = TCP_HEADER_PTR;
 
-    memcpy((uint8_t*)tcpHeader + TCP_HEADER_LEN, data, len);
+    if (data) {
+        memcpy((uint8_t*)tcpHeader + TCP_HEADER_LEN, data, len);
+    }
 
-    // Acknowledge the request package and send response
-    sendReplyWithFlags(len, TCP_FLAG_ACK | TCP_FLAG_PSH );
-
-    // Now close the connection
-    sendWithFlags(0, TCP_FLAG_FIN);
+    // Acknowledge the request packet and send response
+    sendReplyWithFlags(len, TCP_FLAG_ACK | TCP_FLAG_FIN | TCP_FLAG_PSH );
 }
 
 void TCPServer::sendReplyWithFlags(uint16_t len, uint8_t flags)
@@ -109,8 +108,9 @@ void TCPServer::sendReplyWithFlags(uint16_t len, uint8_t flags)
 
     _ether.prepareReply();
 
+    tcpHeader->flags = flags;
     tcpHeader->destinationPort = tcpHeader->sourcePort;
-    tcpHeader->sourcePort = ntohs(_localPort);
+    tcpHeader->sourcePort = htons(_localPort);
     tcpHeader->sequenceNum = htonl(seq);
     tcpHeader->acknowledgementNum = htonl(ack + recievedLen);
 
@@ -121,16 +121,6 @@ void TCPServer::sendReplyWithFlags(uint16_t len, uint8_t flags)
     tcpHeader->mssOptionLen = 4;
     tcpHeader->mssOptionValue = tcpHeader->window;
 
-    sendWithFlags(len, flags);
-}
-
-void TCPServer::sendWithFlags(uint16_t len, uint8_t flags)
-{
-    IPv6Packet& packet = _ether.packet();
-    struct tcp_header *tcpHeader = TCP_HEADER_PTR;
-
-    tcpHeader->flags = flags;
-
     packet.setPayloadLength(TCP_HEADER_LEN + len);
 
     tcpHeader->checksum = 0;
@@ -138,7 +128,6 @@ void TCPServer::sendWithFlags(uint16_t len, uint8_t flags)
 
     _ether.send();
 }
-
 
 IPv6Address& TCPServer::packetSource()
 {

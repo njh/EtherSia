@@ -106,8 +106,6 @@ protected:
 
     void sendReplyWithFlags(uint16_t len, uint8_t flags);
 
-    void sendWithFlags(uint16_t len, uint8_t flags);
-
     EtherSia &_ether;            ///< The Ethernet Interface that this TCP server is attached to
     uint16_t _localPort;         ///< The IPv6 local port number
 
