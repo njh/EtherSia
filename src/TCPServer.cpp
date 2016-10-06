@@ -4,6 +4,7 @@
 TCPServer::TCPServer(EtherSia &ether, uint16_t localPort) : _ether(ether)
 {
     _localPort = localPort;
+    _responsePos = -1;
 }
 
 
@@ -49,8 +50,9 @@ boolean TCPServer::havePacket()
 
     // Packet contains data that needs to be handled
     if (requestLength() > 0) {
+        _responsePos = -1;
         return 1;
-    } else { 
+    } else {
         return 0;
     }
 
@@ -58,6 +60,25 @@ boolean TCPServer::havePacket()
     return 0;
 }
 
+size_t TCPServer::write(uint8_t chr)
+{
+    uint8_t *payload = (uint8_t *)(_ether.packet().payload());
+
+    if (_responsePos == -1) {
+        _responsePos = TCP_HEADER_LEN;
+    }
+
+    payload[_responsePos++] = chr;
+
+    return 1;
+}
+
+void TCPServer::sendReply()
+{
+    if (_responsePos > 0) {
+        sendReply(NULL, _responsePos - TCP_HEADER_LEN);
+    }
+}
 
 void TCPServer::sendReply(const char *string)
 {

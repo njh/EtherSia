@@ -14,7 +14,7 @@ class EtherSia;
 /**
  * Class for sending and receiving TCP packets on a specified port
  */
-class TCPServer {
+class TCPServer : public Print {
 
 public:
 
@@ -39,6 +39,8 @@ public:
     boolean havePacket();
 
 
+
+    void sendReply();
 
     void sendReply(const char *string);
 
@@ -102,6 +104,14 @@ public:
      */
     boolean requestEquals(const char *str);
 
+    /**
+     * Write a single character into the TCP packet buffer
+     *
+     * @param chr The character to write
+     * @return The number of bytes written to the buffer
+     */
+    virtual size_t write(uint8_t chr);
+
 protected:
 
     void sendReplyWithFlags(uint16_t len, uint8_t flags);
@@ -112,6 +122,7 @@ protected:
     //IPv6Address _remoteAddress;  ///< The IPv6 remote address
     //uint16_t _remotePort;        ///< The IPv6 remote port number
 
+    int16_t _responsePos;
 };
 
 
