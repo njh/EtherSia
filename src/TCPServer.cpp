@@ -22,41 +22,29 @@ boolean TCPServer::havePacket()
 
     if (packet.protocol() != IP6_PROTO_TCP) {
         // Wrong protocol
-        Serial.println("Not TCP");
         return 0;
     }
 
     if (packetDestinationPort() != _localPort) {
         // Wrong destination port
-        Serial.println("Wrong Port");
         return 0;
     }
 
-
     if (TCP_HEADER_PTR->flags & TCP_FLAG_RST) {
-        Serial.println("Got RST!");
         return 0;
     }
 
     if (TCP_HEADER_PTR->flags & TCP_FLAG_FIN) {
-        Serial.println("Got FIN!");
-        
         sendReplyWithFlags(0, TCP_FLAG_FIN | TCP_FLAG_ACK);
-
         return 0;
     }
-    
+
     if (TCP_HEADER_PTR->flags & TCP_FLAG_SYN) {
-        Serial.println("Got SYN!");
-        
+        // Accept the connection
         sendReplyWithFlags(0, TCP_FLAG_SYN | TCP_FLAG_ACK);
-        
+
         // We have handled the SYN
         return 0;
-    }
-
-    if (TCP_HEADER_PTR->flags & TCP_FLAG_ACK) {
-        Serial.println("Got ACK!");
     }
 
     // Packet contains data that needs to be handled
@@ -67,8 +55,6 @@ boolean TCPServer::havePacket()
     }
 
     // Something else?
-    Serial.print("Something else: ");
-    Serial.println(TCP_HEADER_PTR->flags, HEX);
     return 0;
 }
 
