@@ -1,5 +1,6 @@
 CFLAGS = -std=c++11 -Wall -Wextra -pedantic
 CFLAGS += -I../src -I./libarduino
+CFLAGS += $(COVERAGE_CFLAGS)
 
 # FIXME: work out how to apply this to the clang compiler only
 CFLAGS += -Werror -Wno-gnu-zero-variadic-macro-arguments
