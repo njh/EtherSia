@@ -48,7 +48,7 @@ boolean TCPServer::havePacket()
     }
 
     // Packet contains data that needs to be handled
-    if (payloadLength() > 0) {
+    if (requestLength() > 0) {
         return 1;
     } else { 
         return 0;
@@ -84,7 +84,7 @@ void TCPServer::sendReplyWithFlags(uint16_t len, uint8_t flags)
 
     uint32_t seq = ntohl(tcpHeader->acknowledgementNum);
     uint32_t ack = ntohl(tcpHeader->sequenceNum);
-    uint16_t recievedLen = payloadLength();
+    uint16_t recievedLen = requestLength();
     if (recievedLen == 0)
         recievedLen = 1;
 
@@ -138,20 +138,19 @@ uint16_t TCPServer::packetDestinationPort()
 }
 
 
-uint8_t* TCPServer::payload()
+uint8_t* TCPServer::requestPayload()
 {
     IPv6Packet& packet = _ether.packet();
-    return (uint8_t *)(packet.payload()) + payloadLength();
+    return packet.payload() + TCP_DATA_OFFSET;
 }
 
-uint16_t TCPServer::payloadLength()
+uint16_t TCPServer::requestLength()
 {
     IPv6Packet& packet = _ether.packet();
-    uint8_t headerLen = ((TCP_HEADER_PTR->dataOffset & 0xF0) >> 4) * 4;
-    return packet.payloadLength() - headerLen;
+    return packet.payloadLength() - TCP_DATA_OFFSET;
 }
 
-boolean TCPServer::payloadEquals(const char *str)
+boolean TCPServer::requestEquals(const char *str)
 {
-    return strncmp((char*)payload(), str, payloadLength()) == 0;
+    return strncmp((char*)requestPayload(), str, requestLength()) == 0;
 }

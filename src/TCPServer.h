@@ -83,7 +83,7 @@ public:
      * @note Please call havePacket() first, before calling this method.
      * @return A pointer to the payload
      */
-    uint8_t* payload();
+    uint8_t* requestPayload();
 
     /**
      * Get the length (in bytes) of the TCP payload of the packet
@@ -91,7 +91,7 @@ public:
      * @note Please call havePacket() first, before calling this method.
      * @return A pointer to the payload
      */
-    uint16_t payloadLength();
+    uint16_t requestLength();
 
     /**
      * Check if the current TCP payload equals a string
@@ -100,7 +100,7 @@ public:
      * @param str The null-terminated string to compare to
      * @return True if the TCP payload is the same as the str parameter
      */
-    boolean payloadEquals(const char *str);
+    boolean requestEquals(const char *str);
 
 protected:
 
@@ -163,6 +163,12 @@ struct tcp_header {
  * @private
  */
 #define TCP_HEADER_PTR            ((struct tcp_header*)(packet.payload()))
+
+/**
+ * Get the length of the TCP header in bytes
+ * @private
+ */
+#define TCP_DATA_OFFSET           ((TCP_HEADER_PTR->dataOffset & 0xF0) >> 2)
 
 /* Verify that compiler gets the structure size correct */
 static_assert(sizeof(struct tcp_header) == TCP_HEADER_LEN, "Size is not correct");
