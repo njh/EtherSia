@@ -41,6 +41,10 @@ boolean TCPServer::havePacket()
     }
 
     if (TCP_HEADER_PTR->flags & TCP_FLAG_SYN) {
+        // Initialise our sequence number to a random number
+        // (this is used later in sendReplyWithFlags)
+        tcpHeader->acknowledgementNum = random();
+
         // Accept the connection
         sendReplyWithFlags(0, TCP_FLAG_SYN | TCP_FLAG_ACK);
 
@@ -109,9 +113,6 @@ void TCPServer::sendReplyWithFlags(uint16_t len, uint8_t flags)
     if (recievedLen == 0)
         recievedLen = 1;
 
-    // FIXME: find more reliable way of setting this (when SYN received)
-    if (seq == 0)
-        seq = random();
 
     _ether.prepareReply();
 
