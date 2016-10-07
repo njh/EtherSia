@@ -109,9 +109,9 @@ void TCPServer::sendReplyWithFlags(uint16_t len, uint8_t flags)
 
     uint32_t seq = ntohl(tcpHeader->acknowledgementNum);
     uint32_t ack = ntohl(tcpHeader->sequenceNum);
-    uint16_t recievedLen = requestLength();
-    if (recievedLen == 0)
-        recievedLen = 1;
+    uint16_t receivedLen = requestLength();
+    if (receivedLen == 0)
+        receivedLen = 1;
 
 
     _ether.prepareReply();
@@ -120,7 +120,7 @@ void TCPServer::sendReplyWithFlags(uint16_t len, uint8_t flags)
     tcpHeader->destinationPort = tcpHeader->sourcePort;
     tcpHeader->sourcePort = htons(_localPort);
     tcpHeader->sequenceNum = htonl(seq);
-    tcpHeader->acknowledgementNum = htonl(ack + recievedLen);
+    tcpHeader->acknowledgementNum = htonl(ack + receivedLen);
 
     tcpHeader->dataOffset = (TCP_HEADER_LEN / 4) << 4;
     tcpHeader->window = htons(TCP_WINDOW_SIZE);
