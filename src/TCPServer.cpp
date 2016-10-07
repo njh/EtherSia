@@ -16,6 +16,7 @@ uint16_t TCPServer::localPort()
 boolean TCPServer::havePacket()
 {
     IPv6Packet& packet = _ether.packet();
+    struct tcp_header *tcpHeader = TCP_HEADER_PTR;
 
     if (!_ether.bufferContainsReceived()) {
         return 0;
@@ -31,16 +32,16 @@ boolean TCPServer::havePacket()
         return 0;
     }
 
-    if (TCP_HEADER_PTR->flags & TCP_FLAG_RST) {
+    if (tcpHeader->flags & TCP_FLAG_RST) {
         return 0;
     }
 
-    if (TCP_HEADER_PTR->flags & TCP_FLAG_FIN) {
+    if (tcpHeader->flags & TCP_FLAG_FIN) {
         sendReplyWithFlags(0, TCP_FLAG_FIN | TCP_FLAG_ACK);
         return 0;
     }
 
-    if (TCP_HEADER_PTR->flags & TCP_FLAG_SYN) {
+    if (tcpHeader->flags & TCP_FLAG_SYN) {
         // Initialise our sequence number to a random number
         // (this is used later in sendReplyWithFlags)
         tcpHeader->acknowledgementNum = random();
