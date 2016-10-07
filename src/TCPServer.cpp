@@ -17,7 +17,7 @@ boolean TCPServer::havePacket()
 {
     IPv6Packet& packet = _ether.packet();
 
-    if (!packet.isValid()) {
+    if (!_ether.bufferContainsReceived()) {
         return 0;
     }
 

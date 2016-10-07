@@ -119,6 +119,15 @@ public:
     uint16_t receivePacket();
 
     /**
+     * Check if the packet buffer contains a valid received packet
+     *
+     * @return
+     * * true: the buffer contains a valid packet received over the network
+     * * false: the buffer contains a packet we generated, or is invalid in some way
+     */
+    inline boolean bufferContainsReceived() { return _bufferContainsReceived; }
+
+    /**
      * Get a reference to the packet buffer (the last packet sent or received).
      *
      * There is a single buffer that is use for both sending and receiving packets,
@@ -216,6 +225,9 @@ protected:
 
     /** The buffer that sent and received packets are stored in */
     uint8_t _buffer[ETHERSIA_MAX_PACKET_SIZE];
+
+    /** Flag indicating if the buffer contains a valid packet we received */
+    boolean _bufferContainsReceived;
 
 
     /**
