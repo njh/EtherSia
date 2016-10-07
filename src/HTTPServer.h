@@ -9,7 +9,6 @@
 #include <stdint.h>
 #include "TCPServer.h"
 
-class EtherSia;
 
 /**
  * Class for responding to HTTP requests
