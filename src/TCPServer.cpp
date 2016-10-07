@@ -66,7 +66,7 @@ boolean TCPServer::havePacket()
 
 size_t TCPServer::write(uint8_t chr)
 {
-    uint8_t *payload = (uint8_t *)(_ether.packet().payload());
+    uint8_t *payload = _ether.packet().payload();
 
     if (_responsePos == -1) {
         _responsePos = TCP_HEADER_LEN;
