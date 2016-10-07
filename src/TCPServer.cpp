@@ -107,7 +107,7 @@ void TCPServer::sendReplyWithFlags(uint16_t len, uint8_t flags)
     IPv6Packet& packet = _ether.packet();
     struct tcp_header *tcpHeader = TCP_HEADER_PTR;
 
-    uint32_t seq = ntohl(tcpHeader->acknowledgementNum);
+    uint32_t seq = tcpHeader->acknowledgementNum;
     uint32_t ack = ntohl(tcpHeader->sequenceNum);
     uint16_t receivedLen = requestLength();
     if (receivedLen == 0)
@@ -119,7 +119,7 @@ void TCPServer::sendReplyWithFlags(uint16_t len, uint8_t flags)
     tcpHeader->flags = flags;
     tcpHeader->destinationPort = tcpHeader->sourcePort;
     tcpHeader->sourcePort = htons(_localPort);
-    tcpHeader->sequenceNum = htonl(seq);
+    tcpHeader->sequenceNum = seq;
     tcpHeader->acknowledgementNum = htonl(ack + receivedLen);
 
     tcpHeader->dataOffset = (TCP_HEADER_LEN / 4) << 4;
