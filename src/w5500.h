@@ -1,5 +1,5 @@
 /**
- * Header file for direct Ethernet frame access to the W5100 controller
+ * Header file for direct Ethernet frame access to the W5500 controller
  * @file w5500.h
  */
 
