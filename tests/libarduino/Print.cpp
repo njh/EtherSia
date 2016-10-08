@@ -6,6 +6,12 @@ size_t Print::print(const char str[])
     return printf("%s", str);
 }
 
+size_t Print::print(const __FlashStringHelper* ifsh)
+{
+    const char* str = reinterpret_cast<const char*>(ifsh);
+    return printf("%s", str);
+}
+
 size_t Print::print(char c)
 {
     return printf("%c", c);
@@ -38,6 +44,12 @@ size_t Print::print(unsigned long i, int base)
 
 size_t Print::println(const char str[])
 {
+    return printf("%s\n", str);
+}
+
+size_t Print::println(const __FlashStringHelper* ifsh)
+{
+    const char* str = reinterpret_cast<const char*>(ifsh);
     return printf("%s\n", str);
 }
 

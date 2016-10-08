@@ -12,6 +12,7 @@ class Print {
 
 public:
     size_t print(const char str[]);
+    size_t print(const __FlashStringHelper* ifsh);
     size_t print(char c);
     size_t print(unsigned char i, int base = DEC);
     size_t print(int i, int base = DEC);
@@ -20,6 +21,7 @@ public:
     size_t print(unsigned long i, int base = DEC);
 
     size_t println(const char str[]);
+    size_t println(const __FlashStringHelper* ifsh);
     size_t println(char c);
     size_t println(unsigned char i, int base = DEC);
     size_t println(int i, int = DEC);
