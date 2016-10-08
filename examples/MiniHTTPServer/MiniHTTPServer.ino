@@ -1,7 +1,7 @@
 #include <EtherSia.h>
 
-/** W5500 Interface */
-EtherSia_ENC28J60 ether(10);
+/** W5100 Ethernet Interface */
+EtherSia_W5100 ether;
 
 /** Define HTTP server */
 HTTPServer http(ether);
@@ -31,15 +31,16 @@ void setup() {
 void loop() {
     ether.receivePacket();
 
-    if (http.isGet("/")) {
-        Serial.print("Received HTTP request from: ");
-        http.packetSource().println();
-        
-        http.println(F("HTTP/1.0 200 OK"));
-        http.println(F("Content-Type: text/html"));
-        http.println();
+    if (http.isGet(F("/"))) {
+        http.printHeaders(http.typeHtml);
         http.println(F("<h1>Hello World</h1>"));
         http.sendReply();
+
+    } else if (http.isGet(F("/text"))) {
+        http.printHeaders(http.typePlain);
+        http.println(F("This is some plain text"));
+        http.sendReply();
+
     } else {
         http.notFound();
     }
