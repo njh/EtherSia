@@ -126,7 +126,7 @@ public:
     void sendReply(uint16_t length);
 
     /**
-     * Send a reply to the last packet recieved
+     * Send a reply to the last packet received
      *
      * @param data A pointer to the data to send
      * @param length The length (in bytes) of the data to send
