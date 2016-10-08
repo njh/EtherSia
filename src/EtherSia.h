@@ -13,6 +13,8 @@
 #include "MACAddress.h"
 #include "IPv6Address.h"
 #include "IPv6Packet.h"
+#include "TCPServer.h"
+#include "HTTPServer.h"
 #include "UDPSocket.h"
 #include "Syslog.h"
 
@@ -26,7 +28,7 @@
  * sending and receiving packets, so it should be bigger than the
  * biggest packet you want to send or receive.
  */
-#define ETHERSIA_MAX_PACKET_SIZE       500
+#define ETHERSIA_MAX_PACKET_SIZE       600
 
 
 
@@ -115,6 +117,15 @@ public:
      * @return The length of the packet, or 0 if no packet was received
      */
     uint16_t receivePacket();
+
+    /**
+     * Check if the packet buffer contains a valid received packet
+     *
+     * @return
+     * * true: the buffer contains a valid packet received over the network
+     * * false: the buffer contains a packet we generated, or is invalid in some way
+     */
+    inline boolean bufferContainsReceived() { return _bufferContainsReceived; }
 
     /**
      * Get a reference to the packet buffer (the last packet sent or received).
@@ -214,6 +225,9 @@ protected:
 
     /** The buffer that sent and received packets are stored in */
     uint8_t _buffer[ETHERSIA_MAX_PACKET_SIZE];
+
+    /** Flag indicating if the buffer contains a valid packet we received */
+    boolean _bufferContainsReceived;
 
 
     /**

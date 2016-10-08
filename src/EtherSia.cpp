@@ -88,20 +88,23 @@ IPv6Packet& EtherSia::packet()
 
 uint16_t EtherSia::receivePacket()
 {
-    IPv6Packet& packet = (IPv6Packet&)_buffer;
     uint16_t len = readFrame(_buffer, sizeof(_buffer));
 
     if (len) {
+        IPv6Packet& packet = (IPv6Packet&)_buffer;
         if (!packet.isValid()) {
+            _bufferContainsReceived = false;
             return 0;
         }
+        
+        _bufferContainsReceived = true;
 
         if (packet.protocol() == IP6_PROTO_ICMP6) {
             icmp6ProcessPacket();
         }
     } else {
-        // We didn't receive anything; invalidate the buffer
-        packet.invalidate();
+        // We didn't receive anything
+        _bufferContainsReceived = false;
         return 0;
     }
 
@@ -111,6 +114,8 @@ uint16_t EtherSia::receivePacket()
 void EtherSia::prepareSend()
 {
     IPv6Packet& packet = (IPv6Packet&)_buffer;
+    
+    _bufferContainsReceived = false;
 
     packet.init();
     if (packet.destination().isLinkLocal()) {
@@ -129,6 +134,8 @@ void EtherSia::prepareReply()
 {
     IPv6Packet& packet = (IPv6Packet&)_buffer;
     IPv6Address *replySourceAddress;
+    
+    _bufferContainsReceived = false;
 
     if (isOurAddress(packet.destination()) == ADDRESS_TYPE_GLOBAL) {
         replySourceAddress = &_globalAddress;
@@ -146,5 +153,8 @@ void EtherSia::prepareReply()
 void EtherSia::send()
 {
     IPv6Packet& packet = (IPv6Packet&)_buffer;
+    
+    _bufferContainsReceived = false;
+
     sendFrame(_buffer, packet.length());
 }

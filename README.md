@@ -7,6 +7,7 @@ A minimal IPv6 library for an [Arduino] with an [ENC28J60] or [W5100] Ethernet c
 Features
 --------
 - Neighbour Discovery Protocol / Stateless Autoconfiguration
+- HTTP Server
 - UDP Client and Server
 - DNS Client
 
@@ -23,9 +24,9 @@ Design Decisions
 Limitations
 -----------
 - Ethernet only
-- No TCP support
 - No DHCPv6
 - No Routing or RPL
+- Stateless TCP (single packet request/response)
 - No fragmentation support
 - A single local router on the network is assumed
 - The network prefix length is assumed to be /64

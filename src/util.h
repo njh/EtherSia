@@ -42,4 +42,15 @@ void printPaddedHex(uint8_t byte, Print &p=Serial);
  */
 uint16_t chksum(uint16_t sum, const uint8_t *data, uint16_t len);
 
+/**
+ * Macro to make it easy to define AVR flash strings as static members of a class
+ *
+ * @param klass The name of the class
+ * @param var The name of the member variable
+ * @param str The string literal
+ */
+#define FlashStringMaker(klass, var, str) \
+    static const char _fsm_##var[] PROGMEM = str; \
+    const __FlashStringHelper* klass::var = reinterpret_cast<const __FlashStringHelper *>(_fsm_##var);
+
 #endif
