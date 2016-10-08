@@ -1,7 +1,7 @@
 EtherSia
 ========
 
-A minimal IPv6 library for an [Arduino] with an [ENC28J60] or [W5100] Ethernet controller.
+A minimal IPv6 library for an [Arduino] with an [ENC28J60], [W5500] or [W5100] Ethernet controller.
 
 
 Features
@@ -40,7 +40,7 @@ then take a look at [EtherCard].
 Compatibility
 -------------
 
-EtherSia should work on any Arduino board with [ENC28J60] or [W5100] based network interface.
+EtherSia should work on any Arduino board with [ENC28J60], [W5500] or [W5100] based network interface.
 There are the results of boards I have tested with:
 
 | Board                         | Class                  | Tested? | CS Pin | Hardware MAC Address |
@@ -64,6 +64,7 @@ License: [3-clause BSD license]
 [Style Guide]:             http://www.arduino.cc/en/Reference/APIStyleGuide
 [Contiki]:                 http://www.contiki-os.org/
 [ENC28J60]:                http://www.microchip.com/ENC28J60
+[W5500]:                   http://www.wiznet.co.kr/product-item/w5500/
 [W5100]:                   http://www.wiznet.co.kr/product-item/w5100/
 [EtherCard]:               http://github.com/jcw/ethercard
 [3-clause BSD license]:    http://opensource.org/licenses/BSD-3-Clause
