@@ -24,6 +24,7 @@
 EtherSia_LinuxSocket ether("eth0");
 
 
+/** Main function in Linux Packet Printer example */
 int main()
 {
     MACAddress macAddress("5e:73:f9:8a:cf:ba");
@@ -66,4 +67,6 @@ int main()
             Serial.println();
         }
     }
+    
+    return 0;
 }
