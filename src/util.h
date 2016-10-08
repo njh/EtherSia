@@ -5,6 +5,9 @@
 
 #include <Arduino.h>
 
+#ifndef ETHERSIA_UTIL
+#define ETHERSIA_UTIL
+
 /**
  * Convert an ASCII hex character to its integer value
  *
@@ -38,3 +41,5 @@ void printPaddedHex(uint8_t byte, Print &p=Serial);
  * @return The calculated checksum
  */
 uint16_t chksum(uint16_t sum, const uint8_t *data, uint16_t len);
+
+#endif
