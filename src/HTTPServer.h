@@ -75,6 +75,29 @@ public:
      */
     void printHeaders(const __FlashStringHelper* contentType=typePlain, const __FlashStringHelper* status=status200);
 
+    /**
+     * Get the body section of the HTTP request as a C string
+     *
+     * @return Pointer to the body or NULL if the body is empty
+     */
+    inline char* body() { return _bodyPtr; }
+
+    /**
+     * Get the length of the HTTP body
+     *
+     * @return The length of the HTTP body (or 0 if there isn't one)
+     */
+    uint16_t bodyLength();
+
+    /**
+     * Check if request body equals the given C string
+     *
+     * @param str The string to compare to
+     * @return true if the body and string are equal
+     */
+    boolean bodyEquals(const char str[]);
+
+
     static const __FlashStringHelper* typeHtml;      /**< String for 'text/html' content type */
     static const __FlashStringHelper* typePlain;     /**< String for 'text/plain' content type */
     static const __FlashStringHelper* typeJson;      /**< String for 'application/json' content type */
@@ -83,6 +106,9 @@ public:
     static const __FlashStringHelper* status404;     /**< String for '404 Not Found' status code */
 
 protected:
+
+    /** A pointer to the start of the body section */
+    char* _bodyPtr;
 
     /**
      * Check if request is of method and path matches the incoming request
