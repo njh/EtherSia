@@ -63,6 +63,21 @@ public:
     void notFound();
 
     /**
+     * Return redirect response to the client
+     */
+    void redirect(const __FlashStringHelper* location);
+
+    /**
+     * Write HTTP status line into the packet buffer
+     *
+     * @param status A flash string for the status code and message. Use the F() macro or one of:
+     *  * @ref status200 (default)
+     *  * @ref status302
+     *  * @ref status404
+     */
+    void printStatus(const __FlashStringHelper* status=status200);
+
+    /**
      * Write HTTP response header into the packet buffer
      *
      * @param contentType An flash string for the Content-Type header. Use the F() macro or one of:
@@ -71,6 +86,7 @@ public:
      *  * @ref typeJson
      * @param status A flash string for the status code and message. Use the F() macro or one of:
      *  * @ref status200 (default)
+     *  * @ref status302
      *  * @ref status404
      */
     void printHeaders(const __FlashStringHelper* contentType=typePlain, const __FlashStringHelper* status=status200);
@@ -103,6 +119,7 @@ public:
     static const __FlashStringHelper* typeJson;      /**< String for 'application/json' content type */
 
     static const __FlashStringHelper* status200;     /**< String for '200 OK' status code */
+    static const __FlashStringHelper* status302;     /**< String for '302 Redirect' status code */
     static const __FlashStringHelper* status404;     /**< String for '404 Not Found' status code */
 
 protected:

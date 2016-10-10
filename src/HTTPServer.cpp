@@ -6,6 +6,7 @@ FlashStringMaker(HTTPServer, typePlain, "text/plain");
 FlashStringMaker(HTTPServer, typeJson, "application/json");
 
 FlashStringMaker(HTTPServer, status200, "200 OK");
+FlashStringMaker(HTTPServer, status302, "302 Redirect");
 FlashStringMaker(HTTPServer, status404, "404 Not Found");
 
 const char PROGMEM HTTPServer::methodGet[] = "GET";
@@ -20,13 +21,18 @@ HTTPServer::HTTPServer(EtherSia &ether, uint16_t localPort) : TCPServer(ether, l
     _bodyPtr = NULL;
 }
 
+void HTTPServer::printStatus(const __FlashStringHelper* status)
+{
+    print(F("HTTP/1.0 "));
+    println(status);
+}
+
 void HTTPServer::printHeaders(const __FlashStringHelper* contentType, const __FlashStringHelper* status)
 {
-      print(F("HTTP/1.0 "));
-      println(status);
-      print(F("Content-Type: "));
-      println(contentType);
-      println();
+    printStatus(status);
+    print(F("Content-Type: "));
+    println(contentType);
+    println();
 }
 
 void HTTPServer::notFound()
@@ -38,6 +44,15 @@ void HTTPServer::notFound()
    }
 }
 
+void HTTPServer::redirect(const __FlashStringHelper* location)
+{
+    printStatus(status302);
+    print(F("Location: "));
+    println(location);
+    println();
+    println(status302);
+    sendReply();
+}
 
 boolean HTTPServer::checkRequest(const char* method, const __FlashStringHelper* path)
 {
