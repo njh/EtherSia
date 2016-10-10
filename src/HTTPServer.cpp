@@ -37,11 +37,11 @@ void HTTPServer::printHeaders(const __FlashStringHelper* contentType, const __Fl
 
 void HTTPServer::notFound()
 {
-   if (havePacket()) {
-      printHeaders(typePlain, status404);
-      println(status404);
-      sendReply();
-   }
+    if (havePacket()) {
+        printHeaders(typePlain, status404);
+        println(status404);
+        sendReply();
+    }
 }
 
 void HTTPServer::redirect(const __FlashStringHelper* location)

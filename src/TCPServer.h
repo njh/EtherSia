@@ -17,7 +17,7 @@ class EtherSia;
  * Requests and responses cannot be bigger than a single packet and
  * are limited by the size of the packet buffer.
  *
- * This class inherits from Print, so you you can also use the print() 
+ * This class inherits from Print, so you you can also use the print()
  * and println() functions when composing a reply.
  *
  */
@@ -50,7 +50,7 @@ public:
     boolean havePacket();
 
     /**
-     * Reply to a TCP request. The response should have been written to the 
+     * Reply to a TCP request. The response should have been written to the
      * packet buffer using the print() and println() methods.
      */
     void sendReply();
@@ -160,9 +160,9 @@ protected:
 
     /** The Ethernet Interface that this TCP server is attached to */
     EtherSia &_ether;
-    
+
     /** The TCP local port number */
-    uint16_t _localPort;         
+    uint16_t _localPort;
 
     /** The current position of writing data to buffer (when using Print interface) */
     int16_t _responsePos;

@@ -295,7 +295,7 @@ void EtherSia_W5500::end()
 uint16_t EtherSia_W5500::readFrame(uint8_t *buffer, uint16_t bufsize)
 {
     uint16_t len = getSn_RX_RSR();
-    
+
     if (len > 0)
     {
         uint8_t head[2];

@@ -70,8 +70,8 @@ EtherSia_LinuxSocket::begin(const MACAddress &address)
     }
 
     if ((sockfd = socket(PF_PACKET, SOCK_RAW, htons(ETHER_TYPE_IPV6))) == -1) {
-      perror("socket(PF_PACKET)");
-      return -1;
+        perror("socket(PF_PACKET)");
+        return -1;
     }
 
     /* Set non-blocking mode */
@@ -87,16 +87,16 @@ EtherSia_LinuxSocket::begin(const MACAddress &address)
 
     /* Allow the socket to be reused */
     if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &sockopt, sizeof sockopt) == -1) {
-      perror("setsockopt(SO_REUSEADDR)");
-      close(sockfd);
-      return false;
+        perror("setsockopt(SO_REUSEADDR)");
+        close(sockfd);
+        return false;
     }
 
     /* Bind to device */
     if (setsockopt(sockfd, SOL_SOCKET, SO_BINDTODEVICE, ifname, IFNAMSIZ-1) == -1)	{
-      perror("setsockopt(SO_BINDTODEVICE)");
-      close(sockfd);
-      return false;
+        perror("setsockopt(SO_BINDTODEVICE)");
+        close(sockfd);
+        return false;
     }
 
     return EtherSia::begin();

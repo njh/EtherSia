@@ -74,34 +74,34 @@ public:
 
     /**
      * Set the priority value for messages
-     * 
+     *
      * See the ::SyslogPriority enumeration for valid values.
      *
      * @param priority The priority value in the range 0-7
      */
     void setPriority(uint8_t priority);
-    
+
     /**
      * Get the configured priority value for messages
-     * 
+     *
      * See the ::SyslogPriority enumeration for valid values.
      *
      * @return The priority value in the range 0-7
      */
     uint8_t priority();
-    
+
     /**
      * Set the facility number for messages
-     * 
+     *
      * See the ::SyslogFacility enumeration for valid values.
      *
      * @param facility The facility number in the range 0-25
      */
     void setFacility(uint8_t facility);
-    
+
     /**
      * Get the configured facility number for messages
-     * 
+     *
      * See the ::SyslogFacility enumeration for valid values.
      *
      * @return The priority value in the range 0-25
