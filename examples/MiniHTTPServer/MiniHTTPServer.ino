@@ -1,3 +1,18 @@
+/**
+ * Mini HTTP Server - demonstrates handling HTTP requests
+ *
+ * This example handles two endpoints:
+ *   /       - Displays "Hello World" as HTML
+ *   /text   - Displays some plain text
+ *
+ * All other requests will display "404 Not Found".
+ *
+ * Get your own Random Locally Administered MAC Address here:
+ * https://www.hellion.org.uk/cgi-bin/randmac.pl
+ *
+ * @file
+ */
+
 #include <EtherSia.h>
 
 /** W5100 Ethernet Interface */
