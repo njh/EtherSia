@@ -94,6 +94,10 @@ public:
     /**
      * Get the body section of the HTTP request as a C string
      *
+     * @warning Some browsers (eg Safari) send the HTTP request headers
+     * and the request body in seperate TCP segments. In this case EtherSia
+     * is unable to see the response body.
+     *
      * @return Pointer to the body or NULL if the body is empty
      */
     inline char* body() { return _bodyPtr; }
@@ -101,12 +105,20 @@ public:
     /**
      * Get the length of the HTTP body
      *
+     * @warning Annoyingly, some browsers (eg Safari) send the HTTP request headers
+     * and the request body in seperate TCP segments. In this case EtherSia
+     * is unable to see the response body.
+     *
      * @return The length of the HTTP body (or 0 if there isn't one)
      */
     uint16_t bodyLength();
 
     /**
      * Check if request body equals the given C string
+     *
+     * @warning Annoyingly, some browsers (eg Safari) send the HTTP request headers
+     * and the request body in seperate TCP segments. In this case EtherSia
+     * is unable to see the response body.
      *
      * @param str The string to compare to
      * @return true if the body and string are equal
