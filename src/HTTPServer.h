@@ -29,6 +29,8 @@ public:
      * Check if request is of type GET and matches path
      *
      * @param path The path to check for (use the F("") macro)
+     * * If the path contains a '?' it will match any character in the request patj
+     * * If the path contains a '#' it will match the rest of the path
      * @return True if the method and path matches
      */
     inline boolean isGet(const __FlashStringHelper* path) { return checkRequest(methodGet, path); }
@@ -37,6 +39,8 @@ public:
      * Check if request is of type POST and matches path
      *
      * @param path The path to check for (use the F("") macro)
+     * * If the path contains a '?' it will match any character in the request patj
+     * * If the path contains a '#' it will match the rest of the path
      * @return True if the method and path matches
      */
     inline boolean isPost(const __FlashStringHelper* path) { return checkRequest(methodPost, path); }
@@ -45,6 +49,8 @@ public:
      * Check if request is of type PUT and matches path
      *
      * @param path The path to check for (use the F("") macro)
+     * * If the path contains a '?' it will match any character in the request patj
+     * * If the path contains a '#' it will match the rest of the path
      * @return True if the method and path matches
      */
     inline boolean isPut(const __FlashStringHelper* path) { return checkRequest(methodPut, path); }
@@ -53,6 +59,8 @@ public:
      * Check if request is of type DELETE and matches path
      *
      * @param path The path to check for (use the F("") macro)
+     * * If the path contains a '?' it will match any character in the request patj
+     * * If the path contains a '#' it will match the rest of the path
      * @return True if the method and path matches
      */
     inline boolean isDelete(const __FlashStringHelper* path) { return checkRequest(methodDelete, path); }
@@ -103,6 +111,13 @@ public:
     inline char* body() { return _bodyPtr; }
 
     /**
+     * Get the path of the HTTP request
+     *
+     * @return the path for the HTTP request as a C string
+     */
+    inline char* path() { return _pathPtr; }
+
+    /**
      * Get the length of the HTTP body
      *
      * @warning Annoyingly, some browsers (eg Safari) send the HTTP request headers
@@ -138,6 +153,9 @@ protected:
 
     /** A pointer to the start of the body section */
     char* _bodyPtr;
+
+    /** A pointer path string for current request */
+    char* _pathPtr;
 
     /**
      * Check if request is of method and path matches the incoming request

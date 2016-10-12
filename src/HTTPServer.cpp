@@ -71,31 +71,44 @@ boolean HTTPServer::checkRequest(const char* method, const __FlashStringHelper* 
         // Wrong method
         return false;
     }
-    
+
     // Check there is a space after the method
     if (payload[endOfMethod] != ' ') {
         // No space after method
         return false;
     }
-    
-    // Search for the end of the path section
-    for(pos = endOfMethod + 1; pos < length; pos++) {
-        if (payload[pos] == ' ' || payload[pos] == '?' || payload[pos] == '\0') {
-            payload[pos] = '\0';
-            break;
-        }
-    }
-
-    if (pos == length) {
-        // Failed to find end of path
-        return false;
-    }
 
     // Do the paths match?
-    const char *charpath = reinterpret_cast<const char *>(path);
-    if (strcmp_P(payload + endOfMethod + 1, charpath) != 0) {
-        // Path mismatch
-        return false;
+    const char *matchpath = reinterpret_cast<const char *>(path);
+    uint8_t maxlen = length - endOfMethod - 1;
+    bool allowAny = false;
+    _pathPtr = &payload[endOfMethod + 1];
+    for(uint8_t i=0; i < maxlen; i++) {
+        char match = pgm_read_byte(matchpath + i);
+
+        // Have we got the end of the path section in the HTTP request?
+        if (isWhitespace(_pathPtr[i]) || _pathPtr[i] == '?') {
+            if (match == '\0') {
+                // Both ended at the same time
+                _pathPtr[i] = '\0';
+                break;
+            } else {
+                // Path ended before the string we are trying to match against
+                return false;
+            }
+        }
+
+        // Allow anything after a '#' character
+        if (match == '#')
+            allowAny = true;
+
+        // Allow any character to match a '?'
+        if (match == '?' || allowAny)
+            continue;
+
+        // Do they match up?
+        if (_pathPtr[i] != match)
+            return false;
     }
 
     // Find the start of the body section
