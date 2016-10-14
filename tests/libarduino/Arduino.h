@@ -44,6 +44,7 @@ void randomSeed(unsigned long);
 #define memcmp_P(p1, p2, n) memcmp(p1, p2, n)
 #define strcmp_P(s1, s2) strcmp(s1, s2)
 #define strlen_P(str) strlen(str)
+#define pgm_read_byte(addr) *(addr);
 
 class __FlashStringHelper;
 
