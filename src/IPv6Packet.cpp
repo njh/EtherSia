@@ -48,17 +48,17 @@ void IPv6Packet::invalidate()
     this->_etherType = 0;
 }
 
-uint8_t IPv6Packet::version()
+uint8_t IPv6Packet::version() const
 {
     return (_ver_tc & 0xF0) >> 4;
 }
 
-uint16_t IPv6Packet::length()
+uint16_t IPv6Packet::length() const
 {
     return ETHER_HEADER_LEN + IP6_HEADER_LEN + payloadLength();
 }
 
-uint16_t IPv6Packet::payloadLength()
+uint16_t IPv6Packet::payloadLength() const
 {
     return ntohs(_length);
 }

@@ -97,21 +97,21 @@ public:
      * This should always return 6 for a valid packet.
      * @return the version number of the IPv6 header
      */
-    uint8_t version();
+    uint8_t version() const;
 
     /**
      * Get total length of this packet, including the Ethernet header,
      * IPv6 header and payload.
      * @return the total length of the IPv6 packet in bytes
      */
-    uint16_t length();
+    uint16_t length() const;
 
     /**
      * Get length of this payload of the packet in bytes.
      * This should include everything after the IPv6 header.
      * @return the total length of the packet payload in bytes
      */
-    uint16_t payloadLength();
+    uint16_t payloadLength() const;
 
     /**
      * Set the length of this payload of the packet in bytes.
