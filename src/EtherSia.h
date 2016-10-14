@@ -291,6 +291,7 @@ protected:
 #include "w5500.h"
 
 #ifndef ARDUINO
+#include "dummy.h"
 #include "LinuxSocket.h"
 #endif
 
