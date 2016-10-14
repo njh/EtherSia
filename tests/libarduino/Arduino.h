@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <string.h>
+#include <ctype.h>
 
 #define HIGH 0x1
 #define LOW  0x0
@@ -36,6 +37,11 @@ long random();
 long random(long);
 long random(long, long);
 void randomSeed(unsigned long);
+
+inline boolean isWhitespace(int c)
+{
+    return (isblank (c) == 0 ? false : true);
+}
 
 #define PROGMEM
 #define F(x) x
