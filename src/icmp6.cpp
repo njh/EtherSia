@@ -41,7 +41,7 @@ void EtherSia::icmp6SendNS(IPv6Address &targetAddress)
 {
     IPv6Packet& packet = (IPv6Packet&)_buffer;
 
-    packet.init();
+    prepareSend();
     packet.setPayloadLength(ICMP6_HEADER_LEN + ICMP6_NS_HEADER_LEN);
     packet.setHopLimit(255);
     packet.source().setZero();
@@ -61,7 +61,7 @@ void EtherSia::icmp6SendRS()
 {
     IPv6Packet& packet = (IPv6Packet&)_buffer;
 
-    packet.init();
+    prepareSend();
     packet.setPayloadLength(ICMP6_HEADER_LEN + ICMP6_RS_HEADER_LEN);
     packet.setHopLimit(255);
     packet.setSource(_linkLocalAddress);
