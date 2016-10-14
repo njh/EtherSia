@@ -39,6 +39,12 @@ void printPaddedHex(uint8_t byte, Print &p)
     }
 }
 
+void printPaddedHex16(uint16_t word, Print &p)
+{
+    printPaddedHex((word & 0xFF00) >> 8, p);
+    printPaddedHex((word & 0x00FF) >> 0, p);
+}
+
 
 // This function comes from Contiki's uip6.c
 uint16_t chksum(uint16_t sum, const uint8_t *data, uint16_t len)

@@ -33,6 +33,14 @@ boolean containsColon(const char *str);
 void printPaddedHex(uint8_t byte, Print &p=Serial);
 
 /**
+ * Print a 4-byte human readable hex value for an 16-bit integer
+ *
+ * @param word The value to print (in range 0x0000 to 0xFFFF)
+ * @param p The stream to print to (default Serial)
+ */
+void printPaddedHex16(uint16_t word, Print &p=Serial);
+
+/**
  * Calculate a IP type 16-bit checksum for a buffer
  *
  * @param sum The current sum accumulator (or 0 for first call)
