@@ -1,4 +1,5 @@
 #include "util.h"
+#include <ctype.h>
 
 
 int8_t asciiToHex(char c)
@@ -45,6 +46,54 @@ void printPaddedHex16(uint16_t word, Print &p)
     printPaddedHex((word & 0x00FF) >> 0, p);
 }
 
+static void printHexDumpAscii(const char* ascii, uint8_t count, Print &p)
+{
+    uint8_t i;
+
+    for(i=0; i < (15-count)*3; i++) {
+        p.print(' ');
+    }
+
+    p.print(F(" |"));
+    for(i=0; i<count; i++) {
+        p.print(ascii[i]);
+    }
+
+    p.println('|');
+}
+
+void printHexDump(uint8_t bytes[], uint16_t len, Print &p)
+{
+    char ascii[16];
+    uint8_t mod=0;
+
+    for(uint16_t i=0; i<len; i++) {
+        mod = i%16;
+
+        if (mod == 0) {
+            printPaddedHex16(i, p);
+            p.print(F(":  "));
+        }
+
+        printPaddedHex(bytes[i], p);
+        p.print(' ');
+        if (isprint(bytes[i])) {
+            ascii[mod] = bytes[i];
+        } else {
+            ascii[mod] = '.';
+        }
+
+        if (mod == 7) {
+            p.print(' ');
+        } else if (mod == 15) {
+            printHexDumpAscii(ascii, mod, p);
+        }
+    }
+
+    if (mod != 15) {
+        printHexDumpAscii(ascii, mod, p);
+    }
+}
 
 // This function comes from Contiki's uip6.c
 uint16_t chksum(uint16_t sum, const uint8_t *data, uint16_t len)
