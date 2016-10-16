@@ -7,24 +7,27 @@
  *
  * https://github.com/PaulStoffregen/TimerOne
  *
- * Connections to outputs and buttons are as follows:
+ * Outputs are connected to:
  *
- *    Output 1 - D5
- *    Output 2 - D6
- *    Output 3 - D7
- *    Output 4 - D8
+ *     Output 1 - D5
+ *     Output 2 - D6
+ *     Output 3 - D7
+ *     Output 4 - D8
  *
- *    Button Input 1 - A0
- *    Button Input 2 - A1
- *    Button Input 3 - A2
- *    Button Input 4 - A3
+ * Buttons are connect to: 
  *
- * The following HTTP endpoints are support:
- *   /           - Displays HTML with buttons
- *   /outputs/1  - Get/set output 1
- *   /outputs/2  - Get/set output 2
- *   /outputs/3  - Get/set output 3
- *   /outputs/4  - Get/set output 4
+ *     Button Input 1 - A0
+ *     Button Input 2 - A1
+ *     Button Input 3 - A2
+ *     Button Input 4 - A3
+ *
+ * The following HTTP endpoints are supported:
+ *
+ *     /           - Displays HTML with buttons
+ *     /outputs/1  - Get/set output 1
+ *     /outputs/2  - Get/set output 2
+ *     /outputs/3  - Get/set output 3
+ *     /outputs/4  - Get/set output 4
  *
  * Any other paths will return '404 Not Found'.
  *
@@ -35,7 +38,7 @@
  *
  * Or toggle using a POST with no body:
  *
- *    curl -X POST http://[2001:dead:beef::9cb3:19ff:fec7:1b10]/outputs/1
+ *     curl -X POST http://[2001:dead:beef::9cb3:19ff:fec7:1b10]/outputs/1
  *
  * Uses a hard-code MAC address. Get your own
  * Random Locally Administered MAC Address here:
@@ -58,17 +61,22 @@ EtherSia_ENC28J60 ether(10);
 HTTPServer http(ether);
 
 
+/** The Arduino pin number for the first input button */
 #define FIRST_INPUT_PIN   (A0)
+
+/** The Arduino pin number for the first output */
 #define FIRST_OUTPUT_PIN  (5)
+
+/** The number of output channels to use */
 #define CHANNEL_COUNT     (4)
 
 
-const char label1[] PROGMEM = "Output 1";
-const char label2[] PROGMEM = "Output 2";
-const char label3[] PROGMEM = "Output 3";
-const char label4[] PROGMEM = "Output 4";
-const char* const labels[CHANNEL_COUNT] = {label1, label2, label3, label4};
+const char PROGMEM label1[] = "Output 1";  ///< Label on HTML page for Output 1
+const char PROGMEM label2[] = "Output 2";  ///< Label on HTML page for Output 2
+const char PROGMEM label3[] = "Output 3";  ///< Label on HTML page for Output 3
+const char PROGMEM label4[] = "Output 4";  ///< Label on HTML page for Output 4
 
+/** Called once at the start */
 void setup()
 {
     MACAddress macAddress("d6:9c:e1:1c:0b:32");
@@ -99,12 +107,18 @@ void setup()
     Serial.println("Ready.");
 }
 
+/**
+ * Turn an output On, when it is Off. Or Off when it is On.
+ *
+ * @param pin The Arduino output pin number
+ */
 void digitalToggle(byte pin)
 {
     digitalWrite(pin, !digitalRead(pin));
 }
 
-void checkButtons(void) {
+/** Periodically called by TimerOne to check if a button has been pressed */
+void checkButtons() {
     static byte ignore_count[CHANNEL_COUNT] = {0,0,0,0};
     static byte trigger_count[CHANNEL_COUNT] = {0,0,0,0};
 
@@ -140,8 +154,12 @@ void checkButtons(void) {
     }
 }
 
-void printIndex()
+/** Send the HTML index page back to the browser */
+void sendIndex()
 {
+    const char* const labels[CHANNEL_COUNT] = {label1, label2, label3, label4};
+
+    http.printHeaders(http.typeHtml);
     http.print(F("<!DOCTYPE html>"));
     http.print(F("<html><head><title>WebToggler</title>"));
     http.print(F("<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"));
@@ -164,9 +182,10 @@ void printIndex()
       http.print(F("\">Toggle</button></td></tr>"));
     }
     http.print(F("</table></form></body></html>"));
+    http.sendReply();
 }
 
-// Get the output number from the path of the request
+/** Get the output number from the path of the HTTP request */
 int8_t pathToNum()
 {
     // /outputs/X
@@ -180,7 +199,7 @@ int8_t pathToNum()
     }
 }
 
-// the loop function runs over and over again forever
+/** the loop function runs over and over again forever */
 void loop()
 {
     // Check for an available packet
@@ -188,9 +207,7 @@ void loop()
 
     // GET the index page
     if (http.isGet(F("/"))) {
-        http.printHeaders(http.typeHtml);
-        printIndex();
-        http.sendReply();
+        sendIndex();
 
     // GET the state of a single output
     } else if (http.isGet(F("/outputs/?"))) {
