@@ -198,9 +198,9 @@ void loop()
         if (num != -1) {
             http.printHeaders(http.typePlain);
             if (digitalRead(FIRST_OUTPUT_PIN + num)) {
-                http.println(F("on"));
+                http.print(F("on"));
             } else {
-                http.println(F("off"));
+                http.print(F("off"));
             }
             http.sendReply();
         }
