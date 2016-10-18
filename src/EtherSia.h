@@ -60,7 +60,9 @@ public:
      * @note Call this before begin().
      * @param address The Global IP address for this Ethernet interface
      */
-    void setGlobalAddress(IPv6Address &address);
+    inline void setGlobalAddress(IPv6Address &address) {
+        _globalAddress = address;
+    }
 
     /**
      * Manually set the global IPv6 address for the Ethernet Interface
@@ -69,7 +71,9 @@ public:
      * @note Call this before begin().
      * @param address The Global IP address for this Ethernet interface
      */
-    void setGlobalAddress(const char* address);
+    inline void setGlobalAddress(const char* address) {
+        _globalAddress.fromString(address);
+    }
 
     /**
      * Get the global IPv6 address of the Ethernet Interface
@@ -78,7 +82,9 @@ public:
      *
      * @return The Global IP address as an IPv6Address object
      */
-    IPv6Address& globalAddress();
+    inline IPv6Address& globalAddress() {
+        return _globalAddress;
+    }
 
     /**
      * Get the link-local address of the Ethernet Interface
@@ -86,7 +92,9 @@ public:
      *
      * @return The Link-Local IP address as an IPv6Address object
      */
-    IPv6Address& linkLocalAddress();
+    inline IPv6Address& linkLocalAddress() {
+        return _linkLocalAddress;
+    }
 
     /**
      * Check to see if an IPv6 address belongs to this Ethernet interface
@@ -101,14 +109,18 @@ public:
      *
      * @param address The DNS Server IP address
      */
-    void setDnsServerAddress(IPv6Address &address);
+    inline void setDnsServerAddress(IPv6Address &address) {
+        _dnsServerAddress = address;
+    }
 
     /**
      * Get the IPv6 address of the DNS server
      *
      * @return The DNS Server address as an IPv6Address object
      */
-    IPv6Address& dnsServerAddress();
+    inline IPv6Address& dnsServerAddress() {
+        return _dnsServerAddress;
+    }
 
     /**
      * Check if there is an IPv6 packet waiting for us and copy it into the buffer.
@@ -125,7 +137,9 @@ public:
      * * true: the buffer contains a valid packet received over the network
      * * false: the buffer contains a packet we generated, or is invalid in some way
      */
-    inline boolean bufferContainsReceived() { return _bufferContainsReceived; }
+    inline boolean bufferContainsReceived() {
+        return _bufferContainsReceived;
+    }
 
     /**
      * Get a reference to the packet buffer (the last packet sent or received).
@@ -137,7 +151,10 @@ public:
      *
      * @return A reference to an IPv6Packet
      */
-    IPv6Packet& packet();
+    inline IPv6Packet& packet()
+    {
+        return (IPv6Packet&)_buffer;
+    }
 
     /**
      * Send the packet currently in the packet buffer.

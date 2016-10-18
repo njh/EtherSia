@@ -38,26 +38,6 @@ boolean EtherSia::begin()
     return result;
 }
 
-void EtherSia::setGlobalAddress(IPv6Address &address)
-{
-    _globalAddress = address;
-}
-
-void EtherSia::setGlobalAddress(const char* address)
-{
-    _globalAddress.fromString(address);
-}
-
-IPv6Address& EtherSia::globalAddress()
-{
-    return _globalAddress;
-}
-
-IPv6Address& EtherSia::linkLocalAddress()
-{
-    return _linkLocalAddress;
-}
-
 uint8_t EtherSia::isOurAddress(const IPv6Address &address)
 {
     if (address == _linkLocalAddress) {
@@ -69,21 +49,6 @@ uint8_t EtherSia::isOurAddress(const IPv6Address &address)
     } else {
         return 0;
     }
-}
-
-void EtherSia::setDnsServerAddress(IPv6Address &address)
-{
-    _dnsServerAddress = address;
-}
-
-IPv6Address& EtherSia::dnsServerAddress()
-{
-    return _dnsServerAddress;
-}
-
-IPv6Packet& EtherSia::packet()
-{
-    return (IPv6Packet&)_buffer;
 }
 
 uint16_t EtherSia::receivePacket()
