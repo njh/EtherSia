@@ -12,5 +12,5 @@ docs/examples.txt
 
 examples/LinuxPacketPrinter/LinuxPacketPrinter
 
-tests/check_*.cpp
-tests/check_*.cmd
+tests/*_check_*.cpp
+tests/*_check_*.cmd
