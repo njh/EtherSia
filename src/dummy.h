@@ -12,9 +12,9 @@
 
 /** Structure for storing information about sent and received packets */
 typedef struct frame_wrapper {
-    time_t time;        ///< A UNIX timestamp for the time the packet was sent/received
-    size_t length;      ///< The length of the packet (in bytes)
-    IPv6Packet* packet; ///< A pointer to the packet data
+    time_t time;         ///< A UNIX timestamp for the time the packet was sent/received
+    uint16_t length;     ///< The length of the packet (in bytes)
+    IPv6Packet* packet;  ///< A pointer to the packet data
 } frame_t;
 
 /**

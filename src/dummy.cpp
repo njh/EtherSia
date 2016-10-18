@@ -94,7 +94,7 @@ EtherSia_Dummy::readFrame(uint8_t *buffer, uint16_t bufsize)
         } else {
             fprintf(
                 stderr,
-                "Packet is too big for EtherSia buffer (frame_length=%lu bufsize=%u)\n",
+                "Packet is too big for EtherSia buffer (frame_length=%u bufsize=%u)\n",
                 frame->length,
                 bufsize
             );
