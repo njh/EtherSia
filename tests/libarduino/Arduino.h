@@ -18,6 +18,7 @@ extern "C" {
     typedef bool boolean ;
 
     void* malloc(size_t size);
+    void free(void *ptr);
 }
 
 /* sketch */
