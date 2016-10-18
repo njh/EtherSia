@@ -68,13 +68,13 @@ EtherSia_Dummy::begin(const MACAddress &address)
 
 
 uint16_t
-EtherSia_Dummy::sendFrame(const uint8_t *data, uint16_t datalen)
+EtherSia_Dummy::sendFrame(const uint8_t *data, uint16_t len)
 {
-    _sent[_sentCount].packet = (IPv6Packet *)malloc(datalen);
+    _sent[_sentCount].packet = (IPv6Packet *)malloc(len);
     assert(_sent[_sentCount].packet != NULL);
 
-    memcpy(_sent[_sentCount].packet, data, datalen);
-    _sent[_sentCount].length = datalen;
+    memcpy(_sent[_sentCount].packet, data, len);
+    _sent[_sentCount].length = len;
     _sent[_sentCount].time = time(NULL);
 
     _sentCount++;
@@ -84,10 +84,26 @@ EtherSia_Dummy::sendFrame(const uint8_t *data, uint16_t datalen)
 
 
 uint16_t
-EtherSia_Dummy::readFrame(uint8_t *, uint16_t )
+EtherSia_Dummy::readFrame(uint8_t *buffer, uint16_t bufsize)
 {
-
-    return 0;
+    if (_recievedCount < _injectCount) {
+        frame_t* frame = &_recieved[_recievedCount++];
+        if (frame->length < bufsize) {
+            memcpy(buffer, frame->packet, frame->length);
+            return frame->length;
+        } else {
+            fprintf(
+                stderr,
+                "Packet is too big for EtherSia buffer (frame_length=%lu bufsize=%u)\n",
+                frame->length,
+                bufsize
+            );
+            return 0;
+        }
+    } else {
+        fprintf(stderr, "Warning: tried to read packet but none available.\n");
+        return 0;
+    }
 }
 
 
@@ -99,7 +115,7 @@ EtherSia_Dummy::getSent(size_t pos)
 
 
 frame_t&
-EtherSia_Dummy::EtherSia_Dummy::getLastSent()
+EtherSia_Dummy::getLastSent()
 {
     return _sent[_sentCount-1];
 }
@@ -108,17 +124,42 @@ EtherSia_Dummy::EtherSia_Dummy::getLastSent()
 void
 EtherSia_Dummy::end()
 {
+    clearSent();
+    clearRecieved();
+}
+
+void EtherSia_Dummy::clearSent()
+{
     for(size_t i=0; i<bufferSize; i++) {
         if (_sent[i].packet) {
             free(_sent[i].packet);
             _sent[i].packet = NULL;
         }
+    }
+}
 
+void EtherSia_Dummy::clearRecieved()
+{
+    for(size_t i=0; i<bufferSize; i++) {
         if (_recieved[i].packet) {
             free(_recieved[i].packet);
             _recieved[i].packet = NULL;
         }
     }
+}
+
+
+void
+EtherSia_Dummy::injectRecievedPacket(void *packet, uint16_t length)
+{
+    _recieved[_injectCount].packet = (IPv6Packet *)malloc(length);
+    assert(_recieved[_injectCount].packet != NULL);
+
+    memcpy(_recieved[_injectCount].packet, packet, length);
+    _recieved[_injectCount].length = length;
+    _recieved[_injectCount].time = time(NULL);
+
+    _injectCount++;
 }
 
 #endif
