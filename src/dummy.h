@@ -8,6 +8,8 @@
 
 #include "EtherSia.h"
 
+#include <time.h>
+
 typedef struct frame_wrapper {
     time_t time;
     size_t length;
