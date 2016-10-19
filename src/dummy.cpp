@@ -93,16 +93,11 @@ EtherSia_Dummy::readFrame(uint8_t *buffer, uint16_t bufsize)
             memcpy(buffer, frame->packet, frame->length);
             return frame->length;
         } else {
-            fprintf(
-                stderr,
-                "Packet is too big for EtherSia buffer (frame_length=%u bufsize=%u)\n",
-                frame->length,
-                bufsize
-            );
+            // Packet is too big for EtherSia buffer
             return 0;
         }
     } else {
-        fprintf(stderr, "Warning: tried to read packet but none available.\n");
+        // Tried to read packet but none available
         return 0;
     }
 }
