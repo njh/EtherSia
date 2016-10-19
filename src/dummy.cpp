@@ -53,6 +53,7 @@ EtherSia_Dummy::EtherSia_Dummy()
         _recieved[i].packet = NULL;
     }
 
+    _injectCount = 0;
     _recievedCount = 0;
     _sentCount = 0;
 }
@@ -131,21 +132,28 @@ EtherSia_Dummy::end()
 void EtherSia_Dummy::clearSent()
 {
     for(size_t i=0; i<bufferSize; i++) {
+        _sent[i].time = 0;
+        _sent[i].length = 0;
         if (_sent[i].packet) {
             free(_sent[i].packet);
             _sent[i].packet = NULL;
         }
     }
+    _sentCount = 0;
 }
 
 void EtherSia_Dummy::clearRecieved()
 {
     for(size_t i=0; i<bufferSize; i++) {
+        _recieved[i].time = 0;
+        _recieved[i].length = 0;
         if (_recieved[i].packet) {
             free(_recieved[i].packet);
             _recieved[i].packet = NULL;
         }
     }
+    _injectCount = 0;
+    _recievedCount = 0;
 }
 
 
