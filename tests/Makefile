@@ -1,4 +1,4 @@
-CFLAGS += -std=c++11 -Werror -Wall -Wextra -pedantic -O0
+CFLAGS += -std=c++11 -Werror -Wall -Wextra -pedantic -g -O0
 CFLAGS += -I../src -I./libarduino
 CFLAGS += $(COVERAGE_CFLAGS)
 
