@@ -1,16 +1,17 @@
 #include "EtherSia.h"
 #include "util.h"
-#suite core
+#suite Core
 
 const char local_mac[] = "ca:2f:6d:70:f9:5f";
+IPv6Address ourLinkLocal("fe80::c82f:6dff:fe70:f95f");
+IPv6Address googleDns("2001:4860:4860::8888");
 
 
 #test default_dns_server
 EtherSia_Dummy ether;
 ether.setGlobalAddress("2001::1");
 ether.begin(local_mac);
-IPv6Address google("2001:4860:4860::8888");
-ck_assert(ether.dnsServerAddress() == google);
+ck_assert(ether.dnsServerAddress() == googleDns);
 
 
 #test sets_linklocal_address
@@ -19,4 +20,26 @@ ether.setGlobalAddress("2001::1");
 ether.begin(local_mac);
 IPv6Address addr("fe80:0000:0000:0000:c82f:6dff:fe70:f95f");
 ck_assert(ether.linkLocalAddress() == addr);
+
+
+#test is_our_address
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:1234::c82f:6dff:fe70:f95f");
+ether.begin(local_mac);
+
+ck_assert_int_eq(ether.isOurAddress(ourLinkLocal), ADDRESS_TYPE_LINK_LOCAL);
+
+IPv6Address expect_global("2001:1234::c82f:6dff:fe70:f95f");
+ck_assert_int_eq(ether.isOurAddress(expect_global), ADDRESS_TYPE_GLOBAL);
+
+IPv6Address expect_allnodes("ff02::1");
+ck_assert_int_eq(ether.isOurAddress(expect_allnodes), ADDRESS_TYPE_MULTICAST);
+
+IPv6Address expect_nodemulticast("ff02::1:ff70:f95f");
+ck_assert_int_eq(ether.isOurAddress(expect_nodemulticast), ADDRESS_TYPE_MULTICAST);
+
+ck_assert_int_eq(ether.isOurAddress(googleDns), 0);
+
+IPv6Address other_global("2a02:26f0::c82f:6dff:fe70:f95f");
+ck_assert_int_eq(ether.isOurAddress(other_global), 0);
 
