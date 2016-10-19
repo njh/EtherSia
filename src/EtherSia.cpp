@@ -108,6 +108,8 @@ void EtherSia::prepareReply()
         replySourceAddress = &_linkLocalAddress;
     }
 
+    packet.setHopLimit(IP6_DEFAULT_HOP_LIMIT);
+
     packet.setDestination(packet.source());
     packet.setSource(*replySourceAddress);
 
