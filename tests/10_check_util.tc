@@ -1,5 +1,5 @@
 #include "util.h"
-#suite util
+#suite Util
 
 #test asciiToHex_0
 ck_assert(asciiToHex('0') == 0x0);
