@@ -14,6 +14,7 @@ void EtherSia::icmp6NSReply()
     }
 
     prepareReply();
+    packet.setHopLimit(255);
 
     // We should now send a neighbor advertisement back to where the neighbor solicication came from.
     packet.setPayloadLength(ICMP6_HEADER_LEN + ICMP6_NA_HEADER_LEN);
