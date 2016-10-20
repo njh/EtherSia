@@ -100,3 +100,41 @@ Buffer buffer;
 buffer.println("Hello");
 ck_assert_uint_eq(buffer.size(), 7);
 ck_assert_str_eq((const char*)buffer, "Hello\r\n");
+
+#test printPaddedHex_05
+Buffer buffer;
+printPaddedHex(0x05, buffer);
+ck_assert_uint_eq(buffer.size(), 2);
+ck_assert_str_eq((const char*)buffer, "05");
+
+#test printPaddedHex_ff
+Buffer buffer;
+printPaddedHex(0xff, buffer);
+ck_assert_uint_eq(buffer.size(), 2);
+ck_assert_str_eq((const char*)buffer, "ff");
+
+#test printPaddedHex16_5
+Buffer buffer;
+printPaddedHex16(0x05, buffer);
+ck_assert_uint_eq(buffer.size(), 4);
+ck_assert_str_eq((const char*)buffer, "0005");
+
+#test printPaddedHex16_ff
+Buffer buffer;
+printPaddedHex16(0xff, buffer);
+ck_assert_uint_eq(buffer.size(), 4);
+ck_assert_str_eq((const char*)buffer, "00ff");
+
+#test printPaddedHex16_100
+Buffer buffer;
+printPaddedHex16(0x100, buffer);
+ck_assert_uint_eq(buffer.size(), 4);
+ck_assert_str_eq((const char*)buffer, "0100");
+
+#test printPaddedHex16_fe80
+Buffer buffer;
+printPaddedHex16(0xfe80, buffer);
+ck_assert_uint_eq(buffer.size(), 4);
+ck_assert_str_eq((const char*)buffer, "fe80");
+
+
