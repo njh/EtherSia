@@ -3,87 +3,72 @@
 
 size_t Print::print(const char str[])
 {
-    return printf("%s", str);
+    unsigned int len = strlen(str);
+    for(unsigned int i=0; i<len; i++) {
+        write(str[i]);
+    }
+    return len;
 }
 
 size_t Print::print(const __FlashStringHelper* ifsh)
 {
     const char* str = reinterpret_cast<const char*>(ifsh);
-    return printf("%s", str);
+    return print(str);
 }
 
 size_t Print::print(char c)
 {
-    return printf("%c", c);
-}
-
-size_t Print::print(unsigned char i, int base)
-{
-    return printf("%d:%d", i, base);
+    return write(c);
 }
 
 size_t Print::print(int i, int base)
 {
-    return printf("%d:%d", i, base);
+    char buf[12] = "\0";
+    if (base == DEC) {
+        snprintf(buf, sizeof(buf), "%d", i);
+    } else if (base == HEX) {
+        snprintf(buf, sizeof(buf), "%x", i);
+    }
+    return print(buf);
 }
 
 size_t Print::print(unsigned int i, int base)
 {
-    return printf("%d:%d", i, base);
-}
-
-size_t Print::print(long i, int base)
-{
-    return printf("%ld:%d", i, base);
-}
-
-size_t Print::print(unsigned long i, int base)
-{
-    return printf("%lu:%d", i, base);
+    char buf[12] = "\0";
+    if (base == DEC) {
+        snprintf(buf, sizeof(buf), "%u", i);
+    } else if (base == HEX) {
+        snprintf(buf, sizeof(buf), "%x", i);
+    }
+    return print(buf);
 }
 
 size_t Print::println(const char str[])
 {
-    return printf("%s\n", str);
+    return print(str) + println();
 }
 
 size_t Print::println(const __FlashStringHelper* ifsh)
 {
-    const char* str = reinterpret_cast<const char*>(ifsh);
-    return printf("%s\n", str);
+    return print(ifsh) + println();
 }
 
 size_t Print::println(char c)
 {
-    return printf("%c\n", c);
-}
-
-size_t Print::println(unsigned char i, int base)
-{
-    return printf("%d:%d\n", i, base);
+    return print(c) + println();
 }
 
 size_t Print::println(int i, int base)
 {
-    return printf("%d:%d\n", i, base);
+    return print(i, base) + println();
 }
 
 size_t Print::println(unsigned int i, int base)
 {
-    return printf("%u:%d\n", i, base);
-}
-
-size_t Print::println(long i, int base)
-{
-    return printf("%ld:%d\n", i, base);
-}
-
-size_t Print::println(unsigned long i, int base)
-{
-    return printf("%lu:%d\n", i, base);
+    return print(i, base) + println();
 }
 
 size_t Print::println(void)
 {
-    return printf("\n");
+    return print("\r\n");
 }

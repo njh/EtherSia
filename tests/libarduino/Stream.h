@@ -8,8 +8,10 @@ class Stream : public Print {
 
 public:
     void begin(int baud);
+    virtual size_t write(uint8_t chr);
 };
 
 extern Stream Serial;
+extern Stream Stdout;
 
 #endif
