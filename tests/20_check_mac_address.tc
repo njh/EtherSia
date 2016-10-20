@@ -72,3 +72,20 @@ MACAddress addr;
 addr.setIPv6Multicast(v6addr);
 ck_assert(memcmp(test, addr, 6) == 0);
 
+#test print
+Buffer buffer;
+MACAddress addr("4e:27:b0:be:69:24");
+addr.print(buffer);
+ck_assert_str_eq(buffer, "4e:27:b0:be:69:24");
+
+#test print_single_digit
+Buffer buffer;
+MACAddress addr("4e:27:b0:01:02:03");
+addr.print(buffer);
+ck_assert_str_eq(buffer, "4e:27:b0:01:02:03");
+
+#test println
+Buffer buffer;
+MACAddress addr("4e:27:b0:be:69:24");
+addr.println(buffer);
+ck_assert_str_eq(buffer, "4e:27:b0:be:69:24\r\n");
