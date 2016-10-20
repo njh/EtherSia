@@ -49,5 +49,6 @@ inline boolean isWhitespace(int c)
 
 #include "Print.h"
 #include "Stream.h"
+#include "Buffer.h"
 
 #endif // Arduino_h

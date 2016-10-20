@@ -58,3 +58,45 @@ const uint8_t data[] = {
 uint16_t checksum = ~ chksum(0, data, sizeof(data));
 ck_assert_uint_eq(checksum, 0xB861);
 
+
+#test print_char
+Buffer buffer;
+buffer.print('c');
+ck_assert_uint_eq(buffer.size(), 1);
+ck_assert_str_eq((const char*)buffer, "c");
+
+#test print_string
+Buffer buffer;
+buffer.print("string");
+ck_assert_uint_eq(buffer.size(), 6);
+ck_assert_str_eq((const char*)buffer, "string");
+
+#test print_unsigned_int_dec
+Buffer buffer;
+buffer.print(12U, DEC);
+ck_assert_uint_eq(buffer.size(), 2);
+ck_assert_str_eq((const char*)buffer, "12");
+
+#test print_int_dec
+Buffer buffer;
+buffer.print(-18, DEC);
+ck_assert_uint_eq(buffer.size(), 3);
+ck_assert_str_eq((const char*)buffer, "-18");
+
+#test print_hex
+Buffer buffer;
+buffer.print(0x16, HEX);
+ck_assert_uint_eq(buffer.size(), 2);
+ck_assert_str_eq((const char*)buffer, "16");
+
+#test println
+Buffer buffer;
+buffer.println();
+ck_assert_uint_eq(buffer.size(), 2);
+ck_assert_str_eq((const char*)buffer, "\r\n");
+
+#test println_string
+Buffer buffer;
+buffer.println("Hello");
+ck_assert_uint_eq(buffer.size(), 7);
+ck_assert_str_eq((const char*)buffer, "Hello\r\n");
