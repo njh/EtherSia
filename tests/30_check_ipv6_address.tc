@@ -228,3 +228,22 @@ ck_assert_int_eq(addr.type(), ADDRESS_TYPE_LINK_LOCAL);
 IPv6Address addr("ff02::2");
 ck_assert_int_eq(addr.type(), ADDRESS_TYPE_MULTICAST);
 
+
+#test print
+Buffer buffer;
+IPv6Address addr("2001:4860:4860::8888");
+addr.print(buffer);
+ck_assert_str_eq(buffer, "2001:4860:4860:0000:0000:0000:0000:8888");
+
+#test print_single_digit
+Buffer buffer;
+IPv6Address addr("ff02::2");
+addr.print(buffer);
+ck_assert_str_eq(buffer, "ff02:0000:0000:0000:0000:0000:0000:0002");
+
+#test println
+Buffer buffer;
+IPv6Address addr("2001:8b0:ffd5:3:f4cc:c669:d333:14cf");
+addr.println(buffer);
+ck_assert_str_eq(buffer, "2001:08b0:ffd5:0003:f4cc:c669:d333:14cf\r\n");
+
