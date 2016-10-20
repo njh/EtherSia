@@ -165,10 +165,6 @@ void EtherSia::icmp6ProcessPacket()
         icmp6EchoReply();
         break;
 
-    case ICMP6_TYPE_RS:
-        // We aren't a router - ignore all Router Solicitations
-        break;
-
     case ICMP6_TYPE_RA:
         icmp6ProcessRA();
         break;
