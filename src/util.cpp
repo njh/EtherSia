@@ -66,7 +66,7 @@ static void printHexDumpAscii(const char* ascii, uint8_t count, Print &p)
     p.println('|');
 }
 
-void printHexDump(uint8_t bytes[], uint16_t len, Print &p)
+void printHexDump(const uint8_t bytes[], uint16_t len, Print &p)
 {
     char ascii[16];
     uint8_t mod=0;

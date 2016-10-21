@@ -47,7 +47,7 @@ void printPaddedHex16(uint16_t word, Print &p=Serial);
  * @param len the number bytes in the array
  * @param p The stream to print to (default Serial)
  */
-void printHexDump(uint8_t bytes[], uint16_t len, Print &p=Serial);
+void printHexDump(const uint8_t bytes[], uint16_t len, Print &p=Serial);
 
 /**
  * Calculate a IP type 16-bit checksum for a buffer
