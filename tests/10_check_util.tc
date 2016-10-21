@@ -137,4 +137,54 @@ printPaddedHex16(0xfe80, buffer);
 ck_assert_uint_eq(buffer.size(), 4);
 ck_assert_str_eq((const char*)buffer, "fe80");
 
+#test printHexDump_6
+const uint8_t data[] = {'H','e','l','l','o','\t'};
+Buffer buffer;
+printHexDump(data, sizeof(data), buffer);
+ck_assert_uint_eq(buffer.size(), 67);
+ck_assert_str_eq(
+    (const char*)buffer,
+    "0000:  48 65 6c 6c 6f 09                                 |Hello.|\r\n"
+);
+
+#test printHexDump_16
+uint8_t binary[16];
+for (unsigned int i=0; i<sizeof(binary); i++) {
+    binary[i] = 0x70 + i;
+}
+Buffer buffer;
+printHexDump(binary, sizeof(binary), buffer);
+ck_assert_uint_eq(buffer.size(), 77);
+ck_assert_str_eq(
+    (const char*)buffer,
+    "0000:  70 71 72 73 74 75 76 77  78 79 7a 7b 7c 7d 7e 7f  |pqrstuvwxyz{|}~.|\r\n"
+);
+
+#test printHexDump_17
+uint8_t binary[17];
+for (unsigned int i=0; i<sizeof(binary); i++) {
+    binary[i] = 0x70 + i;
+}
+Buffer buffer;
+printHexDump(binary, sizeof(binary), buffer);
+ck_assert_uint_eq(buffer.size(), 139);
+ck_assert_str_eq(
+    (const char*)buffer,
+    "0000:  70 71 72 73 74 75 76 77  78 79 7a 7b 7c 7d 7e 7f  |pqrstuvwxyz{|}~.|\r\n"
+    "0010:  80                                                |.|\r\n"
+);
+
+#test printHexDump_25
+uint8_t binary[25];
+for (unsigned int i=0; i<sizeof(binary); i++) {
+    binary[i] = 0x70 + i;
+}
+Buffer buffer;
+printHexDump(binary, sizeof(binary), buffer);
+ck_assert_uint_eq(buffer.size(), 147);
+ck_assert_str_eq(
+    (const char*)buffer,
+    "0000:  70 71 72 73 74 75 76 77  78 79 7a 7b 7c 7d 7e 7f  |pqrstuvwxyz{|}~.|\r\n"
+    "0010:  80 81 82 83 84 85 86 87  88                       |.........|\r\n"
+);
 
