@@ -1,6 +1,9 @@
 docs:
 	$(MAKE) -C docs
 
+examples:
+	$(MAKE) -C examples
+
 test:
 	$(MAKE) -C tests test
 
@@ -22,4 +25,4 @@ clean:
 	find . -name "*.gcda" -delete
 	rm -Rf coverage.info coverage/
 
-.PHONY: docs test coverage coverage-html clean
+.PHONY: docs examples test coverage coverage-html clean
