@@ -52,7 +52,7 @@ void setup() {
 
     // Setup serial port
     Serial.begin(38400);
-    Serial.println("[EtherSia]");
+    Serial.println("[EtherSia NanodeUDPServer]");
 
     Serial.print("Reading MAC address... ");
     r = unio.read(macAddress, NANODE_MAC_ADDRESS, 6);
