@@ -104,7 +104,6 @@ const uint8_t expect[] = {
 };
 
 frame_t &sent = ether.getLastSent();
-printHexDump((uint8_t*)sent.packet, sent.length, Serial);
 ck_assert_int_eq(sent.length, sizeof(expect));
 ck_assert(memcmp(sent.packet, expect, sizeof(expect)) == 0);
 ether.end();
