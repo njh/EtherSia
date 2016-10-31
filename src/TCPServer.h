@@ -9,8 +9,6 @@
 #include <stdint.h>
 #include "IPv6Packet.h"
 
-class EtherSia;
-
 /**
  * Class for responding to TCP requests
  *

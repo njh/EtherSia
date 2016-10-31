@@ -13,10 +13,7 @@
 #include "MACAddress.h"
 #include "IPv6Address.h"
 #include "IPv6Packet.h"
-#include "TCPServer.h"
-#include "HTTPServer.h"
 #include "UDPSocket.h"
-#include "Syslog.h"
 
 /**
  * The maximum size (in bytes) of packet that can be received / sent
@@ -302,6 +299,9 @@ protected:
     void icmp6PacketSend();
 };
 
+#include "TCPServer.h"
+#include "HTTPServer.h"
+#include "Syslog.h"
 
 #include "enc28j60.h"
 #include "w5100.h"
