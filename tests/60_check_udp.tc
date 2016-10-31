@@ -1,0 +1,76 @@
+#include "EtherSia.h"
+#include "util.h"
+#suite UDP
+
+const uint8_t valid_udp_packet[] = {
+    0x00, 0x04, 0xa3, 0x2c, 0x2b, 0xb9,  // Ethernet Destination
+    0xa4, 0x5e, 0x60, 0xda, 0x58, 0x9d,  // Ethernet Source
+    0x86, 0xdd,                          // EtherType
+    0x60, 0x03, 0xb1, 0xb7,              // IPv6 header
+    0x00, 0x0d,                          // Length (32 bytes)
+    0x11,                                // Protocol
+    0x40,                                // Hop Limit
+    0x20, 0x01, 0x08, 0xb0, 0xff, 0xd5, 0x00, 0x03, 0xa6, 0x5e, 0x60, 0xff, 0xfe, 0xda, 0x58, 0x9d,
+    0x20, 0x01, 0x08, 0xb0, 0xff, 0xd5, 0x00, 0x03, 0x02, 0x04, 0xa3, 0xff, 0xfe, 0x2c, 0x2b, 0xb9,
+    0xfa, 0x06,                          // UDP Source Port
+    0x03, 0xf0,                          // UDP Destination Port
+    0x00, 0x0d,                          // Length (32 bytes)
+    0x5e, 0x37,                          // Checksum
+    'H', 'e', 'l', 'l', 'o'
+};
+
+
+#test construct_socket
+EtherSia_Dummy ether;
+UDPSocket sock(ether);
+ck_assert_int_gt(sock.localPort(), 20000);
+ck_assert_int_lt(sock.localPort(), 30000);
+ck_assert_int_eq(sock.remotePort(), 0);
+ck_assert(sock.remoteAddress().isZero());
+
+#test construct_socket_with_local
+EtherSia_Dummy ether;
+UDPSocket sock(ether, 1234);
+ck_assert_int_eq(sock.localPort(), 1234);
+ck_assert_int_eq(sock.remotePort(), 0);
+ck_assert(sock.remoteAddress().isZero());
+
+#test construct_socket_with_remote
+EtherSia_Dummy ether;
+IPv6Address remote("1234::1");
+UDPSocket sock(ether, remote, 1234);
+ck_assert_int_eq(sock.localPort(), 10194);
+ck_assert_int_eq(sock.remotePort(), 1234);
+ck_assert(sock.remoteAddress() == remote);
+
+#test setRemoteAddress_ip
+EtherSia_Dummy ether;
+UDPSocket sock(ether);
+sock.setRemoteAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9", 1234);
+ck_assert_int_eq(sock.remotePort(), 1234);
+IPv6Address expect("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
+ck_assert(sock.remoteAddress() == expect);
+
+#test havePacket_valid
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
+ether.begin("00:04:a3:2c:2b:b9");
+ether.clearSent();
+
+UDPSocket sock(ether, 1008);
+ether.injectRecievedPacket((void*)valid_udp_packet, sizeof(valid_udp_packet));
+ck_assert_int_eq(ether.receivePacket(), 67);
+ck_assert(sock.havePacket() == true);
+
+IPv6Address expectSource("2001:08b0:ffd5:0003:a65e:60ff:feda:589d");
+ck_assert(sock.packetSource() == expectSource);
+
+IPv6Address expectDest("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
+ck_assert(sock.packetSource() == expectSource);
+
+ck_assert_int_eq(sock.packetSourcePort(), 64006);
+ck_assert_int_eq(sock.packetDestinationPort(), 1008);
+ck_assert_int_eq(sock.payloadLength(), 5);
+uint8_t expect_payload[] = {'H', 'e', 'l', 'l', 'o'};
+ck_assert(memcmp(sock.payload(), expect_payload, 5) == 0);
+ck_assert(sock.payloadEquals("Hello") == true);
