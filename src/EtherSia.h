@@ -207,7 +207,8 @@ public:
      *
      * @return Returns true if setting up the Ethernet interface was successful
      */
-    virtual boolean begin();
+    /*virtual*/ boolean begin();
+    // FIXME: virtual is disabled because it seems to trigger Arduino/issues/3972
 
     /**
      * Send an Ethernet frame
