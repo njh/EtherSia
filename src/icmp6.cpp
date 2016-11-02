@@ -17,13 +17,16 @@ void EtherSia::icmp6NSReply()
     packet.setHopLimit(255);
 
     // We should now send a neighbor advertisement back to where the neighbor solicication came from.
-    packet.setPayloadLength(ICMP6_HEADER_LEN + ICMP6_NA_HEADER_LEN);
+    packet.setPayloadLength(ICMP6_HEADER_LEN + ICMP6_NA_HEADER_LEN + 8);
     ICMP6_HEADER_PTR->type = ICMP6_TYPE_NA;
     ICMP6_NA_HEADER_PTR->flags = ICMP6_NA_FLAG_S; // Solicited flag.
     memset(ICMP6_NA_HEADER_PTR->reserved, 0, sizeof(ICMP6_NA_HEADER_PTR->reserved));
-    ICMP6_NA_HEADER_PTR->option_type = ICMP6_OPTION_TARGET_LINK_ADDRESS;
-    ICMP6_NA_HEADER_PTR->option_len = 1;  // Options length, 1 = 8 bytes.
-    ICMP6_NA_HEADER_PTR->option_mac = _localMac;
+
+    // Set the target link address option
+    uint8_t* ptr = _buffer + ICMP6_NA_HEADER_OFFSET + ICMP6_NA_HEADER_LEN;
+    ptr[0] = ICMP6_OPTION_TARGET_LINK_ADDRESS;
+    ptr[1] = 1;  // Options length, 1 = 8 bytes
+    memcpy(&ptr[2], _localMac, 6);
 
     icmp6PacketSend();
 }
@@ -147,6 +150,30 @@ void EtherSia::icmp6ProcessRA()
     }
 }
 
+MACAddress* EtherSia::icmp6ProcessNA(IPv6Address &expected)
+{
+    IPv6Packet& packet = (IPv6Packet&)_buffer;
+    int16_t remaining = packet.payloadLength() - ICMP6_HEADER_LEN - ICMP6_NA_HEADER_LEN;
+    uint8_t *ptr = _buffer + ICMP6_NA_HEADER_OFFSET + ICMP6_NA_HEADER_LEN;
+
+    if (ICMP6_NA_HEADER_PTR->target != expected) {
+        return NULL;
+    }
+
+    // Iterate through options
+    while(remaining > 0) {
+        switch(ptr[0]) {
+        case ICMP6_OPTION_TARGET_LINK_ADDRESS:
+            return (MACAddress*)&ptr[2];
+        }
+
+        remaining -= (8 * ptr[1]);
+        ptr += (8 * ptr[1]);
+    }
+
+    return &(packet.etherSource());
+}
+
 void EtherSia::icmp6ProcessPacket()
 {
     IPv6Packet& packet = (IPv6Packet&)_buffer;
@@ -192,3 +219,37 @@ boolean EtherSia::icmp6AutoConfigure()
     // We have a global IPv6 address - success
     return true;
 }
+
+MACAddress* EtherSia::discoverNeighbour(const char* addrstr)
+{
+    IPv6Address addr(addrstr);
+    return discoverNeighbour(addr);
+}
+
+MACAddress* EtherSia::discoverNeighbour(IPv6Address& address, uint8_t attempts)
+{
+    unsigned long nextNeighbourSolicitation = millis();
+    uint8_t count = 0;
+
+    while (count < attempts) {
+        uint16_t len = receivePacket();
+        if (len) {
+            IPv6Packet& packet = (IPv6Packet&)_buffer;
+            if (packet.protocol() == IP6_PROTO_ICMP6 && ICMP6_HEADER_PTR->type == ICMP6_TYPE_NA) {
+                MACAddress* neighbourMac = icmp6ProcessNA(address);
+                if (neighbourMac) {
+                    return neighbourMac;
+                }
+            }
+        }
+
+        if ((long)(millis() - nextNeighbourSolicitation) >= 0) {
+            icmp6SendNS(address);
+            nextNeighbourSolicitation = millis() + NEIGHBOUR_SOLICITATION_TIMEOUT;
+            count++;
+        }
+    }
+
+    return NULL;
+}
+

@@ -30,10 +30,16 @@
 
 
 /** How often to send Router Solicitation (RS) packets */
-#define ROUTER_SOLICITATION_TIMEOUT    (3000)
+#define ROUTER_SOLICITATION_TIMEOUT      (3000)
 
 /** How many times to send Router Solicitation (RS) packets */
-#define ROUTER_SOLICITATION_ATTEMPTS   (4)
+#define ROUTER_SOLICITATION_ATTEMPTS     (4)
+
+/** How often to send Neighbour Solicitation (NS) packets */
+#define NEIGHBOUR_SOLICITATION_TIMEOUT   (500)
+
+/** How many times to send Neighbour Solicitation (NS) packets */
+#define NEIGHBOUR_SOLICITATION_ATTEMPTS  (5)
 
 
 /**
@@ -199,6 +205,35 @@ public:
     IPv6Address* lookupHostname(const char* hostname);
 
     /**
+     * Perform Neighbour Discovery for an IPv6 address on the local subnet
+     *
+     * This method takes an IPv6 address and resolves it to a MAC address.
+     *
+     * It is recommended that this method is called within setup(),
+     * to avoid packets being lost within loop().
+     *
+     * @note You probably don't need to call this function directly.
+     * @param address The IPv6 address to perform discovery on
+     * @return An pointer to a MAC address or NULL if the discovery failed
+     */
+    MACAddress* discoverNeighbour(const char* address);
+
+    /**
+     * Perform Neighbour Discovery for an IPv6 address on the local subnet
+     *
+     * This method takes an IPv6 address and resolves it to a MAC address.
+     *
+     * It is recommended that this method is called within setup(),
+     * to avoid packets being lost within loop().
+     *
+     * @note You probably don't need to call this function directly.
+     * @param address The IPv6 address to perform discovery on
+     * @param attempts The number of ICMPv6 packets to send before giving up
+     * @return An pointer to a MAC address or NULL if the discovery failed
+     */
+    MACAddress* discoverNeighbour(IPv6Address& address, uint8_t attempts=NEIGHBOUR_SOLICITATION_ATTEMPTS);
+    
+    /**
      * Configure the Ethernet interface and get things ready
      *
      * If a IPv6 address has not already been set, then
@@ -287,6 +322,14 @@ protected:
      * If it is valid, the router MAC and our Global address will be set
      */
     void icmp6ProcessRA();
+
+    /**
+     * Handle a ICMPv6 Neighbour Advertisement (NA) packet
+     *
+     * @param expected The IPv6 address we are expecting a response about
+     * @return Target Link Address, if successful, otherwise NULL
+     */
+    MACAddress* icmp6ProcessNA(IPv6Address &expected);
 
     /**
      * Handle a single Prefix from a Router Advertisement (RA) packet

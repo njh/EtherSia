@@ -113,12 +113,8 @@ struct icmp6_na_header {
     uint8_t flags;
     uint8_t reserved[3];
     IPv6Address target;
-
-    uint8_t option_type;
-    uint8_t option_len;
-    MACAddress option_mac;
 } __attribute__((__packed__));
-#define ICMP6_NA_HEADER_LEN       (28)
+#define ICMP6_NA_HEADER_LEN       (20)
 #define ICMP6_NA_HEADER_OFFSET    (ICMP6_HEADER_OFFSET + ICMP6_HEADER_LEN)
 #define ICMP6_NA_HEADER_PTR       ((struct icmp6_na_header*)(_buffer + ICMP6_NA_HEADER_OFFSET))
 
