@@ -100,6 +100,21 @@ public:
     }
 
     /**
+     * Get the MAC address of the router on the local subnet
+     *
+     * This is used as the Ethernet destination address for 
+     * packets that need to be sent outside of the subnet.
+     *
+     * Typically this is set during the stateless auto-configuration process
+     * when you call begin().
+     *
+     * @return The MAC address of the router
+     */
+    inline MACAddress& routerMac() {
+        return _routerMac;
+    }
+
+    /**
      * Check to see if an IPv6 address belongs to this Ethernet interface
      *
      * @param address the IPv6Addrss to check
