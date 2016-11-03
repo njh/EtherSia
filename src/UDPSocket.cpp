@@ -15,12 +15,6 @@ UDPSocket::UDPSocket(EtherSia &ether, uint16_t localPort) : _ether(ether)
     _remotePort = 0;
 }
 
-UDPSocket::UDPSocket(EtherSia &ether, IPv6Address &remoteAddress, uint16_t remotePort) : _ether(ether)
-{
-    _localPort = 10000 | remotePort;
-    setRemoteAddress(remoteAddress, remotePort);
-}
-
 boolean UDPSocket::setRemoteAddress(const char *remoteAddress, uint16_t remotePort)
 {
     _remotePort = remotePort;

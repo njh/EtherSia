@@ -35,14 +35,6 @@ ck_assert_int_eq(sock.localPort(), 1234);
 ck_assert_int_eq(sock.remotePort(), 0);
 ck_assert(sock.remoteAddress().isZero());
 
-#test construct_socket_with_remote
-EtherSia_Dummy ether;
-IPv6Address remote("1234::1");
-UDPSocket sock(ether, remote, 1234);
-ck_assert_int_eq(sock.localPort(), 10194);
-ck_assert_int_eq(sock.remotePort(), 1234);
-ck_assert(sock.remoteAddress() == remote);
-
 #test setRemoteAddress_ip
 EtherSia_Dummy ether;
 UDPSocket sock(ether);
