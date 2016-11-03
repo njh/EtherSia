@@ -22,7 +22,7 @@ IPv6Address addr("fe80:0000:0000:0000:c82f:6dff:fe70:f95f");
 ck_assert(ether.linkLocalAddress() == addr);
 
 
-#test is_our_address
+#test isOurAddress
 EtherSia_Dummy ether;
 ether.setGlobalAddress("2001:1234::c82f:6dff:fe70:f95f");
 ether.begin(local_mac);
@@ -42,6 +42,20 @@ ck_assert_int_eq(ether.isOurAddress(googleDns), 0);
 
 IPv6Address other_global("2a02:26f0::c82f:6dff:fe70:f95f");
 ck_assert_int_eq(ether.isOurAddress(other_global), 0);
+
+
+#test inOurSubnet
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:1234::c82f:6dff:fe70:f95f");
+ether.begin(local_mac);
+
+IPv6Address expect_linklocal("fe80::d1c5:a0a3:746b:5f9a");
+ck_assert_int_eq(ether.inOurSubnet(expect_linklocal), ADDRESS_TYPE_LINK_LOCAL);
+
+IPv6Address expect_global("2001:1234::1");
+ck_assert_int_eq(ether.inOurSubnet(expect_global), ADDRESS_TYPE_GLOBAL);
+
+ck_assert_int_eq(ether.inOurSubnet(googleDns), 0);
 
 
 #test no_packets_available

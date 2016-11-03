@@ -51,6 +51,18 @@ uint8_t EtherSia::isOurAddress(const IPv6Address &address)
     }
 }
 
+uint8_t EtherSia::inOurSubnet(const IPv6Address &address)
+{
+    if (address.isLinkLocal()) {
+        return ADDRESS_TYPE_LINK_LOCAL;
+    } else if (address.inSameSubnet(_globalAddress)) {
+        return ADDRESS_TYPE_GLOBAL;
+    } else {
+        // Address is in a different subnet
+        return 0;
+    }
+}
+
 uint16_t EtherSia::receivePacket()
 {
     uint16_t len = readFrame(_buffer, sizeof(_buffer));

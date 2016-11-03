@@ -108,6 +108,15 @@ public:
     uint8_t isOurAddress(const IPv6Address &address);
 
     /**
+     * Check if an address is in the same subnet as us
+     *
+     * @param address the IPv6Addrss to check
+     * @return the type of address IPv6AddressType or 0 if it is not in the same subnet
+     * @note assumes that the subnet mask is /64
+     */
+    uint8_t inOurSubnet(const IPv6Address &address);
+
+    /**
      * Set the IPv6 address DNS server to use for hostname lookups
      *
      * @param address The DNS Server IP address
