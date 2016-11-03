@@ -152,6 +152,15 @@ public:
     boolean isZero() const;
 
     /**
+     * Returns true if two addresses are in the same subnet
+     *
+     * @note assumes that local subnet is /64 (which is an assumption elsewhere too)
+     * @param address the address to
+     * @return true if the addresses are in the same subnet
+     */
+    boolean inSameSubnet(const IPv6Address& address) const;
+
+    /**
      * Print a IPv6 address to a stream as a human readable string.
      * @param print The stream to print to (defaults to Serial)
      */

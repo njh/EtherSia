@@ -116,6 +116,24 @@ IPv6Address addr("2001:4860:4860::8888");
 ck_assert(addr.isLinkLocal() == false);
 
 
+#test inSameSubnet
+IPv6Address addr1("2001:4860:4860::8888");
+IPv6Address addr2("2001:4860:4860::4444");
+ck_assert(addr1.inSameSubnet(addr2) == true);
+
+
+#test inSameSubnet_false
+IPv6Address addr1("2001:4860:4860:0::8888");
+IPv6Address addr2("2001:4860:4860:1::8888");
+ck_assert(addr1.inSameSubnet(addr2) == false);
+
+
+#test inSameSubnet_linkLocal
+IPv6Address addr1("fe80::0323:45ff:fe67:8910");
+IPv6Address addr2("fe80::d1c5:a0a3:746b:5f9a");
+ck_assert(addr1.inSameSubnet(addr2) == true);
+
+
 #test setLinkLocalAllNodes
 uint8_t expect[16] = {
     0xff, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,

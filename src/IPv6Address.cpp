@@ -44,6 +44,12 @@ boolean IPv6Address::isZero() const
     return 1;
 }
 
+boolean IPv6Address::inSameSubnet(const IPv6Address& address) const
+{
+    // Check if the first 64 bits match
+    return memcmp(_address, address._address, 8) == 0;
+}
+
 void IPv6Address::setEui64(const MACAddress &macAddress)
 {
     _address[8] = macAddress[0] ^ 0x02;
