@@ -118,7 +118,7 @@ public:
      * Check to see if an IPv6 address belongs to this Ethernet interface
      *
      * @param address the IPv6Addrss to check
-     * @return ture if the
+     * @return the type of address IPv6AddressType or 0 if it is not our address
      */
     uint8_t isOurAddress(const IPv6Address &address);
 
