@@ -10,7 +10,13 @@
 
 #include <time.h>
 
-/** Structure for storing information about sent and received packets */
+/**
+ * Structure for storing information about sent and received packets
+ *
+ * Only used for testing with EtherSia_Dummy
+ *
+ * @private
+ */
 typedef struct frame_wrapper {
     time_t time;         ///< A UNIX timestamp for the time the packet was sent/received
     uint16_t length;     ///< The length of the packet (in bytes)
