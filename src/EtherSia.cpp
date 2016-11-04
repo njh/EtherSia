@@ -51,7 +51,9 @@ uint8_t EtherSia::isOurAddress(const IPv6Address &address)
         return ADDRESS_TYPE_LINK_LOCAL;
     } else if (address == _globalAddress) {
         return ADDRESS_TYPE_GLOBAL;
-    } else if (address.isLinkLocalAllNodes() || address.isSolicitedNodeMulticastAddress(_linkLocalAddress)) {
+    } else if (address.isLinkLocalAllNodes() ||
+               address.isSolicitedNodeMulticastAddress(_linkLocalAddress) ||
+               address.isSolicitedNodeMulticastAddress(_globalAddress)) {
         return ADDRESS_TYPE_MULTICAST;
     } else {
         return 0;
