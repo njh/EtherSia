@@ -55,12 +55,46 @@ public:
     EtherSia();
 
     /**
+     * Configure the Ethernet interface and get things ready
+     *
+     * If auto-configuration has not been disabled, then
+     * stateless auto-configuration will start - attempting to
+     * get an IP address and Router address using IGMPv6.
+     *
+     * @return Returns true if setting up the Ethernet interface was successful
+     */
+    /*virtual*/ boolean begin();
+    // FIXME: virtual is disabled because it seems to trigger Arduino/issues/3972
+
+    /**
+     * Disable stateless auto-configuration (SLAAC)
+     *
+     * Disables sending Router Solicitations and accepting Router Advertisements.
+     *
+     * Disable auto-configuration if you would like to use a statically
+     * configured global address, or want to only use link-local addressing.
+     *
+     */
+    inline void disableAutoconfiguration() {
+        _autoConfigurationEnabled = false;
+    }
+
+    /**
+     * Enable stateless auto-configuration (SLAAC)
+     *
+     * @note Stateless auto-configuration is enabled by default.
+     */
+    inline void enableAutoconfiguration() {
+        _autoConfigurationEnabled = true;
+    }
+
+    /**
      * Manually set the global IPv6 address for the Ethernet Interface
      * from an IPv6Address object
      *
-     * This is not needed, if stateless auto-configuration is used.
+     * If using a static global address, it would be a good idea to disable
+     * auto-configuration using disableAutoconfiguration() before calling begin().
      *
-     * @note Call this before begin().
      * @param address The Global IP address for this Ethernet interface
      */
     inline void setGlobalAddress(IPv6Address &address) {
@@ -71,7 +105,9 @@ public:
      * Manually set the global IPv6 address for the Ethernet Interface
      * from human readable string.
      *
-     * @note Call this before begin().
+     * If using a static global address, it would be a good idea to disable
+     * auto-configuration using disableAutoconfiguration() before calling begin().
+     *
      * @param address The Global IP address for this Ethernet interface
      */
     inline void setGlobalAddress(const char* address) {
@@ -80,6 +116,7 @@ public:
 
     /**
      * Get the global IPv6 address of the Ethernet Interface
+     *
      * If this is called after begin(), then it will return
      * the IP address assigned during stateless auto-configuration.
      *
@@ -102,7 +139,7 @@ public:
     /**
      * Get the MAC address of the router on the local subnet
      *
-     * This is used as the Ethernet destination address for 
+     * This is used as the Ethernet destination address for
      * packets that need to be sent outside of the subnet.
      *
      * Typically this is set during the stateless auto-configuration process
@@ -256,18 +293,6 @@ public:
      * @return An pointer to a MAC address or NULL if the discovery failed
      */
     MACAddress* discoverNeighbour(IPv6Address& address, uint8_t attempts=NEIGHBOUR_SOLICITATION_ATTEMPTS);
-    
-    /**
-     * Configure the Ethernet interface and get things ready
-     *
-     * If a IPv6 address has not already been set, then
-     * stateless auto-configuration will start - attempting to
-     * get an IP address and Router address using IGMP6.
-     *
-     * @return Returns true if setting up the Ethernet interface was successful
-     */
-    /*virtual*/ boolean begin();
-    // FIXME: virtual is disabled because it seems to trigger Arduino/issues/3972
 
     /**
      * Send an Ethernet frame
@@ -302,6 +327,9 @@ protected:
 
     /** Flag indicating if the buffer contains a valid packet we received */
     boolean _bufferContainsReceived;
+
+    /** Flag indicating if the buffer contains a valid packet we received */
+    boolean _autoConfigurationEnabled;
 
 
     /**

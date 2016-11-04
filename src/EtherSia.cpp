@@ -11,11 +11,16 @@ EtherSia::EtherSia()
 {
     // Use Google Public DNS by default
     memcpy_P(_dnsServerAddress, googlePublicDnsAddress, sizeof(googlePublicDnsAddress));
+
+    // Use stateless auto-configuration by default
+    _autoConfigurationEnabled = true;
 }
 
 
 boolean EtherSia::begin()
 {
+    boolean success = true;
+
     // Calculate our link local address
     _linkLocalAddress.setLinkLocalPrefix();
     _linkLocalAddress.setEui64(_localMac);
@@ -29,13 +34,15 @@ boolean EtherSia::begin()
     // Send link local Neighbour Solicitation for Duplicate Address Detection
     icmp6SendNS(_linkLocalAddress);
 
-    // Perform stateless auto-configuration
-    boolean result = icmp6AutoConfigure();
+    // Perform stateless auto-configuration if enabled
+    if (_autoConfigurationEnabled) {
+        success = icmp6AutoConfigure();
+    }
 
     // Now there has been a little bit of randomness in network activity
     randomSeed(micros());
 
-    return result;
+    return success;
 }
 
 uint8_t EtherSia::isOurAddress(const IPv6Address &address)

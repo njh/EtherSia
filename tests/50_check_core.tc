@@ -9,14 +9,14 @@ IPv6Address googleDns("2001:4860:4860::8888");
 
 #test default_dns_server
 EtherSia_Dummy ether;
-ether.setGlobalAddress("2001::1");
+ether.disableAutoconfiguration();
 ether.begin(local_mac);
 ck_assert(ether.dnsServerAddress() == googleDns);
 
 
 #test sets_linklocal_address
 EtherSia_Dummy ether;
-ether.setGlobalAddress("2001::1");
+ether.disableAutoconfiguration();
 ether.begin(local_mac);
 IPv6Address addr("fe80:0000:0000:0000:c82f:6dff:fe70:f95f");
 ck_assert(ether.linkLocalAddress() == addr);
