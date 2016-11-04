@@ -72,6 +72,21 @@ uint8_t EtherSia::inOurSubnet(const IPv6Address &address)
     }
 }
 
+boolean EtherSia::setRouter(const char* address) {
+    IPv6Address addr(address);
+    return setRouter(addr);
+}
+
+boolean EtherSia::setRouter(IPv6Address &address) {
+    MACAddress *mac = discoverNeighbour(address);
+    if (mac == NULL) {
+        return false;
+    } else {
+        _routerMac = *mac;
+        return true;
+    }
+}
+
 uint16_t EtherSia::receivePacket()
 {
     uint16_t len = readFrame(_buffer, sizeof(_buffer));

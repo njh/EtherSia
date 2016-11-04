@@ -72,7 +72,7 @@ public:
      * Disables sending Router Solicitations and accepting Router Advertisements.
      *
      * Disable auto-configuration if you would like to use a statically
-     * configured global address, or want to only use link-local addressing.
+     * configured global address, or only want to use link-local addressing.
      *
      */
     inline void disableAutoconfiguration() {
@@ -150,6 +150,41 @@ public:
     inline MACAddress& routerMac() {
         return _routerMac;
     }
+
+    /**
+     * Manually set the MAC address of the router on the local subnet
+     *
+     * This is used as the Ethernet destination address for
+     * packets that need to be sent outside of the subnet.
+     *
+     * @note You don't normally need to use this if auto-configuration is enabled, which it is by default.
+     * @param routerMac The MAC address of the router
+     */
+    inline void setRouter(MACAddress& routerMac) {
+        _routerMac = routerMac;
+    }
+
+    /**
+     * Manually set the IPv6 address of the router on the local subnet
+     *
+     * Neighbour discovery is used to resolve this to a MAC address.
+     *
+     * @note You don't normally need to use this if auto-configuration is enabled, which it is by default.
+     * @param address The IPv6 address of the router, as C string
+     * @return true if setting the router address was successful
+     */
+    boolean setRouter(const char* address);
+
+    /**
+     * Manually set the IPv6 address of the router on the local subnet
+     *
+     * Neighbour discovery is used to resolve this to a MAC address.
+     *
+     * @note You don't normally need to use this if auto-configuration is enabled, which it is by default.
+     * @param address The IPv6 address of the router
+     * @return true if setting the router address was successful
+     */
+    boolean setRouter(IPv6Address &address);
 
     /**
      * Check to see if an IPv6 address belongs to this Ethernet interface
