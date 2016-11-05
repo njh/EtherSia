@@ -207,8 +207,9 @@ protected:
 
     EtherSia &_ether;            ///< The Ethernet Interface that this UDP socket is attached to
     IPv6Address _remoteAddress;  ///< The IPv6 remote address
-    uint16_t _remotePort;        ///< The IPv6 remote port number
-    uint16_t _localPort;         ///< The IPv6 local port number
+    MACAddress _remoteMac;       ///< The Ethernet address to send packets to
+    uint16_t _remotePort;        ///< The UDP remote port number
+    uint16_t _localPort;         ///< The UDP local port number
 };
 
 

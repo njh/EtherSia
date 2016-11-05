@@ -17,27 +17,42 @@ UDPSocket::UDPSocket(EtherSia &ether, uint16_t localPort) : _ether(ether)
 
 boolean UDPSocket::setRemoteAddress(const char *remoteAddress, uint16_t remotePort)
 {
-    _remotePort = remotePort;
     if (containsColon(remoteAddress)) {
         // Parse a human readable IPv6 Address string
-        return _remoteAddress.fromString(remoteAddress);
+        if (!_remoteAddress.fromString(remoteAddress)) {
+            return false;
+        }
     } else {
         // Lookup a hostname
         IPv6Address *address = _ether.lookupHostname(remoteAddress);
         if (address) {
             _remoteAddress = *address;
-            return true;
         } else {
             // Fail
             return false;
         }
     }
+
+    return setRemoteAddress(_remoteAddress, remotePort);
 }
 
 boolean UDPSocket::setRemoteAddress(IPv6Address &remoteAddress, uint16_t remotePort)
 {
     _remotePort = remotePort;
     _remoteAddress = remoteAddress;
+
+    // Work out the MAC address to use
+    if (_ether.inOurSubnet(_remoteAddress)) {
+        MACAddress *mac = _ether.discoverNeighbour(_remoteAddress);
+        if (mac == NULL) {
+            return false;
+        } else {
+            _remoteMac = *mac;
+        }
+    } else {
+        _remoteMac = _ether.routerMac();
+    }
+
     return true;
 }
 
@@ -115,6 +130,7 @@ void UDPSocket::send(uint16_t len)
     struct udp_header *udpHeader = UDP_HEADER_PTR;
 
     packet.setDestination(_remoteAddress);
+    packet.setEtherDestination(_remoteMac);
     udpHeader->destinationPort = htons(_remotePort);
     _ether.prepareSend();
 

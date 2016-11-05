@@ -126,9 +126,7 @@ void EtherSia::prepareSend()
     }
 
     packet.setEtherSource(_localMac);
-
-    // FIXME: this might be a link-local MAC
-    packet.setEtherDestination(_routerMac);
+    // caller must set Ethernet Destination
 }
 
 void EtherSia::prepareReply()
