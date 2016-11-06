@@ -4,7 +4,7 @@
 
 const char local_mac[] = "ca:2f:6d:70:f9:5f";
 
-const uint8_t expect_linklocal_nd[] = {
+const uint8_t expect_linklocal_ns[] = {
     0x33, 0x33, 0xff, 0x70, 0xf9, 0x5f,     // Ethernet Destination
     0xca, 0x2f, 0x6d, 0x70, 0xf9, 0x5f,     // Ethernet Source
     0x86, 0xdd,                             // EtherType (IPv6)
@@ -49,15 +49,15 @@ const uint8_t router_advertisment[] = {
 };
 
 
-#test sends_linklocal_nd
+#test sends_linklocal_ns
 EtherSia_Dummy ether;
 ether.setGlobalAddress("2001::1");
 ether.begin(local_mac);
 
 ck_assert_int_eq(1, ether.getSentCount());
 frame_t &frame = ether.getLastSent();
-ck_assert_int_eq(frame.length, sizeof(expect_linklocal_nd));
-ck_assert(memcmp(frame.packet, expect_linklocal_nd, sizeof(expect_linklocal_nd)) == 0);
+ck_assert_int_eq(frame.length, sizeof(expect_linklocal_ns));
+ck_assert(memcmp(frame.packet, expect_linklocal_ns, sizeof(expect_linklocal_ns)) == 0);
 ether.end();
 
 
