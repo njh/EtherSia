@@ -46,62 +46,7 @@ boolean UDPSocket::havePacket()
     return 1;
 }
 
-void UDPSocket::send(const char *data)
-{
-    send((const uint8_t *)data, strlen(data));
-}
-
-void UDPSocket::send(const void *data, uint16_t len)
-{
-    IPv6Packet& packet = _ether.packet();
-    struct udp_header *udpHeader = UDP_HEADER_PTR;
-
-    // FIXME: check it isn't too big
-    memcpy((uint8_t*)udpHeader + UDP_HEADER_LEN, data, len);
-
-    send(len);
-}
-
-void UDPSocket::send(uint16_t len)
-{
-    IPv6Packet& packet = _ether.packet();
-    struct udp_header *udpHeader = UDP_HEADER_PTR;
-
-    packet.setDestination(_remoteAddress);
-    packet.setEtherDestination(_remoteMac);
-    udpHeader->destinationPort = htons(_remotePort);
-    _ether.prepareSend();
-
-    sendInternal(len);
-}
-
-void UDPSocket::sendReply(const char *data)
-{
-    sendReply((const uint8_t*)data, strlen(data));
-}
-
-void UDPSocket::sendReply(const void* data, uint16_t len)
-{
-    IPv6Packet& packet = _ether.packet();
-    struct udp_header *udpHeader = UDP_HEADER_PTR;
-
-    memcpy((uint8_t*)udpHeader + UDP_HEADER_LEN, data, len);
-
-    sendReply(len);
-}
-
-void UDPSocket::sendReply(uint16_t len)
-{
-    IPv6Packet& packet = _ether.packet();
-    struct udp_header *udpHeader = UDP_HEADER_PTR;
-
-    udpHeader->destinationPort = udpHeader->sourcePort;
-    _ether.prepareReply();
-
-    sendInternal(len);
-}
-
-void UDPSocket::sendInternal(uint16_t length)
+void UDPSocket::sendInternal(uint16_t length, boolean isReply)
 {
     IPv6Packet& packet = _ether.packet();
     struct udp_header *udpHeader = UDP_HEADER_PTR;
@@ -111,6 +56,11 @@ void UDPSocket::sendInternal(uint16_t length)
     packet.setPayloadLength(totalLen);
 
     udpHeader->length = htons(totalLen);
+    if (isReply) {
+        udpHeader->destinationPort = udpHeader->sourcePort;
+    } else {
+        udpHeader->destinationPort = ntohs(_remotePort);
+    }
     udpHeader->sourcePort = ntohs(_localPort);
     udpHeader->checksum = 0;
     udpHeader->checksum = htons(packet.calculateChecksum());

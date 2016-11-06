@@ -80,3 +80,52 @@ IPv6Address& Socket::packetDestination()
 {
     return _ether.packet().destination();
 }
+
+void Socket::send(const char *data)
+{
+    send((const uint8_t *)data, strlen(data));
+}
+
+void Socket::send(const void *data, uint16_t length)
+{
+    uint8_t* payload = this->payload();
+
+    // FIXME: check it isn't too big
+    memcpy(payload, data, length);
+
+    send(length);
+}
+
+void Socket::send(uint16_t length)
+{
+    IPv6Packet& packet = _ether.packet();
+
+    packet.setDestination(_remoteAddress);
+    packet.setEtherDestination(_remoteMac);
+    _ether.prepareSend();
+
+    sendInternal(length, false);
+}
+
+void Socket::sendReply(const char *data)
+{
+    sendReply((const uint8_t*)data, strlen(data));
+}
+
+void Socket::sendReply(const void* data, uint16_t length)
+{
+    uint8_t *payload = this->payload();
+
+    // FIXME: check it isn't too big
+    memcpy(payload, data, length);
+
+    sendReply(length);
+}
+
+void Socket::sendReply(uint16_t length)
+{
+    _ether.prepareReply();
+
+    sendInternal(length, true);
+}
+

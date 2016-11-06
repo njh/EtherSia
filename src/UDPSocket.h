@@ -42,52 +42,6 @@ public:
     boolean havePacket();
 
     /**
-     * Send a string out on the UDP socket
-     * @param data The null-terminated string to send
-     */
-    void send(const char *data);
-
-    /**
-     * Send the contents of the packet payload buffer
-     *
-     * Place the data in the payload() buffer before calling this method.
-     *
-     * @param length The length of the UDP payload
-     */
-    void send(uint16_t length);
-
-    /**
-     * Send data out on the UDP socket
-     *
-     * @param data A pointer to the data to send
-     * @param length The length (in bytes) of the data to send
-     */
-    void send(const void *data, uint16_t length);
-
-    /**
-     * Send a reply to the last packet received
-     * @param data The null-terminated string to send
-     */
-    void sendReply(const char *data);
-
-    /**
-     * Send a reply to the last packet received
-     *
-     * Place the data in the payload() buffer before calling this method.
-     *
-     * @param length The length (in bytes) of the data to send
-     */
-    void sendReply(uint16_t length);
-
-    /**
-     * Send a reply to the last packet received
-     *
-     * @param data A pointer to the data to send
-     * @param length The length (in bytes) of the data to send
-     */
-    void sendReply(const void *data, uint16_t length);
-
-    /**
      * Get the IPv6 source port number of the last UDP packet received
      *
      * @note Please call havePacket() first, before calling this method.
@@ -137,11 +91,12 @@ protected:
      * - sets the IP packet length
      * - sets the UDP packet length
      * - sets the UDP source port number
+     * - sets the UDP distination port number
      * - sets the UDP checksum
      *
      * @param length The length (in bytes) of the data to send
      */
-    void sendInternal(uint16_t length);
+    void sendInternal(uint16_t length, boolean isReply);
 };
 
 

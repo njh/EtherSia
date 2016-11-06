@@ -95,7 +95,71 @@ public:
      */
     IPv6Address& packetDestination();
 
+    /**
+     * Send the contents of the packet payload buffer
+     *
+     * Place the data in the payload() buffer before calling this method.
+     *
+     * @param length The length of the payload
+     */
+    void send(uint16_t length);
+
+    /**
+     * Send a packet containing a string from socket
+     *
+     * @param data The null-terminated string to send
+     */
+    void send(const char *data);
+
+    /**
+     * Send a packet containing an array of bytes from socket
+     *
+     * @param data The data to send as the payload
+     * @param length The length (in bytes) of the data to send
+     */
+    void send(const void *data, uint16_t length);
+
+    /**
+     * Send a reply to the last packet received
+     *
+     * Place the data in the payload() buffer before calling this method.
+     *
+     * @param length The length (in bytes) of the data to send
+     */
+    void sendReply(uint16_t length);
+
+    /**
+     * Send a reply to the last packet received
+     * @param data The null-terminated string to send
+     */
+    void sendReply(const char *data);
+
+    /**
+     * Send a reply to the last packet received
+     *
+     * @param data A pointer to the data to send
+     * @param length The length (in bytes) of the data to send
+     */
+    void sendReply(const void *data, uint16_t length);
+
+    /**
+     * Get a pointer to the payload of the current packet in the buffer
+     *
+     * @note This method must be implemented by sub-classes
+     * @return A pointer to the payload
+     */
+    virtual uint8_t* payload() = 0;
+
+    /**
+     * Get the length (in bytes) of the payload of the packet
+     *
+     * @note This method must be implemented by sub-classes
+     * @return A pointer to the payload
+     */
+    virtual uint16_t payloadLength() = 0;
+
 protected:
+    virtual void sendInternal(uint16_t length, boolean isReply) = 0;
 
     EtherSia &_ether;            ///< The Ethernet Interface that this UDP socket is attached to
     IPv6Address _remoteAddress;  ///< The IPv6 remote address
