@@ -45,6 +45,6 @@ libethersia.a: $(LIBETHERSIA_OBJECTS)
 clean:
 	rm -f libarduino.a $(LIBARDUINO_OBJECTS)
 	rm -f libethersia.a $(LIBETHERSIA_OBJECTS)
-	rm -f $(TEST_SOURCES) $(TEST_COMMANDS)
+	rm -f *.cpp *.o *.cmd
 
 .PHONY: test check clean
