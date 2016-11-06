@@ -207,13 +207,13 @@ boolean EtherSia::icmp6AutoConfigure()
     unsigned long nextRouterSolicitation = millis();
     uint8_t count = 0;
     while (_globalAddress.isZero()) {
-        receivePacket();
-
         if ((long)(millis() - nextRouterSolicitation) >= 0) {
             icmp6SendRS();
             nextRouterSolicitation = millis() + ROUTER_SOLICITATION_TIMEOUT;
             count++;
         }
+
+        receivePacket();
 
         if (count > ROUTER_SOLICITATION_ATTEMPTS) {
             return false;
@@ -236,6 +236,12 @@ MACAddress* EtherSia::discoverNeighbour(IPv6Address& address, uint8_t attempts)
     uint8_t count = 0;
 
     while (count < attempts) {
+        if ((long)(millis() - nextNeighbourSolicitation) >= 0) {
+            icmp6SendNS(address);
+            nextNeighbourSolicitation = millis() + NEIGHBOUR_SOLICITATION_TIMEOUT;
+            count++;
+        }
+
         uint16_t len = receivePacket();
         if (len) {
             IPv6Packet& packet = (IPv6Packet&)_buffer;
@@ -246,14 +252,7 @@ MACAddress* EtherSia::discoverNeighbour(IPv6Address& address, uint8_t attempts)
                 }
             }
         }
-
-        if ((long)(millis() - nextNeighbourSolicitation) >= 0) {
-            icmp6SendNS(address);
-            nextNeighbourSolicitation = millis() + NEIGHBOUR_SOLICITATION_TIMEOUT;
-            count++;
-        }
     }
 
     return NULL;
 }
-
