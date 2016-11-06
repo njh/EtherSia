@@ -1,0 +1,27 @@
+#include "EtherSia.h"
+#include "util.h"
+#suite Socket
+
+
+#test construct_socket
+EtherSia_Dummy ether;
+Socket sock(ether);
+ck_assert_int_gt(sock.localPort(), 20000);
+ck_assert_int_lt(sock.localPort(), 30000);
+ck_assert_int_eq(sock.remotePort(), 0);
+ck_assert(sock.remoteAddress().isZero());
+
+#test construct_socket_with_local
+EtherSia_Dummy ether;
+Socket sock(ether, 1234);
+ck_assert_int_eq(sock.localPort(), 1234);
+ck_assert_int_eq(sock.remotePort(), 0);
+ck_assert(sock.remoteAddress().isZero());
+
+#test setRemoteAddress_ip
+EtherSia_Dummy ether;
+Socket sock(ether);
+sock.setRemoteAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9", 1234);
+ck_assert_int_eq(sock.remotePort(), 1234);
+IPv6Address expect("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
+ck_assert(sock.remoteAddress() == expect);

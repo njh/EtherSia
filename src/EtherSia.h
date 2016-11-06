@@ -13,6 +13,7 @@
 #include "MACAddress.h"
 #include "IPv6Address.h"
 #include "IPv6Packet.h"
+#include "Socket.h"
 #include "UDPSocket.h"
 
 /**
