@@ -1,0 +1,62 @@
+#include "Arduino.h"
+#include "EtherSia.h"
+#include "util.h"
+
+#suite Syslog
+
+#test construct_defaults
+EtherSia_Dummy ether;
+Syslog syslog(ether);
+ck_assert_int_eq(syslog.priority(), LOG_INFO);
+ck_assert_int_eq(syslog.facility(), LOG_LOCAL0);
+
+
+#test setPriority
+EtherSia_Dummy ether;
+Syslog syslog(ether);
+syslog.setPriority(LOG_CRIT);
+ck_assert_int_eq(syslog.priority(), LOG_CRIT);
+ck_assert_int_eq(syslog.facility(), LOG_LOCAL0);
+
+
+#test setFacility
+EtherSia_Dummy ether;
+Syslog syslog(ether);
+syslog.setFacility(LOG_DAEMON);
+ck_assert_int_eq(syslog.priority(), LOG_INFO);
+ck_assert_int_eq(syslog.facility(), LOG_DAEMON);
+
+
+#test println
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:1234::1");
+ether.begin("00:04:a3:2c:2b:b9");
+ether.clearSent();
+
+Syslog syslog(ether);
+syslog.setRemoteAddress("2001:4321::514");
+syslog.print("Hello");
+syslog.println(" World");
+
+const uint8_t expect[] = {
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  // Ethernet Destination
+    0x00, 0x04, 0xa3, 0x2c, 0x2b, 0xb9,  // Ethernet Source
+    0x86, 0xdd,                          // EtherType
+    0x60, 0x00, 0x00, 0x00,              // IPv6 header
+    0x00, 0x22,                          // Length (14 bytes)
+    0x11,                                // Protocol
+    0x40,                                // Hop Limit
+    0x20, 0x01, 0x12, 0x34, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01,
+    0x20, 0x01, 0x43, 0x21, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x05, 0x14,
+    0x61, 0xa8,                          // UDP Source Port
+    0x02, 0x02,                          // UDP Destination Port
+    0x00, 0x22,                          // Length (14 bytes)
+    0xd7, 0x18,                          // Checksum
+    '<', '1', '3', '4', '>', 'E', 't', 'h', 'e', 'r', 'S', 'i', 'a', ':', ' ',
+    'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', 
+};
+
+frame_t &sent = ether.getLastSent();
+ck_assert_int_eq(sent.length, sizeof(expect));
+ck_assert(memcmp(sent.packet, expect, sizeof(expect)) == 0);
+ether.end();

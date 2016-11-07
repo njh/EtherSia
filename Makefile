@@ -13,6 +13,7 @@ coverage.info:
 	lcov --zerocounters --directory src 
 	$(MAKE) -C tests COVERAGE_CFLAGS="-fprofile-arcs -ftest-coverage" test
 	lcov --capture --directory src --output-file coverage.info --no-external
+	lcov --remove coverage.info 'libarduino/*' --output-file coverage.info
 
 coverage-html: coverage.info
 	mkdir -p coverage
