@@ -59,4 +59,33 @@ const uint8_t expect[] = {
 frame_t &sent = ether.getLastSent();
 ck_assert_int_eq(sent.length, sizeof(expect));
 ck_assert(memcmp(sent.packet, expect, sizeof(expect)) == 0);
+
+
+#test println_twice
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:1234::1");
+ether.begin("00:04:a3:2c:2b:b9");
+ether.clearSent();
+
+Syslog syslog(ether);
+syslog.setRemoteAddress("2001:4321::514");
+syslog.println("First Message");
+
+syslog.setPriority(LOG_DEBUG);
+syslog.print("The result=0x");
+syslog.println(0x45, HEX);
+ck_assert_int_eq(ether.getSentCount(), 2);
+
+const int offset = ETHER_HEADER_LEN + IP6_HEADER_LEN + UDP_HEADER_LEN;
+
+frame_t &packet1 = ether.getSent(0);
+const char* log_line1 = "<134>EtherSia: First Message";
+ck_assert_int_eq(packet1.length - offset, strlen(log_line1));
+ck_assert_str_eq((const char*)packet1.packet + offset, log_line1);
+
+frame_t &packet2 = ether.getSent(1);
+const char* log_line2 = "<135>EtherSia: The result=0x45";
+ck_assert_int_eq(packet2.length - offset, strlen(log_line2));
+ck_assert_str_eq((const char*)packet2.packet + offset, log_line2);
+
 ether.end();
