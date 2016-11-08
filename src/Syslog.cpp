@@ -40,6 +40,7 @@ size_t Syslog::write(uint8_t chr)
 
     if (chr == '\n' || chr == '\r') {
         if (_logLen) {
+            packetBuffer[_logLen++] = '\0';
             send(_logLen);
             _headerWritten = false;
             _logLen = 0;
