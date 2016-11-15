@@ -6,6 +6,7 @@ Socket::Socket(EtherSia &ether) : _ether(ether)
     _localPort = random(20000, 30000);
     _remoteAddress.setZero();
     _remotePort = 0;
+    _writePos = -1;
 }
 
 Socket::Socket(EtherSia &ether, uint16_t localPort) : _ether(ether)
@@ -13,6 +14,7 @@ Socket::Socket(EtherSia &ether, uint16_t localPort) : _ether(ether)
     _localPort = localPort;
     _remoteAddress.setZero();
     _remotePort = 0;
+    _writePos = -1;
 }
 
 boolean Socket::setRemoteAddress(const char *remoteAddress, uint16_t remotePort)
@@ -81,6 +83,14 @@ IPv6Address& Socket::packetDestination()
     return _ether.packet().destination();
 }
 
+void Socket::send()
+{
+    if (_writePos > 0) {
+        send(_writePos);
+        _writePos = -1;
+    }
+}
+
 void Socket::send(const char *data)
 {
     send((const uint8_t *)data, strlen(data));
@@ -129,3 +139,31 @@ void Socket::sendReply(uint16_t length)
     sendInternal(length, true);
 }
 
+boolean Socket::handleWriteNewline()
+{
+    return true;
+}
+
+void Socket::writePayloadHeader()
+{
+}
+
+size_t Socket::write(uint8_t chr)
+{
+    uint8_t *payload = this->payload();
+    boolean doWriteChar = true;
+
+    if (chr == '\n' || chr == '\r') {
+        doWriteChar = handleWriteNewline();
+    } else if (_writePos == -1) {
+        _writePos = 0;
+        writePayloadHeader();
+    }
+
+    if (doWriteChar) {
+        payload[_writePos++] = chr;
+        return 1;
+    } else {
+        return 0;
+    }
+}

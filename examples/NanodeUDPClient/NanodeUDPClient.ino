@@ -77,7 +77,8 @@ void loop()
     static unsigned long nextMessage = millis();
     if ((long)(millis() - nextMessage) >= 0) {
         Serial.println("Sending UDP.");
-        udp.send("Hello World!\n");
+        udp.println("Hello World!");
+        udp.send();
         nextMessage = millis() + 5000;
     }
 }

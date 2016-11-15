@@ -50,7 +50,7 @@ enum SyslogFacility {
  *
  * @see https://en.wikipedia.org/wiki/Syslog
  */
-class Syslog : public UDPSocket, public Print {
+class Syslog : public UDPSocket {
 
 public:
     /** Default UDP port number to sent Syslog messages to */
@@ -58,6 +58,7 @@ public:
 
     /**
      * Construct a Syslog socket
+     *
      * Set the remote server address using setRemoteAddress()
      *
      * @param ether The Ethernet interface to attach the socket to
@@ -108,19 +109,14 @@ public:
      */
     uint8_t facility();
 
-    /**
-     * Write a single character into the UDP packet buffer
-     *
-     * @param chr The character to write
-     * @return The number of bytes written to the buffer
-     */
-    virtual size_t write(uint8_t chr);
-
 protected:
 
-    uint8_t _logLen;
-    bool _headerWritten;
+    boolean handleWriteNewline();
+
+    void writePayloadHeader();
+
     uint8_t _pri;
+
 };
 
 

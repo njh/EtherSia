@@ -14,7 +14,7 @@ class EtherSia;
 /**
  * Abstract base class for a IP socket
  */
-class Socket {
+class Socket : public Print {
 
 public:
 
@@ -89,6 +89,12 @@ public:
     IPv6Address& packetDestination();
 
     /**
+     * Sent out a packet. The payload should have been written to the
+     * packet buffer using the print() and println() methods.
+     */
+    void send();
+
+    /**
      * Send the contents of the packet payload buffer
      *
      * Place the data in the payload() buffer before calling this method.
@@ -151,7 +157,39 @@ public:
      */
     virtual uint16_t payloadLength() = 0;
 
+    /**
+     * Write a single character into the packet buffer
+     *
+     * @param chr The character to write
+     * @return The number of bytes written to the buffer
+     */
+    virtual size_t write(uint8_t chr);
+
 protected:
+
+    /**
+     * This method is called when a newline is written using print()
+     * 
+     * Default behaviour is to handle Carriage Return or Line Feed
+     * in the normal way, like any other character.
+     *
+     * But some sub-classes my want to overload it and use it as a
+     * trigger to send a packet.
+     *
+     * @return True if the newline character should be written to the buffer
+     */
+    virtual boolean handleWriteNewline();
+
+    /**
+     * This method is called when it is time to initialise a new packet
+     * 
+     * Default behaviour is to do nothing.
+     *
+     * But some sub-classes my want to use it write a header into the 
+     * buffer before appending other character are written using print().
+     */
+    virtual void writePayloadHeader();
+
     virtual void sendInternal(uint16_t length, boolean isReply) = 0;
 
     EtherSia &_ether;            ///< The Ethernet Interface that this socket is attached to
@@ -159,6 +197,9 @@ protected:
     MACAddress _remoteMac;       ///< The Ethernet address to send packets to
     uint16_t _remotePort;        ///< The remote port number
     uint16_t _localPort;         ///< The local port number
+
+    /** The current position of writing data to buffer (when using Print interface) */
+    int16_t _writePos;
 };
 
 
