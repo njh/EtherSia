@@ -36,16 +36,20 @@ libarduino.a: $(LIBARDUINO_OBJECTS)
 libethersia.a: $(LIBETHERSIA_OBJECTS)
 	$(AR) rcs $@ $^
 
+libhext.a: hext.o
+	$(AR) rcs $@ $^
+
 %.cpp: %.tc
 	checkmk $< > $@ || rm -f $@
 
-%.cmd: %.o libarduino.a libethersia.a
-	$(CXX) -o $@ $< -L. -lethersia -larduino $(CHECK_LIBS) $(CFLAGS)
+%.cmd: %.o libarduino.a libethersia.a libhext.a
+	$(CXX) -o $@ $< -L. -lethersia -larduino -lhext $(CHECK_LIBS) $(CFLAGS)
 
 
 clean:
 	rm -f libarduino.a $(LIBARDUINO_OBJECTS)
 	rm -f libethersia.a $(LIBETHERSIA_OBJECTS)
+	rm -f libhext.a
 	rm -f *.cpp *.o *.cmd
 
 .PHONY: test check clean
