@@ -1,6 +1,7 @@
-CFLAGS += -std=c++11 -Werror -Wall -Wextra -pedantic -g -O0
+CFLAGS += -Werror -Wall -Wextra -pedantic -g -O0
 CFLAGS += -I../src -I./libarduino
 CFLAGS += $(COVERAGE_CFLAGS)
+CXXFLAGS += -std=c++11
 
 # FIXME: work out how to apply this to the clang compiler only
 CFLAGS += -Wno-gnu-zero-variadic-macro-arguments
@@ -27,7 +28,7 @@ check: $(TEST_COMMANDS)
 	@$(foreach f,$^,./$(f) &&) echo "All tests passed."
 
 %.o: %.cpp
-	$(CXX) $(CFLAGS) $(CHECK_CFLAGS) -c -o $@ $<
+	$(CXX) $(CXXFLAGS) $(CFLAGS) $(CHECK_CFLAGS) -c -o $@ $<
 
 libarduino.a: $(LIBARDUINO_OBJECTS)
 	$(AR) rcs $@ $^
