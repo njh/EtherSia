@@ -30,7 +30,7 @@ static int ascii_to_hex(char c)
     }
 }
 
-// Based on: https://en.wikipedia.org/wiki/Escape_sequences_in_C
+/* Based on: https://en.wikipedia.org/wiki/Escape_sequences_in_C */
 static int escape_to_hex(int c)
 {
     switch(c) {
@@ -62,11 +62,11 @@ int hext_stream_to_stream(FILE* input, FILE* output)
             break;
 
         } else if (isspace(chr) || chr == ':' || chr == '-') {
-            // Ignore
+            /* Ignore */
             continue;
 
         } else if (chr == '#') {
-            // Ignore the rest of the line
+            /* Ignore the rest of the line */
             while (!feof(input)) {
                 int chr2 = fgetc(input);
                 if (chr2 == '\n' || chr2 == '\r')
@@ -130,13 +130,16 @@ int hext_stream_to_stream(FILE* input, FILE* output)
 
 int hext_filename_to_stream(const char* filename, FILE* output)
 {
-    FILE *input = fopen(filename, "rb");
+    FILE *input = NULL;
+    int len = 0;
+
+    input = fopen(filename, "rb");
     if (!input) {
         perror("Failed to open input file");
         return -1;
     }
 
-    int len = hext_stream_to_stream(input, output);
+    len = hext_stream_to_stream(input, output);
 
     fclose(input);
     return len;
@@ -151,25 +154,30 @@ struct buffer_write_struct {
 static int write_buffer(void *cookie, const char *ptr, int len)
 {
     struct buffer_write_struct *bws = (struct buffer_write_struct*)cookie;
-    
+    int i = 0;
+
     if (bws->buffer_used + len < bws->buffer_len) {
-        for(int i=0; i<len; i++) {
+        for(i=0; i<len; i++) {
             bws->buffer[bws->buffer_used] = ptr[i];
             bws->buffer_used++;
         }
         return len;
     } else {
-        // Buffer isn't big enough
+        /* Buffer isn't big enough */
         return -1;
     }
 }
 
 int hext_filename_to_buffer(const char* filename, uint8_t *buffer, size_t buffer_len)
 {
-    struct buffer_write_struct bws = {buffer, 0, buffer_len};   
-    FILE* output = fwopen(&bws, write_buffer);
+    struct buffer_write_struct bws = {NULL, 0, 0};
+    FILE* output = NULL;
+    int len = 0;
 
-    int len = hext_filename_to_stream(filename, output);
+    bws.buffer = buffer;
+    bws.buffer_len = buffer_len;
+    output = fwopen(&bws, write_buffer);
+    len = hext_filename_to_stream(filename, output);
 
     fclose(output);
 
@@ -189,8 +197,9 @@ static int write_hex(void *cookie, const char *ptr, int len)
 {
     FILE* output = (FILE*)cookie;
     size_t count = 0;
+    int i = 0;
 
-    for (int i=0; i<len; i++) {
+    for (i=0; i<len; i++) {
         int result = fprintf(output, "%2.2x", (const unsigned char)ptr[i]);
         if (result < 0) {
             return result;
@@ -204,9 +213,11 @@ static int write_hex(void *cookie, const char *ptr, int len)
 
 static void print_c_block(FILE *output, const uint8_t *buffer, int buffer_len)
 {
+    int i;
+
     fprintf(output, "uint8_t buffer[] = {");
 
-    for (int i=0; i<buffer_len; i++) {
+    for (i=0; i<buffer_len; i++) {
         if (i % 8 == 0) {
             fprintf(output, "\n    ");
         }
@@ -235,7 +246,7 @@ int main(int argc, char **argv)
 {
     int opt, mode = 0;
 
-    // Parse Switches
+    /* Parse Switches */
     while ((opt = getopt(argc, argv, "bcx")) != -1) {
         switch (opt) {
         case 'b':
