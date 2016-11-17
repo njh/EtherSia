@@ -1,0 +1,14 @@
+33:33:ff:70:f9:5f        # Ethernet Destination
+ca:2f:6d:70:f9:5f        # Ethernet Source
+86dd                     # EtherType (IPv6)
+
+60 00 00 00              # IPv6 header
+0018                     # Length
+3a                       # IP Protocol
+ff                       # Hop Limit
+
+0000:0000:0000:0000:0000:0000:0000:0000  # Source Address
+ff02:0000:0000:0000:0000:0001:ff70:f95f  # Destination Address
+
+87 00 54 57 00 00 00 00                  # ICMPv6 header
+fe80:0000:0000:0000:c82f:6dff:fe70:f95f  # ICMPv6 Target Address

@@ -1,0 +1,18 @@
+a4:5e:60:da:58:9d        # Ethernet Destination
+00:04:a3:2c:2b:b9        # Ethernet Source
+86dd                     # EtherType (IPv6)
+
+60 06 f6 54              # IPv6 header
+0010                     # Length (16 bytes)
+3a                       # Protocol
+40                       # Hop Limit
+
+2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9  # IPv6 Source Address
+2001:08b0:ffd5:0003:a65e:60ff:feda:589d  # IPv6 Destination Address
+
+81                       # ICMPv6 Echo Reply
+00                       # ICMPv6 Code
+32 f7                    # Checksum
+1d 3a                    # Identifier
+00 21                    # Sequence
+58 07 ed de 00 0a 68 9e  # Data

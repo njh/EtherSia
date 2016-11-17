@@ -1,6 +1,6 @@
-ca:2f:6d:70:f9:5f     # Ethernet Destination
-02:c0:de:02:02:02     # Ethernet Source
-0800                  # EtherType (IPv4)
+ca:2f:6d:70:f9:5f        # Ethernet Destination
+02:c0:de:02:02:02        # Ethernet Source
+0800                     # EtherType (IPv4)
 
 45 00
 00 32 56 66 00 00 40 11 a2 e4 c0 a8 00 1f c0 a8

@@ -34,7 +34,7 @@ ether.begin("00:04:a3:2c:2b:b9");
 ether.clearSent();
 
 UDPSocket sock(ether, 1008);
-HextFile valid_udp("packets/valid_udp_packet.hext");
+HextFile valid_udp("packets/udp_valid_hello.hext");
 ether.injectRecievedPacket(valid_udp.buffer, valid_udp.length);
 ck_assert_int_eq(ether.receivePacket(), 67);
 ck_assert(sock.havePacket() == true);
@@ -63,26 +63,10 @@ UDPSocket sock(ether);
 sock.setRemoteAddress("2001:41c8:51:7cf::6", 5004);
 sock.send("Oh hi!");
 
-const uint8_t expect[] = {
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  // Ethernet Destination
-    0x00, 0x04, 0xa3, 0x2c, 0x2b, 0xb9,  // Ethernet Source
-    0x86, 0xdd,                          // EtherType
-    0x60, 0x00, 0x00, 0x00,              // IPv6 header
-    0x00, 0x0e,                          // Length (14 bytes)
-    0x11,                                // Protocol
-    0x40,                                // Hop Limit
-    0x20, 0x01, 0x08, 0xb0, 0xff, 0xd5, 0x00, 0x03, 0x02, 0x04, 0xa3, 0xff, 0xfe, 0x2c, 0x2b, 0xb9,
-    0x20, 0x01, 0x41, 0xc8, 0x00, 0x51, 0x07, 0xcf, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x06,
-    0x61, 0xa8,                          // UDP Source Port
-    0x13, 0x8c,                          // UDP Destination Port
-    0x00, 0x0e,                          // Length (14 bytes)
-    0x4f, 0x49,                          // Checksum
-    'O', 'h', ' ', 'h', 'i', '!'
-};
-
+HextFile expect("packets/udp_valid_oh_hi.hext");
 frame_t &sent = ether.getLastSent();
-ck_assert_int_eq(sent.length, sizeof(expect));
-ck_assert(memcmp(sent.packet, expect, sizeof(expect)) == 0);
+ck_assert_int_eq(sent.length, expect.length);
+ck_assert(memcmp(sent.packet, expect.buffer, expect.length) == 0);
 ether.end();
 
 
@@ -93,30 +77,14 @@ ether.begin("00:04:a3:2c:2b:b9");
 ether.clearSent();
 
 UDPSocket sock(ether, 1008);
-HextFile valid_udp("packets/valid_udp_packet.hext");
+HextFile valid_udp("packets/udp_valid_hello.hext");
 ether.injectRecievedPacket(valid_udp.buffer, valid_udp.length);
 ck_assert(ether.receivePacket() && sock.havePacket());
 sock.sendReply("Oh hi!");
 
-const uint8_t expect[] = {
-    0xa4, 0x5e, 0x60, 0xda, 0x58, 0x9d,  // Ethernet Destination
-    0x00, 0x04, 0xa3, 0x2c, 0x2b, 0xb9,  // Ethernet Source
-    0x86, 0xdd,                          // EtherType
-    0x60, 0x03, 0xb1, 0xb7,              // IPv6 header
-    0x00, 0x0e,                          // Length (14 bytes)
-    0x11,                                // Protocol
-    0x40,                                // Hop Limit
-    0x20, 0x01, 0x08, 0xb0, 0xff, 0xd5, 0x00, 0x03, 0x02, 0x04, 0xa3, 0xff, 0xfe, 0x2c, 0x2b, 0xb9,
-    0x20, 0x01, 0x08, 0xb0, 0xff, 0xd5, 0x00, 0x03, 0xa6, 0x5e, 0x60, 0xff, 0xfe, 0xda, 0x58, 0x9d,
-    0x03, 0xf0,                          // UDP Source Port
-    0xfa, 0x06,                          // UDP Destination Port
-    0x00, 0x0e,                          // Length (14 bytes)
-    0xa9, 0x15,                          // Checksum
-    'O', 'h', ' ', 'h', 'i', '!'
-};
-
+HextFile expect("packets/udp_reply_oh_hi.hext");
 frame_t &sent = ether.getLastSent();
-ck_assert_int_eq(sent.length, sizeof(expect));
-ck_assert(memcmp(sent.packet, expect, sizeof(expect)) == 0);
+ck_assert_int_eq(sent.length, expect.length);
+ck_assert(memcmp(sent.packet, expect.buffer, expect.length) == 0);
 ether.end();
 

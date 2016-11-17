@@ -1,0 +1,18 @@
+33:33:ff:00:50:00        # Ethernet Destination
+ca:2f:6d:70:f9:5f        # Ethernet Source
+86dd                     # EtherType (IPv6)
+
+60 00 00 00              # IPv6 header
+0018                     # Length (24 bytes)
+3a                       # Protocol
+ff                       # Hop Limit
+
+0000:0000:0000:0000:0000:0000:0000:0000  # FIXME
+ff02:0000:0000:0000:0000:0001:ff00:5000  # IPv6 Destination Address
+
+87                       # ICMPv6 neighbour solicitation (135)
+00                       # ICMPv6 Code
+a872                     # Checksum
+00 00 00 00              # Reserved
+
+2001:1234:0000:0000:0000:0000:0000:5000
