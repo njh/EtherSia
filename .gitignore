@@ -1,5 +1,6 @@
 *.o
 *.a
+*.dSYM
 
 coverage.info
 coverage/*
@@ -14,3 +15,4 @@ examples/LinuxPacketPrinter/LinuxPacketPrinter
 
 tests/*_check_*.cpp
 tests/*_check_*.cmd
+tests/ipv6checksum

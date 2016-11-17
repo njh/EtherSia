@@ -45,11 +45,15 @@ libhext.a: hext.o
 %.cmd: %.o libarduino.a libethersia.a libhext.a
 	$(CXX) -o $@ $< -L. -lethersia -larduino -lhext $(CHECK_LIBS) $(CFLAGS)
 
+ipv6checksum: ipv6checksum.cpp libarduino.a libethersia.a libhext.a
+	$(CXX) -o $@ $< -L. -lethersia -larduino -lhext $(CXXFLAGS) $(CFLAGS)
+
 
 clean:
 	rm -f libarduino.a $(LIBARDUINO_OBJECTS)
 	rm -f libethersia.a $(LIBETHERSIA_OBJECTS)
 	rm -f libhext.a
-	rm -f *.cpp *.o *.cmd
+	rm -f ipv6checksum
+	rm -f $(TEST_SOURCES) *.o *.cmd
 
 .PHONY: test check clean
