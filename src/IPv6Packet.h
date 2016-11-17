@@ -91,6 +91,14 @@ public:
      * @param address the new destination address
      */
     void setEtherDestination(MACAddress& address);
+    
+    /**
+     * Get the EtherType (Ethernet frame type)
+     *
+     * @note This should always be 86dd for IPv6
+     * @return the 16-bit EtherType of the frame
+     */
+    uint16_t etherType() const;
 
     /**
      * Get the IP version number from the IPv6 header.

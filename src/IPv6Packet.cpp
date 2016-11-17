@@ -48,6 +48,11 @@ void IPv6Packet::invalidate()
     this->_etherType = 0;
 }
 
+uint16_t IPv6Packet::etherType() const
+{
+    return ntohs(_etherType);
+}
+
 uint8_t IPv6Packet::version() const
 {
     return (_ver_tc & 0xF0) >> 4;

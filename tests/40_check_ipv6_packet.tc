@@ -52,6 +52,11 @@ ck_assert(packet->isValid() == true);
 packet->invalidate();
 ck_assert(packet->isValid() == false);
 
+#test etherType
+HextFile rs("packets/icmp6_router_solicitation.hext");
+IPv6Packet *packet = (IPv6Packet *)rs.buffer;
+ck_assert_int_eq(packet->etherType(), 0x86dd);
+
 #test version
 HextFile rs("packets/icmp6_router_solicitation.hext");
 IPv6Packet *packet = (IPv6Packet *)rs.buffer;
