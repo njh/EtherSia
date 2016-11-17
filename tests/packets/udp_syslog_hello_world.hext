@@ -1,0 +1,17 @@
+00:00:00:00:00:00        # Ethernet Destination
+00:04:a3:2c:2b:b9        # Ethernet Source
+86dd                     # EtherType (IPv6)
+
+60 00 00 00              # IPv6 header
+0023                     # Length (35 bytes)
+11                       # Protocol
+40                       # Hop Limit
+
+2001:1234:0000:0000:0000:0000:0000:0001
+2001:4321:0000:0000:0000:0000:0000:0514
+
+61a8                          # UDP Source Port
+0202                          # UDP Destination Port
+0023                          # Length (35 bytes)
+d716                          # Checksum
+"<134>EtherSia: Hello World\0"

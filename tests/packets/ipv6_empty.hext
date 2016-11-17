@@ -1,0 +1,11 @@
+36:b4:40:75:3b:a6        # Ethernet Destination
+a6:69:c0:80:da:3b        # Ethernet Source
+86dd                     # EtherType (IPv6)
+
+60 00 00 00              # IPv6 header
+0000                     # Length (0 bytes)
+fe                       # Protocol (0xfe = Use for experimentation and testing)
+40                       # Hop Limit
+
+fe80:0000:0000:0000:a469:c0ff:fe80:da3b  # IPv6 Source Address
+fe80:0000:0000:0000:34b4:40ff:fe75:3ba6  # IPv6 Destination Address

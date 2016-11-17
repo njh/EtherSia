@@ -1,16 +1,23 @@
-33:33:00:00:00:01     # Ethernet Destination
-3c:61:04:d4:8d:88     # Ethernet Source
-86dd                  # EtherType (IPv6)
+33:33:00:00:00:01        # Ethernet Destination
+3c:61:04:d4:8d:88        # Ethernet Source
+86dd                     # EtherType (IPv6)
 
-60 00 00 00           # IPv6 header
-0038                  # Length
-3a                    # IP Protocol
-ff                    # Hop Limit
+60 00 00 00              # IPv6 header
+0038                     # Length
+3a                       # ICMPv6 Protocol
+ff                       # Hop Limit
 
-fe80:0000:0000:0000:3e61:04ff:fed4:8d88  # Source Address
-ff02:0000:0000:0000:0000:0000:0000:0001  # Destination Address
+fe80:0000:0000:0000:3e61:04ff:fed4:8d88  # IPv6 Source Address
+ff02:0000:0000:0000:0000:0000:0000:0001  # IPv6 Destination Address
 
-86 00 65 08 40 00 03 84 00 00 00 00 00 00 00 00 01 01
-3c 61 04 d4 8d 88
+86                       # ICMPv6 router advertisement (134)
+00                       # ICMPv6 Code
+6508                     # Checksum
+
+40 00 03 84 00 00 00 00 00 00 00 00 01 01
+
+3c:61:04:d4:8d:88        # Router MAC
+
 03 04 40 c0 00 27 8d 00 00 09 3a 80 00 00 00 00
-20 01 08 b0 ff d5 00 03 00 00 00 00 00 00 00 00 
+
+2001:08b0:ffd5:0003:0000:0000:0000:0000  # IPv6 prefix
