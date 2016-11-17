@@ -19,26 +19,26 @@ boolean TCPServer::havePacket()
     struct tcp_header *tcpHeader = TCP_HEADER_PTR;
 
     if (!_ether.bufferContainsReceived()) {
-        return 0;
+        return false;
     }
 
     if (packet.protocol() != IP6_PROTO_TCP) {
         // Wrong protocol
-        return 0;
+        return false;
     }
 
     if (packetDestinationPort() != _localPort) {
         // Wrong destination port
-        return 0;
+        return false;
     }
 
     if (tcpHeader->flags & TCP_FLAG_RST) {
-        return 0;
+        return false;
     }
 
     if (tcpHeader->flags & TCP_FLAG_FIN) {
         sendReplyWithFlags(0, TCP_FLAG_FIN | TCP_FLAG_ACK);
-        return 0;
+        return false;
     }
 
     if (tcpHeader->flags & TCP_FLAG_SYN) {
@@ -50,19 +50,19 @@ boolean TCPServer::havePacket()
         sendReplyWithFlags(0, TCP_FLAG_SYN | TCP_FLAG_ACK);
 
         // We have handled the SYN
-        return 0;
+        return false;
     }
 
     // Packet contains data that needs to be handled
     if (requestLength() > 0) {
         _responsePos = -1;
-        return 1;
+        return true;
     } else {
-        return 0;
+        return false;
     }
 
     // Something else?
-    return 0;
+    return false;
 }
 
 size_t TCPServer::write(uint8_t chr)
