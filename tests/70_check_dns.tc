@@ -15,10 +15,7 @@ ck_assert(memcmp(buffer, expected.buffer, expected.length) == 0);
 
 #test dnsProcessReply_ipv6_aelius
 HextFile response("packets/dns_res_aelius.hext");
-uint8_t expect[16] = {
-    0x20, 0x01, 0x41, 0xc8, 0x00, 0x51, 0x07, 0xcf,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x06
-};
+IPv6Address expect("2001:41c8:0051:07cf:0000:0000:0000:0006");
 
 IPv6Address *addr = dnsProcessReply(response.buffer, response.length, 0x1234);
 ck_assert_ptr_ne(addr, NULL);
