@@ -9,7 +9,8 @@
 #include <Arduino.h>
 #include <stdint.h>
 
-#include "endian.h"
+#include "esendian.h"
+
 #include "MACAddress.h"
 #include "IPv6Address.h"
 #include "IPv6Packet.h"
