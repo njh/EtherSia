@@ -1,3 +1,11 @@
+/*
+
+  C++ wrapper class to load a hext file into memory
+
+  Copyright 2016 Nicholas Humfrey
+
+*/
+
 #ifndef HEXT_HH
 #define HEXT_HH
 
