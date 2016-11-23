@@ -1,0 +1,33 @@
+00:04:a3:2c:2b:b9        # Ethernet Destination
+a4:5e:60:da:58:9d        # Ethernet Source
+86dd                     # EtherType (IPv6)
+
+60 01 cb 2f    # IPv6 header
+002c           # Length (44 bytes)
+06             # Protocol (TCP)
+40             # Hop Limit
+
+2001:08b0:ffd5:0003:a65e:60ff:feda:589d  # IPv6 Source Address
+2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9  # IPv6 Destination Address
+
+cfed           # TCP Source port number (53229)
+0050           # TCP Destination port number (80)
+
+6fbb7776       # TCP Sequence number
+00000000       # TCP Acknowledgement number
+b0             # TCP Header length (44 bytes)
+02             # TCP Flags (SYN)
+ffff           # TCP Window size
+8d5a           # TCP Checksum
+0000           # TCP Urgent Pointer
+
+02 04 05 a0    # Maximum segment size: 1440 bytes
+01             # NOP
+03 03 05       # Window scale: 5
+01             # NOP
+01             # NOP
+08 0a          # Time Stamp Option (8)
+37 d9 3a 9a    # Timestamp value: 936983194
+00 00 00 00    # Timestamp echo reply: 0
+04 02          # TCP SACK permitted: True
+00 00          # End of Option List
