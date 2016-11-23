@@ -14,36 +14,36 @@ boolean UDPSocket::havePacket()
     IPv6Packet& packet = _ether.packet();
 
     if (!_ether.bufferContainsReceived()) {
-        return 0;
+        return false;
     }
 
     if (packet.protocol() != IP6_PROTO_UDP) {
         // Wrong protocol
-        return 0;
+        return false;
     }
 
     if (packetDestinationPort() != _localPort) {
         // Wrong destination port
-        return 0;
+        return false;
     }
 
     if (_remotePort && packetSourcePort() != _remotePort) {
         // Wrong source port
-        return 0;
+        return false;
     }
 
     if (!_ether.isOurAddress(packetDestination())) {
         // Wrong destination address
-        return 0;
+        return false;
     }
 
     if (!_remoteAddress.isZero() && packetSource() != _remoteAddress) {
         // Wrong source address
-        return 0;
+        return false;
     }
 
     // The packet in the buffer is valid for this socket
-    return 1;
+    return true;
 }
 
 void UDPSocket::sendInternal(uint16_t length, boolean isReply)
