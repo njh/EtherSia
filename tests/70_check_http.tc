@@ -1,0 +1,27 @@
+#include "Arduino.h"
+#include "EtherSia.h"
+#include "hext.hh"
+#include "util.h"
+
+#suite HTTP
+
+#test construct_defaults
+EtherSia_Dummy ether;
+HTTPServer http(ether);
+ck_assert_int_eq(http.localPort(), 80);
+
+
+#test isGet_root
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
+ether.begin("00:04:a3:2c:2b:b9");
+ether.clearSent();
+
+HTTPServer server(ether);
+HextFile tcp_syn("packets/http_get_root.hext");
+ether.injectRecievedPacket(tcp_syn.buffer, tcp_syn.length);
+ck_assert_int_eq(ether.receivePacket(), 196);
+ck_assert(server.havePacket() == true);
+ck_assert(server.isPost(F("/")) == false);
+ck_assert(server.isGet(F("/")) == true);
+ck_assert_int_eq(server.bodyLength(), 0);
