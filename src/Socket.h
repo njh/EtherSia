@@ -190,6 +190,13 @@ protected:
      */
     virtual void writePayloadHeader();
 
+    /**
+     * Protocol specific function that is called by send(), sendReply() etc.
+     *
+     * @note must be overloaded by sub-classes
+     * @param length The length (in bytes) of the data to send
+     * @param boolean Set to true if this packet is a reply to an incoming packet
+     */
     virtual void sendInternal(uint16_t length, boolean isReply) = 0;
 
     EtherSia &_ether;            ///< The Ethernet Interface that this socket is attached to
