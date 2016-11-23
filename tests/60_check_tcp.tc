@@ -6,8 +6,8 @@
 
 #test construct_server
 EtherSia_Dummy ether;
-TCPServer server(ether, 8080);
-ck_assert_int_eq(server.localPort(), 8080);
+TCPServer server(ether, 80);
+ck_assert_int_eq(server.localPort(), 80);
 
 
 #test have_packet_rst
@@ -106,5 +106,33 @@ ck_assert_int_eq(server.packetSourcePort(), 59545);
 ck_assert_int_eq(server.packetDestinationPort(), 80);
 
 ether.end();
+
+
+#test wrong_port
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
+ether.begin("00:04:a3:2c:2b:b9");
+ether.clearSent();
+
+TCPServer server(ether, 8080);
+HextFile tcp_syn("packets/tcp_receive_data.hext");
+ether.injectRecievedPacket(tcp_syn.buffer, tcp_syn.length);
+ck_assert_int_eq(ether.receivePacket(), 104);
+ck_assert(server.havePacket() == false);
+ck_assert_int_eq(0, ether.getSentCount());
+
+
+#test wrong_protocol
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
+ether.begin("00:04:a3:2c:2b:b9");
+ether.clearSent();
+
+TCPServer server(ether, 80);
+HextFile udp_packet("packets/udp_valid_hello.hext");
+ether.injectRecievedPacket(udp_packet.buffer, udp_packet.length);
+ck_assert_int_eq(ether.receivePacket(), 67);
+ck_assert(server.havePacket() == false);
+ck_assert_int_eq(0, ether.getSentCount());
 
 
