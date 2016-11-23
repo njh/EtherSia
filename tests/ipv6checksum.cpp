@@ -19,8 +19,8 @@ int main(int argc, char** argv)
     HextFile input(argv[1]);
     IPv6Packet *packet = (IPv6Packet *)input.buffer;
 
-    printf("Input filename: %s\n", argv[1]);
-    printf("Input packet length: %d\n", input.length);
+    printf("    Input filename: %s\n", argv[1]);
+    printf(" Input file length: %d\n", input.length);
 
     // Check the EtherType
     if (packet->etherType() != ETHER_TYPE_IPV6) {
@@ -34,7 +34,15 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    printf("Checksum: 0x%4.4x\n", packet->calculateChecksum());
+    printf("     Packet length: %d\n", packet->length());
+    printf("    Payload length: %d\n", packet->payloadLength());
+    if (packet->length() != input.length) {
+        fprintf(stderr, "Error: packet length != file length\n");
+        fprintf(stderr, "Payload length should = 0x%4.4x\n", input.length - ETHER_HEADER_LEN - IP6_HEADER_LEN);
+        return -1;
+    }
+
+    printf("   Packet Checksum: 0x%4.4x\n", packet->calculateChecksum());
 
     return 0;
 }
