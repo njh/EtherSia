@@ -57,8 +57,6 @@ boolean TCPServer::havePacket()
     if (requestLength() > 0) {
         _responsePos = -1;
         return true;
-    } else {
-        return false;
     }
 
     // Something else?
