@@ -16,7 +16,7 @@ e899           # TCP Source port number (59545)
 bb55a98f       # TCP Sequence number
 eabf6f22       # TCP Acknowledgement number
 80             # TCP Header length (32 bytes)
-18             # TCP Flags (FIN and ACK)
+18             # TCP Flags (ACK,PSH)
 31c7           # TCP Window size
 7624           # TCP Checksum
 0000           # TCP Urgent Pointer
