@@ -91,8 +91,3 @@ uint16_t UDPSocket::payloadLength()
     IPv6Packet& packet = _ether.packet();
     return ntohs(UDP_HEADER_PTR->length) - UDP_HEADER_LEN;
 }
-
-boolean UDPSocket::payloadEquals(const char *str)
-{
-    return strncmp((char*)payload(), str, payloadLength()) == 0;
-}

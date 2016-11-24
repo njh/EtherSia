@@ -73,15 +73,6 @@ public:
      */
     uint16_t payloadLength();
 
-    /**
-     * Check if the current UDP payload equals a string
-     *
-     * @note Please call havePacket() first, before calling this method.
-     * @param str The null-terminated string to compare to
-     * @return True if the UDP payload is the same as the str parameter
-     */
-    boolean payloadEquals(const char *str);
-
 protected:
 
     /**

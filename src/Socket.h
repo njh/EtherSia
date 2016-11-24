@@ -158,6 +158,15 @@ public:
     virtual uint16_t payloadLength() = 0;
 
     /**
+     * Check if the current payload equals a string
+     *
+     * @note Please call havePacket() first, before calling this method.
+     * @param str The null-terminated string to compare to
+     * @return True if the UDP payload is the same as the str parameter
+     */
+    boolean payloadEquals(const char *str);
+
+    /**
      * Write a single character into the packet buffer
      *
      * @param chr The character to write

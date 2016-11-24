@@ -139,6 +139,11 @@ void Socket::sendReply(uint16_t length)
     sendInternal(length, true);
 }
 
+boolean Socket::payloadEquals(const char *str)
+{
+    return strncmp((char*)payload(), str, payloadLength()) == 0;
+}
+
 boolean Socket::handleWriteNewline()
 {
     return true;
