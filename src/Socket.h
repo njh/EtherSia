@@ -89,7 +89,9 @@ public:
     IPv6Address& packetDestination();
 
     /**
-     * Sent out a packet. The payload should have been written to the
+     * Send out a packet
+     *
+     * Before calling this, the payload should have been written to the
      * packet buffer using the print() and println() methods.
      */
     void send();
@@ -117,6 +119,14 @@ public:
      * @param length The length (in bytes) of the data to send
      */
     void send(const void *data, uint16_t length);
+
+    /**
+     * Send a reply to an incoming packet
+     *
+     * Before calling this, the payload should have been written to the
+     * packet buffer using the print() and println() methods.
+     */
+    void sendReply();
 
     /**
      * Send a reply to the last packet received

@@ -117,6 +117,14 @@ void Socket::send(uint16_t length)
     sendInternal(length, false);
 }
 
+void Socket::sendReply()
+{
+    if (_writePos > 0) {
+        sendReply(_writePos);
+        _writePos = -1;
+    }
+}
+
 void Socket::sendReply(const char *data)
 {
     sendReply((const uint8_t*)data, strlen(data));
