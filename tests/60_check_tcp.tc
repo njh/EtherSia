@@ -92,9 +92,9 @@ ck_assert(server.havePacket() == true);
 ck_assert_int_eq(0, ether.getSentCount());
 
 const char expect_payload[] = "GET / HTTP/1.0\r\n\r\n";
-ck_assert_int_eq(server.requestLength(), strlen(expect_payload));
-ck_assert(memcmp(server.requestPayload(), expect_payload, strlen(expect_payload)) == 0);
-ck_assert(server.requestEquals(expect_payload) == true);
+ck_assert_int_eq(server.payloadLength(), strlen(expect_payload));
+ck_assert(memcmp(server.payload(), expect_payload, strlen(expect_payload)) == 0);
+ck_assert(server.payloadEquals(expect_payload) == true);
 
 IPv6Address expectSource("2001:08b0:ffd5:0003:a65e:60ff:feda:589d");
 ck_assert(memcmp(server.packetSource(), expectSource, 16) == 0);

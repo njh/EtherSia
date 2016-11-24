@@ -56,8 +56,8 @@ void HTTPServer::redirect(const __FlashStringHelper* location)
 
 boolean HTTPServer::checkRequest(const char* method, const __FlashStringHelper* path)
 {
-    char* payload = (char*)requestPayload();
-    uint16_t length = requestLength();
+    char* payload = (char*)this->payload();
+    uint16_t length = payloadLength();
     uint16_t endOfMethod;
     uint16_t pos;
 
@@ -132,7 +132,7 @@ uint16_t HTTPServer::bodyLength()
     if (_bodyPtr == NULL)
         return 0;
 
-    return requestLength() - (_bodyPtr - (char*)requestPayload());
+    return payloadLength() - (_bodyPtr - (char*)payload());
 }
 
 boolean HTTPServer::bodyEquals(const char str[])

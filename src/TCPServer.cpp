@@ -54,7 +54,7 @@ boolean TCPServer::havePacket()
     }
 
     // Packet contains data that needs to be handled
-    if (requestLength() > 0) {
+    if (payloadLength() > 0) {
         _responsePos = -1;
         return true;
     }
@@ -108,7 +108,7 @@ void TCPServer::sendReplyWithFlags(uint16_t len, uint8_t flags)
 
     uint32_t seq = tcpHeader->acknowledgementNum;
     uint32_t ack = ntohl(tcpHeader->sequenceNum);
-    uint16_t receivedLen = requestLength();
+    uint16_t receivedLen = payloadLength();
     if (receivedLen == 0)
         receivedLen = 1;
 
@@ -159,19 +159,19 @@ uint16_t TCPServer::packetDestinationPort()
 }
 
 
-uint8_t* TCPServer::requestPayload()
+uint8_t* TCPServer::payload()
 {
     IPv6Packet& packet = _ether.packet();
     return packet.payload() + TCP_DATA_OFFSET;
 }
 
-uint16_t TCPServer::requestLength()
+uint16_t TCPServer::payloadLength()
 {
     IPv6Packet& packet = _ether.packet();
     return packet.payloadLength() - TCP_DATA_OFFSET;
 }
 
-boolean TCPServer::requestEquals(const char *str)
+boolean TCPServer::payloadEquals(const char *str)
 {
-    return strncmp((char*)requestPayload(), str, requestLength()) == 0;
+    return strncmp((char*)payload(), str, payloadLength()) == 0;
 }

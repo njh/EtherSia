@@ -110,7 +110,7 @@ public:
      * @note Please call havePacket() first, before calling this method.
      * @return A pointer to the payload
      */
-    uint8_t* requestPayload();
+    uint8_t* payload();
 
     /**
      * Get the length (in bytes) of the TCP payload of the packet
@@ -118,7 +118,7 @@ public:
      * @note Please call havePacket() first, before calling this method.
      * @return A pointer to the payload
      */
-    uint16_t requestLength();
+    uint16_t payloadLength();
 
     /**
      * Check if the current TCP payload equals a string
@@ -127,7 +127,7 @@ public:
      * @param str The null-terminated string to compare to
      * @return True if the TCP payload is the same as the str parameter
      */
-    boolean requestEquals(const char *str);
+    boolean payloadEquals(const char *str);
 
     /**
      * Write a single character into the TCP packet buffer
