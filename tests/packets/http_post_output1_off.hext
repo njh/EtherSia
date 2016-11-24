@@ -1,0 +1,38 @@
+00:04:a3:2c:2b:b9        # Ethernet Destination
+a4:5e:60:da:58:9d        # Ethernet Source
+86dd                     # EtherType (IPv6)
+
+60 0d 14 5e    # IPv6 header
+00b9           # Length (142 bytes)
+06             # Protocol (TCP)
+40             # Hop Limit
+
+2001:08b0:ffd5:0003:a65e:60ff:feda:589d  # IPv6 Source Address
+2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9  # IPv6 Destination Address
+
+e899           # TCP Source port number (59545)
+0050           # TCP Destination port number (80)
+
+bb55a98f       # TCP Sequence number
+eabf6f22       # TCP Acknowledgement number
+80             # TCP Header length (32 bytes)
+18             # TCP Flags (ACK,PSH)
+31c7           # TCP Window size
+2714           # TCP Checksum
+0000           # TCP Urgent Pointer
+
+01             # TCP Option NOP
+01             # TCP Option NOP
+08             # Timestamp option
+0a             # Timestamp length (10 bytes)
+38706da2       # Timestamp value
+38706da2       # Timestamp echo reply
+
+"POST /output1 HTTP/1.1\r\n"
+"Host: [::1]:3000\r\n"
+"User-Agent: curl/7.44.0\r\n"
+"Accept: */*\r\n"
+"Content-Length: 3\r\n"
+"Content-Type: application/x-www-form-urlencoded\r\n"
+"\r\n"
+"off"
