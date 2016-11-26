@@ -68,7 +68,7 @@ size_t TCPServer::write(uint8_t chr)
     uint8_t *payload = _ether.packet().payload();
 
     if (_responsePos == -1) {
-        _responsePos = TCP_HEADER_LEN;
+        _responsePos = TCP_TRANSMIT_HEADER_LEN;
     }
 
     payload[_responsePos++] = chr;
@@ -79,7 +79,7 @@ size_t TCPServer::write(uint8_t chr)
 void TCPServer::sendReply()
 {
     if (_responsePos > 0) {
-        sendReply(NULL, _responsePos - TCP_HEADER_LEN);
+        sendReply(NULL, _responsePos - TCP_TRANSMIT_HEADER_LEN);
     }
 }
 
@@ -94,7 +94,7 @@ void TCPServer::sendReply(const void* data, uint16_t len)
     struct tcp_header *tcpHeader = TCP_HEADER_PTR;
 
     if (data) {
-        memcpy((uint8_t*)tcpHeader + TCP_HEADER_LEN, data, len);
+        memcpy((uint8_t*)tcpHeader + TCP_TRANSMIT_HEADER_LEN, data, len);
     }
 
     // Acknowledge the request packet and send response
@@ -121,14 +121,14 @@ void TCPServer::sendReplyWithFlags(uint16_t len, uint8_t flags)
     tcpHeader->sequenceNum = seq;
     tcpHeader->acknowledgementNum = htonl(ack + receivedLen);
 
-    tcpHeader->dataOffset = (TCP_HEADER_LEN / 4) << 4;
+    tcpHeader->dataOffset = (TCP_TRANSMIT_HEADER_LEN / 4) << 4;
     tcpHeader->window = htons(TCP_WINDOW_SIZE);
     tcpHeader->urgentPointer = 0;
     tcpHeader->mssOptionKind = 2;
     tcpHeader->mssOptionLen = 4;
     tcpHeader->mssOptionValue = tcpHeader->window;
 
-    packet.setPayloadLength(TCP_HEADER_LEN + len);
+    packet.setPayloadLength(TCP_TRANSMIT_HEADER_LEN + len);
 
     tcpHeader->checksum = 0;
     tcpHeader->checksum = htons(packet.calculateChecksum());
@@ -158,17 +158,16 @@ uint16_t TCPServer::packetDestinationPort()
     return ntohs(TCP_HEADER_PTR->destinationPort);
 }
 
-
 uint8_t* TCPServer::payload()
 {
     IPv6Packet& packet = _ether.packet();
-    return packet.payload() + TCP_DATA_OFFSET;
+    return packet.payload() + TCP_RECEIVE_HEADER_LEN;
 }
 
 uint16_t TCPServer::payloadLength()
 {
     IPv6Packet& packet = _ether.packet();
-    return packet.payloadLength() - TCP_DATA_OFFSET;
+    return packet.payloadLength() - TCP_RECEIVE_HEADER_LEN;
 }
 
 boolean TCPServer::payloadEquals(const char *str)

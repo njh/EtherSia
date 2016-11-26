@@ -183,38 +183,40 @@ struct tcp_header {
     uint16_t window;
     uint16_t checksum;
     uint16_t urgentPointer;
+
+    // Following fields are options used when sending/transmitting only
     uint8_t mssOptionKind;
     uint8_t mssOptionLen;
     uint16_t mssOptionValue;
 } __attribute__((__packed__));
 
 /**
- * The length of a TCP response packet header
+ * The length of a TCP response packet header, used when sending packets
  * @private
  */
-#define TCP_HEADER_LEN            (24)
+#define TCP_TRANSMIT_HEADER_LEN            (24)
+
+/* Verify that compiler gets the structure size correct */
+static_assert(sizeof(struct tcp_header) == TCP_TRANSMIT_HEADER_LEN, "Size is not correct");
 
 /**
- * The maximum size of the TCP segment that we can recieve
+ * Get the length of the recieved TCP header in bytes
+ * @private
+ */
+#define TCP_RECEIVE_HEADER_LEN    ((TCP_HEADER_PTR->dataOffset & 0xF0) >> 2)
+
+/**
+ * The maximum size of the TCP segment that we can receive
  * @private
  */
 #define TCP_WINDOW_SIZE           (ETHERSIA_MAX_PACKET_SIZE - \
-                                   ETHER_HEADER_LEN - IP6_HEADER_LEN - TCP_HEADER_LEN - 32)
+                                   ETHER_HEADER_LEN - IP6_HEADER_LEN - TCP_TRANSMIT_HEADER_LEN - 32)
 
 /**
  * Get the pointer to the TCP header from within EtherSia
  * @private
  */
 #define TCP_HEADER_PTR            ((struct tcp_header*)(packet.payload()))
-
-/**
- * Get the length of the TCP header in bytes
- * @private
- */
-#define TCP_DATA_OFFSET           ((TCP_HEADER_PTR->dataOffset & 0xF0) >> 2)
-
-/* Verify that compiler gets the structure size correct */
-static_assert(sizeof(struct tcp_header) == TCP_HEADER_LEN, "Size is not correct");
 
 
 #endif
