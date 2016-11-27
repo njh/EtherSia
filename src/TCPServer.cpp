@@ -4,7 +4,7 @@
 TCPServer::TCPServer(EtherSia &ether, uint16_t localPort) : _ether(ether)
 {
     _localPort = localPort;
-    _responsePos = -1;
+    _writePos = -1;
 }
 
 
@@ -55,7 +55,7 @@ boolean TCPServer::havePacket()
 
     // Packet contains data that needs to be handled
     if (payloadLength() > 0) {
-        _responsePos = -1;
+        _writePos = -1;
         return true;
     }
 
@@ -65,21 +65,21 @@ boolean TCPServer::havePacket()
 
 size_t TCPServer::write(uint8_t chr)
 {
-    uint8_t *payload = _ether.packet().payload();
+    uint8_t *payload = this->transmitPayload();
 
-    if (_responsePos == -1) {
-        _responsePos = TCP_TRANSMIT_HEADER_LEN;
+    if (_writePos < 0) {
+        _writePos = 0;
     }
 
-    payload[_responsePos++] = chr;
-
+    payload[_writePos++] = chr;
     return 1;
 }
 
 void TCPServer::sendReply()
 {
-    if (_responsePos > 0) {
-        sendReply(NULL, _responsePos - TCP_TRANSMIT_HEADER_LEN);
+    if (_writePos > 0) {
+        sendReply(NULL, _writePos);
+        _writePos = -1;
     }
 }
 
@@ -90,11 +90,10 @@ void TCPServer::sendReply(const char *string)
 
 void TCPServer::sendReply(const void* data, uint16_t len)
 {
-    IPv6Packet& packet = _ether.packet();
-    struct tcp_header *tcpHeader = TCP_HEADER_PTR;
+    uint8_t *payload = this->transmitPayload();
 
     if (data) {
-        memcpy((uint8_t*)tcpHeader + TCP_TRANSMIT_HEADER_LEN, data, len);
+        memcpy(payload, data, len);
     }
 
     // Acknowledge the request packet and send response
@@ -124,6 +123,7 @@ void TCPServer::sendReplyWithFlags(uint16_t len, uint8_t flags)
     tcpHeader->dataOffset = (TCP_TRANSMIT_HEADER_LEN / 4) << 4;
     tcpHeader->window = htons(TCP_WINDOW_SIZE);
     tcpHeader->urgentPointer = 0;
+
     tcpHeader->mssOptionKind = 2;
     tcpHeader->mssOptionLen = 4;
     tcpHeader->mssOptionValue = tcpHeader->window;
@@ -173,4 +173,10 @@ uint16_t TCPServer::payloadLength()
 boolean TCPServer::payloadEquals(const char *str)
 {
     return strncmp((char*)payload(), str, payloadLength()) == 0;
+}
+
+uint8_t* TCPServer::transmitPayload()
+{
+    IPv6Packet& packet = _ether.packet();
+    return packet.payload() + TCP_TRANSMIT_HEADER_LEN;
 }

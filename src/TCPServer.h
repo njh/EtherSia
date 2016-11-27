@@ -105,7 +105,7 @@ public:
     uint16_t packetDestinationPort();
 
     /**
-     * Get a pointer to the TCP payload of the current packet in the buffer
+     * Get a pointer to the TCP payload of the last received packet
      *
      * @note Please call havePacket() first, before calling this method.
      * @return A pointer to the payload
@@ -113,7 +113,7 @@ public:
     uint8_t* payload();
 
     /**
-     * Get the length (in bytes) of the TCP payload of the packet
+     * Get the length (in bytes) of the last received TCP packet payload
      *
      * @note Please call havePacket() first, before calling this method.
      * @return A pointer to the payload
@@ -121,13 +121,20 @@ public:
     uint16_t payloadLength();
 
     /**
-     * Check if the current TCP payload equals a string
+     * Check if the last recieved TCP payload equals a string
      *
      * @note Please call havePacket() first, before calling this method.
      * @param str The null-terminated string to compare to
      * @return True if the TCP payload is the same as the str parameter
      */
     boolean payloadEquals(const char *str);
+
+    /**
+     * Get a pointer to the next TCP packet payload to be sent
+     *
+     * @return A pointer to the transmit payload buffer
+     */
+    uint8_t* transmitPayload();
 
     /**
      * Write a single character into the TCP packet buffer
@@ -163,7 +170,7 @@ protected:
     uint16_t _localPort;
 
     /** The current position of writing data to buffer (when using Print interface) */
-    int16_t _responsePos;
+    int16_t _writePos;
 };
 
 
