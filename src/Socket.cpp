@@ -98,7 +98,7 @@ void Socket::send(const char *data)
 
 void Socket::send(const void *data, uint16_t length)
 {
-    uint8_t* payload = this->payload();
+    uint8_t* payload = this->transmitPayload();
 
     // FIXME: check it isn't too big
     memcpy(payload, data, length);
@@ -132,7 +132,7 @@ void Socket::sendReply(const char *data)
 
 void Socket::sendReply(const void* data, uint16_t length)
 {
-    uint8_t *payload = this->payload();
+    uint8_t *payload = this->transmitPayload();
 
     // FIXME: check it isn't too big
     memcpy(payload, data, length);
@@ -152,6 +152,13 @@ boolean Socket::payloadEquals(const char *str)
     return strncmp((char*)payload(), str, payloadLength()) == 0;
 }
 
+uint8_t* Socket::transmitPayload()
+{
+    // This method can be overloaded
+    // by default return pointer to the received payload
+    return this->payload();
+}
+
 boolean Socket::handleWriteNewline()
 {
     return true;
@@ -163,7 +170,7 @@ void Socket::writePayloadHeader()
 
 size_t Socket::write(uint8_t chr)
 {
-    uint8_t *payload = this->payload();
+    uint8_t *payload = this->transmitPayload();
     boolean doWriteChar = true;
 
     if (chr == '\n' || chr == '\r') {

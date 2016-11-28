@@ -177,6 +177,13 @@ public:
     boolean payloadEquals(const char *str);
 
     /**
+     * Get a pointer to the next packet payload to be sent
+     *
+     * @return A pointer to the transmit payload buffer
+     */
+    uint8_t* transmitPayload();
+
+    /**
      * Write a single character into the packet buffer
      *
      * @param chr The character to write
