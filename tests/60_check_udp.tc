@@ -79,7 +79,8 @@ ether.clearSent();
 UDPSocket sock(ether, 1008);
 HextFile valid_udp("packets/udp_valid_hello.hext");
 ether.injectRecievedPacket(valid_udp.buffer, valid_udp.length);
-ck_assert(ether.receivePacket() && sock.havePacket());
+ck_assert_int_eq(ether.receivePacket(), valid_udp.length);
+ck_assert(sock.havePacket() == true);
 sock.sendReply("Oh hi!");
 
 HextFile expect("packets/udp_reply_oh_hi.hext");
