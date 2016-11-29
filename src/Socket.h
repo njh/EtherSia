@@ -181,7 +181,7 @@ public:
      *
      * @return A pointer to the transmit payload buffer
      */
-    uint8_t* transmitPayload();
+    virtual uint8_t* transmitPayload();
 
     /**
      * Write a single character into the packet buffer

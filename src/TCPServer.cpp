@@ -1,16 +1,8 @@
 #include "EtherSia.h"
 #include "util.h"
 
-TCPServer::TCPServer(EtherSia &ether, uint16_t localPort) : _ether(ether)
+TCPServer::TCPServer(EtherSia &ether, uint16_t localPort) : Socket(ether, localPort)
 {
-    _localPort = localPort;
-    _writePos = -1;
-}
-
-
-uint16_t TCPServer::localPort()
-{
-    return _localPort;
 }
 
 boolean TCPServer::havePacket()
@@ -37,17 +29,19 @@ boolean TCPServer::havePacket()
     }
 
     if (tcpHeader->flags & TCP_FLAG_FIN) {
-        sendReplyWithFlags(0, TCP_FLAG_FIN | TCP_FLAG_ACK);
+        tcpHeader->flags = TCP_FLAG_FIN | TCP_FLAG_ACK;
+        sendReply((uint16_t)0);
         return false;
     }
 
     if (tcpHeader->flags & TCP_FLAG_SYN) {
         // Initialise our sequence number to a random number
-        // (this is used later in sendReplyWithFlags)
+        // (this is used later in sendInternal)
         tcpHeader->acknowledgementNum = random();
 
         // Accept the connection
-        sendReplyWithFlags(0, TCP_FLAG_SYN | TCP_FLAG_ACK);
+        tcpHeader->flags = TCP_FLAG_SYN | TCP_FLAG_ACK;
+        sendReply((uint16_t)0);
 
         // We have handled the SYN
         return false;
@@ -56,6 +50,7 @@ boolean TCPServer::havePacket()
     // Packet contains data that needs to be handled
     if (payloadLength() > 0) {
         _writePos = -1;
+        tcpHeader->flags = 0;
         return true;
     }
 
@@ -63,44 +58,7 @@ boolean TCPServer::havePacket()
     return false;
 }
 
-size_t TCPServer::write(uint8_t chr)
-{
-    uint8_t *payload = this->transmitPayload();
-
-    if (_writePos < 0) {
-        _writePos = 0;
-    }
-
-    payload[_writePos++] = chr;
-    return 1;
-}
-
-void TCPServer::sendReply()
-{
-    if (_writePos > 0) {
-        sendReply(NULL, _writePos);
-        _writePos = -1;
-    }
-}
-
-void TCPServer::sendReply(const char *string)
-{
-    sendReply((const void*)string, strlen(string));
-}
-
-void TCPServer::sendReply(const void* data, uint16_t len)
-{
-    uint8_t *payload = this->transmitPayload();
-
-    if (data) {
-        memcpy(payload, data, len);
-    }
-
-    // Acknowledge the request packet and send response
-    sendReplyWithFlags(len, TCP_FLAG_ACK | TCP_FLAG_FIN | TCP_FLAG_PSH );
-}
-
-void TCPServer::sendReplyWithFlags(uint16_t len, uint8_t flags)
+void TCPServer::sendInternal(uint16_t length, boolean /*isReply*/)
 {
     IPv6Packet& packet = _ether.packet();
     struct tcp_header *tcpHeader = TCP_HEADER_PTR;
@@ -110,11 +68,11 @@ void TCPServer::sendReplyWithFlags(uint16_t len, uint8_t flags)
     uint16_t receivedLen = payloadLength();
     if (receivedLen == 0)
         receivedLen = 1;
+        
+    if (tcpHeader->flags == 0) {
+        tcpHeader->flags = TCP_FLAG_ACK | TCP_FLAG_FIN | TCP_FLAG_PSH;
+    }
 
-
-    _ether.prepareReply();
-
-    tcpHeader->flags = flags;
     tcpHeader->destinationPort = tcpHeader->sourcePort;
     tcpHeader->sourcePort = htons(_localPort);
     tcpHeader->sequenceNum = seq;
@@ -128,22 +86,12 @@ void TCPServer::sendReplyWithFlags(uint16_t len, uint8_t flags)
     tcpHeader->mssOptionLen = 4;
     tcpHeader->mssOptionValue = tcpHeader->window;
 
-    packet.setPayloadLength(TCP_TRANSMIT_HEADER_LEN + len);
+    packet.setPayloadLength(TCP_TRANSMIT_HEADER_LEN + length);
 
     tcpHeader->checksum = 0;
     tcpHeader->checksum = htons(packet.calculateChecksum());
 
     _ether.send();
-}
-
-IPv6Address& TCPServer::packetSource()
-{
-    return _ether.packet().source();
-}
-
-IPv6Address& TCPServer::packetDestination()
-{
-    return _ether.packet().destination();
 }
 
 uint16_t TCPServer::packetSourcePort()
@@ -168,11 +116,6 @@ uint16_t TCPServer::payloadLength()
 {
     IPv6Packet& packet = _ether.packet();
     return packet.payloadLength() - TCP_RECEIVE_HEADER_LEN;
-}
-
-boolean TCPServer::payloadEquals(const char *str)
-{
-    return strncmp((char*)payload(), str, payloadLength()) == 0;
 }
 
 uint8_t* TCPServer::transmitPayload()

@@ -8,6 +8,7 @@
 
 #include <stdint.h>
 #include "IPv6Packet.h"
+#include "Socket.h"
 
 /**
  * Class for responding to TCP requests
@@ -19,7 +20,7 @@
  * and println() functions when composing a reply.
  *
  */
-class TCPServer : public Print {
+class TCPServer : public Socket {
 
 public:
 
@@ -32,12 +33,6 @@ public:
     TCPServer(EtherSia &ether, uint16_t localPort);
 
     /**
-     * Get the local TCP port number that packets are being sent to
-     * @return the port number
-     */
-    uint16_t localPort();
-
-    /**
      * Check if a TCP data packet is available to be processed for this server
      *
      * This method also has a side effect of responding to other stages
@@ -46,47 +41,6 @@ public:
      * @return true if there is a valid packet with data has been received for this server
      */
     boolean havePacket();
-
-    /**
-     * Reply to a TCP request. The response should have been written to the
-     * packet buffer using the print() and println() methods.
-     */
-    void sendReply();
-
-    /**
-     * Reply to a TCP request with a null-terminated string
-     *
-     * The string is copied into the packet buffer before sending.
-     *
-     * @param string The string to place in the reply
-     */
-    void sendReply(const char *string);
-
-    /**
-     * Reply to a TCP request with a buffer
-     *
-     * The bytes are copied into the packet buffer before sending.
-     *
-     * @param data The data to reply with
-     * @param len The length of the data in bytes
-     */
-    void sendReply(const void* data, uint16_t len);
-
-    /**
-     * Get the IPv6 source address of the last TCP packet received
-     *
-     * @note Please call havePacket() first, before calling this method.
-     * @return The source IPv6 address
-     */
-    IPv6Address& packetSource();
-
-    /**
-     * Get the IPv6 destination address of the last TCP packet received
-     *
-     * @note Please call havePacket() first, before calling this method.
-     * @return The destination IPv6 address
-     */
-    IPv6Address& packetDestination();
 
     /**
      * Get the IPv6 source port number of the last TCP packet received
@@ -110,7 +64,7 @@ public:
      * @note Please call havePacket() first, before calling this method.
      * @return A pointer to the payload
      */
-    uint8_t* payload();
+    virtual uint8_t* payload();
 
     /**
      * Get the length (in bytes) of the last received TCP packet payload
@@ -118,31 +72,14 @@ public:
      * @note Please call havePacket() first, before calling this method.
      * @return A pointer to the payload
      */
-    uint16_t payloadLength();
-
-    /**
-     * Check if the last recieved TCP payload equals a string
-     *
-     * @note Please call havePacket() first, before calling this method.
-     * @param str The null-terminated string to compare to
-     * @return True if the TCP payload is the same as the str parameter
-     */
-    boolean payloadEquals(const char *str);
+    virtual uint16_t payloadLength();
 
     /**
      * Get a pointer to the next TCP packet payload to be sent
      *
      * @return A pointer to the transmit payload buffer
      */
-    uint8_t* transmitPayload();
-
-    /**
-     * Write a single character into the TCP packet buffer
-     *
-     * @param chr The character to write
-     * @return The number of bytes written to the buffer
-     */
-    virtual size_t write(uint8_t chr);
+    virtual uint8_t* transmitPayload();
 
 protected:
     enum TCP_FLAGS {
@@ -155,6 +92,20 @@ protected:
     };
 
     /**
+     * Send a UDP packet, based on the contents of the buffer.
+     * This function:
+     * - sets the IP protocol number
+     * - sets the IP packet length
+     * - sets the UDP packet length
+     * - sets the UDP source port number
+     * - sets the UDP distination port number
+     * - sets the UDP checksum
+     *
+     * @param length The length (in bytes) of the data to send
+     */
+    virtual void sendInternal(uint16_t length, boolean isReply);
+
+    /**
      * Reply to a TCP packet, using data contained in buffer
      *
      * @param len The length of the data in the buffer
@@ -162,15 +113,6 @@ protected:
      * @return The number of bytes written to the buffer
      */
     void sendReplyWithFlags(uint16_t len, uint8_t flags);
-
-    /** The Ethernet Interface that this TCP server is attached to */
-    EtherSia &_ether;
-
-    /** The TCP local port number */
-    uint16_t _localPort;
-
-    /** The current position of writing data to buffer (when using Print interface) */
-    int16_t _writePos;
 };
 
 
