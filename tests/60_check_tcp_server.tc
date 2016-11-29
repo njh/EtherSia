@@ -2,7 +2,7 @@
 #include "hext.hh"
 #include "util.h"
 
-#suite TCP
+#suite TCPServer
 
 #test construct_server
 EtherSia_Dummy ether;
