@@ -37,7 +37,7 @@ boolean Syslog::handleWriteNewline()
 
     if (_writePos > 0) {
         packetBuffer[_writePos++] = '\0';
-        send(_writePos);
+        send((uint16_t)_writePos);
         _writePos = -1;
     }
 

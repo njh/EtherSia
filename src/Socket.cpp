@@ -83,68 +83,42 @@ IPv6Address& Socket::packetDestination()
     return _ether.packet().destination();
 }
 
-void Socket::send()
+void Socket::send(boolean isReply)
 {
     if (_writePos > 0) {
-        send(_writePos);
+        send(_writePos, isReply);
         _writePos = -1;
     }
 }
 
-void Socket::send(const char *data)
+void Socket::send(const char *data, boolean isReply)
 {
-    send((const uint8_t *)data, strlen(data));
+    send((const uint8_t *)data, strlen(data), isReply);
 }
 
-void Socket::send(const void *data, uint16_t length)
+void Socket::send(const void *data, uint16_t length, boolean isReply)
 {
     uint8_t* payload = this->transmitPayload();
 
     // FIXME: check it isn't too big
     memcpy(payload, data, length);
 
-    send(length);
+    send(length, isReply);
 }
 
-void Socket::send(uint16_t length)
+void Socket::send(uint16_t length, boolean isReply)
 {
     IPv6Packet& packet = _ether.packet();
 
-    packet.setDestination(_remoteAddress);
-    packet.setEtherDestination(_remoteMac);
-    _ether.prepareSend();
-
-    sendInternal(length, false);
-}
-
-void Socket::sendReply()
-{
-    if (_writePos > 0) {
-        sendReply(_writePos);
-        _writePos = -1;
+    if (isReply) {
+        _ether.prepareReply();
+    } else {
+        packet.setDestination(_remoteAddress);
+        packet.setEtherDestination(_remoteMac);
+        _ether.prepareSend();
     }
-}
 
-void Socket::sendReply(const char *data)
-{
-    sendReply((const uint8_t*)data, strlen(data));
-}
-
-void Socket::sendReply(const void* data, uint16_t length)
-{
-    uint8_t *payload = this->transmitPayload();
-
-    // FIXME: check it isn't too big
-    memcpy(payload, data, length);
-
-    sendReply(length);
-}
-
-void Socket::sendReply(uint16_t length)
-{
-    _ether.prepareReply();
-
-    sendInternal(length, true);
+    sendInternal(length, isReply);
 }
 
 boolean Socket::payloadEquals(const char *str)

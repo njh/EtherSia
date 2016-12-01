@@ -93,8 +93,10 @@ public:
      *
      * Before calling this, the payload should have been written to the
      * packet buffer using the print() and println() methods.
+     *
+     * @param isReply true if the sent packet is a reply to the packet current in the buffer
      */
-    void send();
+    void send(boolean isReply=false);
 
     /**
      * Send the contents of the packet payload buffer
@@ -102,23 +104,27 @@ public:
      * Place the data in the payload() buffer before calling this method.
      *
      * @param length The length of the payload
+     * @param isReply true if the sent packet is a reply to the packet current in the buffer
      */
-    void send(uint16_t length);
+    void send(uint16_t length, boolean isReply=false);
 
     /**
      * Send a packet containing a string from socket
      *
      * @param data The null-terminated string to send
+     * @param length The length (in bytes) of the data to send
+     * @param isReply true if the sent packet is a reply to the packet current in the buffer
      */
-    void send(const char *data);
+    void send(const char *data, boolean isReply=false);
 
     /**
      * Send a packet containing an array of bytes from socket
      *
      * @param data The data to send as the payload
      * @param length The length (in bytes) of the data to send
+     * @param isReply true if the sent packet is a reply to the packet current in the buffer
      */
-    void send(const void *data, uint16_t length);
+    void send(const void *data, uint16_t length, boolean isReply=false);
 
     /**
      * Send a reply to an incoming packet
@@ -126,7 +132,7 @@ public:
      * Before calling this, the payload should have been written to the
      * packet buffer using the print() and println() methods.
      */
-    void sendReply();
+    inline void sendReply() { send(true); };
 
     /**
      * Send a reply to the last packet received
@@ -135,13 +141,13 @@ public:
      *
      * @param length The length (in bytes) of the data to send
      */
-    void sendReply(uint16_t length);
+    inline void sendReply(uint16_t length) { send(length, true); }
 
     /**
      * Send a reply to the last packet received
      * @param data The null-terminated string to send
      */
-    void sendReply(const char *data);
+    inline void sendReply(const char *data) { send(data, true); }
 
     /**
      * Send a reply to the last packet received
@@ -149,7 +155,7 @@ public:
      * @param data A pointer to the data to send
      * @param length The length (in bytes) of the data to send
      */
-    void sendReply(const void *data, uint16_t length);
+    inline void sendReply(const void *data, uint16_t length) { send(data, length, true); };
 
     /**
      * Get a pointer to the payload of the current packet in the buffer
