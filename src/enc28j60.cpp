@@ -591,7 +591,8 @@ EtherSia_ENC28J60::sendFrame(const uint8_t *data, uint16_t datalen)
 uint16_t
 EtherSia_ENC28J60::readFrame(uint8_t *buffer, uint16_t bufsize)
 {
-    int n, len, next, err;
+    uint16_t len, next;
+    uint8_t n, err;
 
     uint8_t nxtpkt[2];
     uint8_t status[2];
