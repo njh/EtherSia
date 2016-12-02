@@ -92,7 +92,7 @@ uint16_t EtherSia::receivePacket()
     uint16_t len = readFrame(_buffer, sizeof(_buffer));
 
     if (len) {
-        IPv6Packet& packet = (IPv6Packet&)_buffer;
+        IPv6Packet& packet = (IPv6Packet&)_ptr;
         if (!packet.isValid()) {
             _bufferContainsReceived = false;
             return 0;
@@ -114,7 +114,7 @@ uint16_t EtherSia::receivePacket()
 
 void EtherSia::prepareSend()
 {
-    IPv6Packet& packet = (IPv6Packet&)_buffer;
+    IPv6Packet& packet = (IPv6Packet&)_ptr;
 
     _bufferContainsReceived = false;
 
@@ -131,7 +131,7 @@ void EtherSia::prepareSend()
 
 void EtherSia::prepareReply()
 {
-    IPv6Packet& packet = (IPv6Packet&)_buffer;
+    IPv6Packet& packet = (IPv6Packet&)_ptr;
     IPv6Address *replySourceAddress;
 
     _bufferContainsReceived = false;
@@ -153,7 +153,7 @@ void EtherSia::prepareReply()
 
 void EtherSia::send()
 {
-    IPv6Packet& packet = (IPv6Packet&)_buffer;
+    IPv6Packet& packet = (IPv6Packet&)_ptr;
 
     _bufferContainsReceived = false;
 

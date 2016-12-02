@@ -254,7 +254,7 @@ public:
      */
     inline IPv6Packet& packet()
     {
-        return (IPv6Packet&)_buffer;
+        return (IPv6Packet&)_ptr;
     }
 
     /**
@@ -360,7 +360,10 @@ protected:
     MACAddress _routerMac;
 
     /** The buffer that sent and received packets are stored in */
-    uint8_t _buffer[ETHERSIA_MAX_PACKET_SIZE];
+    union {
+        uint8_t _buffer[ETHERSIA_MAX_PACKET_SIZE];
+        void* _ptr;
+    };
 
     /** Flag indicating if the buffer contains a valid packet we received */
     boolean _bufferContainsReceived;
