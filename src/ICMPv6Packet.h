@@ -1,5 +1,10 @@
-#ifndef ETHERSIA_ICMP6_HEADERS_H
-#define ETHERSIA_ICMP6_HEADERS_H
+/**
+ * Header file for the ICMPv6Packet class
+ * @file ICMPv6Packet.h
+ */
+
+#ifndef ICMPV6_PACKET_H
+#define ICMPV6_PACKET_H
 
 #define ICMP6_TYPE_ECHO           128
 #define ICMP6_TYPE_ECHO_REPLY     129
@@ -18,21 +23,9 @@
 #define ICMP6_OPTION_RECURSIVE_DNS       25
 
 
-/**
- * Structure for accessing the fields of a ICMP6 packet
- * @private
- */
-struct icmp6_header {
-    uint8_t type;
-    uint8_t code;
-    uint16_t checksum;
-} __attribute__((__packed__));
+/* The length of the header of an ICMPv6 packet */
 #define ICMP6_HEADER_LEN          (4)
 #define ICMP6_HEADER_OFFSET       (ETHER_HEADER_LEN + IP6_HEADER_LEN)
-#define ICMP6_HEADER_PTR          ((struct icmp6_header*)(_buffer + ICMP6_HEADER_OFFSET))
-
-/* Verify that compiler gets the structure size correct */
-static_assert(sizeof(struct icmp6_header) == ICMP6_HEADER_LEN, "Size is not correct");
 
 
 /**
@@ -48,7 +41,6 @@ struct icmp6_rs_header {
 } __attribute__((__packed__));
 #define ICMP6_RS_HEADER_LEN       (12)
 #define ICMP6_RS_HEADER_OFFSET    (ICMP6_HEADER_OFFSET + ICMP6_HEADER_LEN)
-#define ICMP6_RS_HEADER_PTR       ((struct icmp6_rs_header*)(_buffer + ICMP6_RS_HEADER_OFFSET))
 
 /* Verify that compiler gets the structure size correct */
 static_assert(sizeof(struct icmp6_rs_header) == ICMP6_RS_HEADER_LEN, "Size is not correct");
@@ -67,7 +59,6 @@ struct icmp6_ra_header {
 } __attribute__((__packed__));
 #define ICMP6_RA_HEADER_LEN       (12)
 #define ICMP6_RA_HEADER_OFFSET    (ICMP6_HEADER_OFFSET + ICMP6_HEADER_LEN)
-#define ICMP6_RA_HEADER_PTR       ((struct icmp6_ra_header*)(_buffer + ICMP6_RA_HEADER_OFFSET))
 
 /* Verify that compiler gets the structure size correct */
 static_assert(sizeof(struct icmp6_ra_header) == ICMP6_RA_HEADER_LEN, "Size is not correct");
@@ -99,7 +90,6 @@ struct icmp6_ns_header {
 } __attribute__((__packed__));
 #define ICMP6_NS_HEADER_LEN       (20)
 #define ICMP6_NS_HEADER_OFFSET    (ICMP6_HEADER_OFFSET + ICMP6_HEADER_LEN)
-#define ICMP6_NS_HEADER_PTR       ((struct icmp6_ns_header*)(_buffer + ICMP6_NS_HEADER_OFFSET))
 
 /* Verify that compiler gets the structure size correct */
 static_assert(sizeof(struct icmp6_ns_header) == ICMP6_NS_HEADER_LEN, "Size is not correct");
@@ -116,10 +106,31 @@ struct icmp6_na_header {
 } __attribute__((__packed__));
 #define ICMP6_NA_HEADER_LEN       (20)
 #define ICMP6_NA_HEADER_OFFSET    (ICMP6_HEADER_OFFSET + ICMP6_HEADER_LEN)
-#define ICMP6_NA_HEADER_PTR       ((struct icmp6_na_header*)(_buffer + ICMP6_NA_HEADER_OFFSET))
 
 /* Verify that compiler gets the structure size correct */
 static_assert(sizeof(struct icmp6_na_header) == ICMP6_NA_HEADER_LEN, "Size is not correct");
+
+
+
+/**
+ * Class for accessing the fields of a ICMP6 packet
+ * @private
+ */
+class ICMPv6Packet : public IPv6Packet {
+
+public:
+    uint8_t type;
+    uint8_t code;
+    uint16_t checksum;
+
+    union {
+        struct icmp6_ra_header ra;
+        struct icmp6_rs_header rs;
+        struct icmp6_na_header na;
+        struct icmp6_ns_header ns;
+    } __attribute__((__packed__));
+
+} __attribute__((__packed__));
 
 
 #endif
