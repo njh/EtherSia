@@ -112,7 +112,6 @@ public:
      * Send a packet containing a string from socket
      *
      * @param data The null-terminated string to send
-     * @param length The length (in bytes) of the data to send
      * @param isReply true if the sent packet is a reply to the packet current in the buffer
      */
     void send(const char *data, boolean isReply=false);
