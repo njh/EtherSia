@@ -6,7 +6,7 @@ A minimal IPv6 library for an [Arduino] with an [ENC28J60], [W5500] or [W5100] E
 
 Features
 --------
-- Neighbour Discovery Protocol / Stateless Autoconfiguration
+- SLAAC (Neighbour Discovery Protocol / Stateless Auto-configuration)
 - HTTP Server
 - UDP Client and Server
 - DNS Client
