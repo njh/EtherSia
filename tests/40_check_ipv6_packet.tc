@@ -13,12 +13,12 @@ uint8_t zeroAddress[16] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
-ck_assert(memcmp(packet.etherSource(), zeroMac, 6) == 0);
-ck_assert(memcmp(packet.etherDestination(), zeroMac, 6) == 0);
+ck_assert_mem_eq(packet.etherSource(), zeroMac, 6);
+ck_assert_mem_eq(packet.etherDestination(), zeroMac, 6);
 ck_assert_int_eq(packet.version(), 6);
 ck_assert_int_eq(packet.hopLimit(), IP6_DEFAULT_HOP_LIMIT);
-ck_assert(memcmp(packet.source(), zeroAddress, 16) == 0);
-ck_assert(memcmp(packet.destination(), zeroAddress, 16) == 0);
+ck_assert_mem_eq(packet.source(), zeroAddress, 16);
+ck_assert_mem_eq(packet.destination(), zeroAddress, 16);
 
 #test isValid
 HextFile rs("packets/icmp6_router_solicitation.hext");
@@ -101,49 +101,49 @@ ck_assert_int_eq(packet.hopLimit(), 10);
 HextFile rs("packets/icmp6_router_solicitation.hext");
 MACAddress expect("ca:2f:6d:70:f9:5f");
 IPv6Packet *packet = (IPv6Packet *)rs.buffer;
-ck_assert(memcmp(packet->etherSource(), expect, 6) == 0);
+ck_assert_mem_eq(packet->etherSource(), expect, 6);
 
 #test setEtherSource
 MACAddress addr("01:23:45:67:89:10");
 IPv6Packet packet;
 packet.setEtherSource(addr);
-ck_assert(memcmp(packet.etherSource(), addr, 6) == 0);
+ck_assert_mem_eq(packet.etherSource(), addr, 6);
 
 #test etherDestination
 HextFile rs("packets/icmp6_router_solicitation.hext");
 MACAddress expect("33:33:00:00:00:02");
 IPv6Packet *packet = (IPv6Packet *)rs.buffer;
-ck_assert(memcmp(packet->etherDestination(), expect, 6) == 0);
+ck_assert_mem_eq(packet->etherDestination(), expect, 6);
 
 #test setEtherDestination
 MACAddress addr("01:23:45:67:89:10");
 IPv6Packet packet;
 packet.setEtherDestination(addr);
-ck_assert(memcmp(packet.etherDestination(), addr, 6) == 0);
+ck_assert_mem_eq(packet.etherDestination(), addr, 6);
 
 #test source
 HextFile rs("packets/icmp6_router_solicitation.hext");
 IPv6Address expect("fe80::c82f:6dff:fe70:f95f");
 IPv6Packet *packet = (IPv6Packet *)rs.buffer;
-ck_assert(memcmp(packet->source(), expect, 16) == 0);
+ck_assert_mem_eq(packet->source(), expect, 16);
 
 #test setSource
 IPv6Address addr("fe80::c58e:e533:e358:7006");
 IPv6Packet packet;
 packet.setSource(addr);
-ck_assert(memcmp(packet.source(), addr, 16) == 0);
+ck_assert_mem_eq(packet.source(), addr, 16);
 
 #test destination
 HextFile rs("packets/icmp6_router_solicitation.hext");
 IPv6Address expect("ff02::2");
 IPv6Packet *packet = (IPv6Packet *)rs.buffer;
-ck_assert(memcmp(packet->destination(), expect, 16) == 0);
+ck_assert_mem_eq(packet->destination(), expect, 16);
 
 #test setDestination
 IPv6Address addr("2001:4860:4860::8888");
 IPv6Packet packet;
 packet.setDestination(addr);
-ck_assert(memcmp(packet.destination(), addr, 16) == 0);
+ck_assert_mem_eq(packet.destination(), addr, 16);
 
 #test calculateChecksum
 HextFile rs("packets/icmp6_router_solicitation.hext");
@@ -162,7 +162,7 @@ packet.destination().fromString("fe80::34b4:40ff:fe75:3ba6");
 
 HextFile expect("packets/ipv6_empty.hext");
 ck_assert_int_eq(sizeof(IPv6Packet), expect.length);
-ck_assert(memcmp(&packet, expect.buffer, expect.length) == 0);
+ck_assert_mem_eq(&packet, expect.buffer, expect.length);
 
 
 #test castReference

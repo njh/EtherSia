@@ -10,7 +10,7 @@ HextFile expected("packets/dns_req_aelius.hext");
 uint8_t buffer[256];
 uint16_t len = dnsMakeRequest(buffer, "ipv6.aelius.com", 0x1234);
 ck_assert_int_eq(len, expected.length);
-ck_assert(memcmp(buffer, expected.buffer, expected.length) == 0);
+ck_assert_mem_eq(buffer, expected.buffer, expected.length);
 
 
 #test dnsProcessReply_ipv6_aelius
@@ -19,7 +19,7 @@ IPv6Address expect("2001:41c8:0051:07cf:0000:0000:0000:0006");
 
 IPv6Address *addr = dnsProcessReply(response.buffer, response.length, 0x1234);
 ck_assert_ptr_ne(addr, NULL);
-ck_assert(memcmp(expect, addr, sizeof(expect)) == 0);
+ck_assert_mem_eq(expect, addr, sizeof(expect));
 
 
 #test dnsProcessReply_id_mismatch
@@ -51,7 +51,7 @@ HextFile response("packets/dns_res_long.hext");
 IPv6Address expect("2a02:26f0:5d:2a8::1aca");
 IPv6Address *addr = dnsProcessReply(response.buffer, response.length, 0xbb91);
 ck_assert_ptr_ne(addr, NULL);
-ck_assert(memcmp(expect, addr, sizeof(expect)) == 0);
+ck_assert_mem_eq(expect, addr, sizeof(expect));
 
 
 #test dnsProcessReply_truncated_response

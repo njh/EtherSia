@@ -49,7 +49,7 @@ ck_assert_int_eq(sock.packetSourcePort(), 64006);
 ck_assert_int_eq(sock.packetDestinationPort(), 1008);
 ck_assert_int_eq(sock.payloadLength(), 5);
 uint8_t expect_payload[] = {'H', 'e', 'l', 'l', 'o'};
-ck_assert(memcmp(sock.payload(), expect_payload, 5) == 0);
+ck_assert_mem_eq(sock.payload(), expect_payload, 5);
 ck_assert(sock.payloadEquals("Hello") == true);
 
 
@@ -66,7 +66,7 @@ sock.send("Oh hi!");
 HextFile expect("packets/udp_valid_oh_hi.hext");
 frame_t &sent = ether.getLastSent();
 ck_assert_int_eq(sent.length, expect.length);
-ck_assert(memcmp(sent.packet, expect.buffer, expect.length) == 0);
+ck_assert_mem_eq(sent.packet, expect.buffer, expect.length);
 ether.end();
 
 
@@ -86,6 +86,6 @@ sock.sendReply("Oh hi!");
 HextFile expect("packets/udp_reply_oh_hi.hext");
 frame_t &sent = ether.getLastSent();
 ck_assert_int_eq(sent.length, expect.length);
-ck_assert(memcmp(sent.packet, expect.buffer, expect.length) == 0);
+ck_assert_mem_eq(sent.packet, expect.buffer, expect.length);
 ether.end();
 

@@ -15,7 +15,7 @@ frame_t &frame = ether.getLastSent();
 
 HextFile expect("packets/icmp6_neighbour_solicitation_dad_linklocal.hext");
 ck_assert_int_eq(frame.length, expect.length);
-ck_assert(memcmp(frame.packet, expect.buffer, expect.length) == 0);
+ck_assert_mem_eq(frame.packet, expect.buffer, expect.length);
 ether.end();
 
 
@@ -29,7 +29,7 @@ ck_assert_int_eq(2, ether.getSentCount());
 frame_t &frame = ether.getLastSent();
 HextFile expect("packets/icmp6_router_solicitation.hext");
 ck_assert_int_eq(frame.length, expect.length);
-ck_assert(memcmp(frame.packet, expect.buffer, expect.length) == 0);
+ck_assert_mem_eq(frame.packet, expect.buffer, expect.length);
 
 IPv6Address addr("2001:08b0:ffd5:0003:c82f:6dff:fe70:f95f");
 ck_assert(ether.globalAddress() == addr);
@@ -52,7 +52,7 @@ HextFile expect("packets/icmp6_neighbour_advertisement_global.hext");
 ck_assert_int_eq(ether.getSentCount(), 1);
 frame_t &sent = ether.getLastSent();
 ck_assert_int_eq(sent.length, expect.length);
-ck_assert(memcmp(sent.packet, expect.buffer, expect.length) == 0);
+ck_assert_mem_eq(sent.packet, expect.buffer, expect.length);
 ether.end();
 
 
@@ -72,7 +72,7 @@ HextFile expect("packets/icmp6_echo_response.hext");
 ck_assert_int_eq(ether.getSentCount(), 1);
 frame_t &sent = ether.getLastSent();
 ck_assert_int_eq(sent.length, expect.length);
-ck_assert(memcmp(sent.packet, expect.buffer, expect.length) == 0);
+ck_assert_mem_eq(sent.packet, expect.buffer, expect.length);
 ether.end();
 
 
@@ -87,12 +87,12 @@ ether.injectRecievedPacket(naResponse.buffer, naResponse.length);
 
 MACAddress *response = ether.discoverNeighbour("2001:1234::5000");
 ck_assert_ptr_ne(response, NULL);
-ck_assert(memcmp(response, "\x01\x02\x03\x04\x05\x06", 6) == 0);
+ck_assert_mem_eq(response, "\x01\x02\x03\x04\x05\x06", 6);
 
 // Check the NS packet that was sent looks correct
 HextFile expect("packets/icmp6_neighbour_solicitation_global2.hext");
 ck_assert_int_eq(ether.getSentCount(), 1);
 frame_t &sent = ether.getLastSent();
 ck_assert_int_eq(sent.length, expect.length);
-ck_assert(memcmp(sent.packet, expect.buffer, expect.length) == 0);
+ck_assert_mem_eq(sent.packet, expect.buffer, expect.length);
 ether.end();

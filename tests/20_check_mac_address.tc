@@ -9,7 +9,7 @@ const uint8_t zero[6] = {
 
 #test new_MACAddress
 MACAddress addr;
-ck_assert(memcmp(zero, addr, 6) == 0);
+ck_assert_mem_eq(zero, addr, 6);
 
 
 #test new_MACAddress_six_uint8
@@ -25,21 +25,21 @@ ck_assert(addr[5] == 0x06);
 #test new_MACAddress_string
 uint8_t test[] = {0x4e, 0x27, 0xb0, 0xbe, 0x69, 0x24};
 MACAddress addr("4e:27:b0:be:69:24");
-ck_assert(memcmp(test, addr, 6) == 0);
+ck_assert_mem_eq(test, addr, 6);
 
 
 #test fromString
 uint8_t test[] = {0x6a, 0x06, 0xed, 0x54, 0x7f, 0xd1};
 MACAddress addr;
 ck_assert(addr.fromString("6a:06:ed:54:7f:d1") == true);
-ck_assert(memcmp(test, addr, 6) == 0);
+ck_assert_mem_eq(test, addr, 6);
 
 
 #test fromString_dash
 uint8_t test[] = {0x6a, 0x06, 0xed, 0x54, 0x7f, 0xd1};
 MACAddress addr;
 ck_assert(addr.fromString("6a-06-ed-54-7f-d1") == true);
-ck_assert(memcmp(test, addr, 6) == 0);
+ck_assert_mem_eq(test, addr, 6);
 
 
 #test fromString_invalid_nonhex
@@ -70,7 +70,7 @@ uint8_t v6addr[] = {
 uint8_t test[] = {0x33, 0x33, 0x00, 0x00, 0x88, 0x88};
 MACAddress addr;
 addr.setIPv6Multicast(v6addr);
-ck_assert(memcmp(test, addr, 6) == 0);
+ck_assert_mem_eq(test, addr, 6);
 
 #test print
 Buffer buffer;

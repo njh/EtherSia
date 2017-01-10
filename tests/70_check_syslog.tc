@@ -42,7 +42,7 @@ syslog.println(" World");
 HextFile expect("packets/udp_syslog_hello_world.hext");
 frame_t &sent = ether.getLastSent();
 ck_assert_int_eq(sent.length, expect.length);
-ck_assert(memcmp(sent.packet, expect.buffer, expect.length) == 0);
+ck_assert_mem_eq(sent.packet, expect.buffer, expect.length);
 
 
 #test println_twice

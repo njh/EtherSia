@@ -12,7 +12,7 @@ const uint8_t zero[16] = {
 
 #test new_IPv6Address
 IPv6Address addr;
-ck_assert(memcmp(zero, addr, 16) == 0);
+ck_assert_mem_eq(zero, addr, 16);
 
 
 #test setZero
@@ -22,7 +22,7 @@ uint8_t expect[16] = {
 };
 IPv6Address *addr = (IPv6Address *)expect;
 addr->setZero();
-ck_assert(memcmp(zero, addr, 16) == 0);
+ck_assert_mem_eq(zero, addr, 16);
 
 
 #test isZero_true
@@ -47,7 +47,7 @@ uint8_t expect[16] = {
 IPv6Address addr;
 boolean result = addr.fromString("::1");
 ck_assert(result == true);
-ck_assert(memcmp(expect, addr, 16) == 0);
+ck_assert_mem_eq(expect, addr, 16);
 
 
 #test fromString_zero
@@ -65,7 +65,7 @@ uint8_t expect[16] = {
 IPv6Address addr;
 boolean result = addr.fromString("2001:4860:4860::8888");
 ck_assert(result == true);
-ck_assert(memcmp(expect, addr, 16) == 0);
+ck_assert_mem_eq(expect, addr, 16);
 
 
 #test fromString_googlePublicDNS_expanded
@@ -76,7 +76,7 @@ uint8_t expect[16] = {
 IPv6Address addr;
 boolean result = addr.fromString("2001:4860:4860:0000:0000:0000:0000:8888");
 ck_assert(result == true);
-ck_assert(memcmp(expect, addr, 16) == 0);
+ck_assert_mem_eq(expect, addr, 16);
 
 
 #test fromString_invalid
@@ -91,7 +91,7 @@ uint8_t expect[16] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x88, 0x88
 };
 IPv6Address addr("2001:4860:4860:0000:0000:0000:0000:8888");
-ck_assert(memcmp(expect, addr, 16) == 0);
+ck_assert_mem_eq(expect, addr, 16);
 
 
 #test setLinkLocal
@@ -103,7 +103,7 @@ MACAddress macAddress("01:23:45:67:89:10");
 IPv6Address addr;
 addr.setLinkLocalPrefix();
 addr.setEui64(macAddress);
-ck_assert(memcmp(expect, addr, 16) == 0);
+ck_assert_mem_eq(expect, addr, 16);
 
 
 #test isLinkLocal
@@ -141,7 +141,7 @@ uint8_t expect[16] = {
 };
 IPv6Address addr;
 addr.setLinkLocalAllNodes();
-ck_assert(memcmp(expect, addr, 16) == 0);
+ck_assert_mem_eq(expect, addr, 16);
 
 
 #test isLinkLocalAllNodes_true
@@ -162,7 +162,7 @@ uint8_t expect[16] = {
 };
 IPv6Address addr;
 addr.setLinkLocalAllRouters();
-ck_assert(memcmp(expect, addr, 16) == 0);
+ck_assert_mem_eq(expect, addr, 16);
 
 
 #test isLinkLocalAllRouters_true
@@ -194,7 +194,7 @@ uint8_t expect[16] = {
 IPv6Address globalAddr("2001:4860:4860::8888");
 IPv6Address addr;
 addr.setSolicitedNodeMulticastAddress(globalAddr);
-ck_assert(memcmp(expect, addr, 16) == 0);
+ck_assert_mem_eq(expect, addr, 16);
 
 
 #test isSolicitedNodeMulticastAddress_true
