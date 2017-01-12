@@ -51,6 +51,8 @@ public:
 
     /**
      * Get a pointer to the start of the IPv6 packet payload
+     * May be used to get or change the contents of the packet
+     * @return a pointer to the memory containing the packet payload
      */
     uint8_t* payload();
 
@@ -189,6 +191,7 @@ public:
 
     /**
      * Calculate the 16-bit checksum for the IPv6 packet
+     * @return the checksum of the packet
      */
     uint16_t calculateChecksum();
 

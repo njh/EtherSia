@@ -72,6 +72,7 @@ public:
 
     /**
      * Return redirect response to the client
+     * @param location the address to redirect the client to. Use the F() macro.
      */
     void redirect(const __FlashStringHelper* location);
 

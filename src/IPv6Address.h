@@ -67,11 +67,15 @@ public:
 
     /**
      * Check if the address equals another IPv6 address.
+     * @param address the second address to compare to
+     * @return true if the two addresses are the same
      */
     boolean operator==(const IPv6Address& address) const;
 
     /**
      * Check if the address is not equal to another IPv6 address.
+     * @param address the second address to compare to
+     * @return true if the two addresses are the same
      */
     boolean operator!=(const IPv6Address& address) const;
 
@@ -137,17 +141,20 @@ public:
     void setZero();
 
     /**
-     * Returns true if the address is a multicast address (starts FF)
+     * Check if the address is a multicast address (starts FF)
+     * @return true if the address is a multicast address
      */
     boolean isMulticast() const;
 
     /**
-     * Returns true if the address is a link-local address (starts FE80)
+     * Check if the address is a link-local address (starts FE80)
+     * @return true if the address is a link-local address
      */
     boolean isLinkLocal() const;
 
     /**
-     * Returns true if the address is empty / all-zeros (::)
+     * Check if the address is empty / all-zeros (::)
+     * @return true if the address is empty / all-zeros (::)
      */
     boolean isZero() const;
 

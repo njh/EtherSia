@@ -107,6 +107,7 @@ public:
     /**
      * Get number of packets that EtherSia has received
      * This includes invalid or ignored packets
+     * @return the number of packets received
      */
     size_t getRecievedCount() {
         return _recievedCount;
@@ -114,6 +115,7 @@ public:
 
     /**
      * Get number of packets made available to EtherSia to receive
+     * @return the number of packets injected
      */
     size_t getInjectCount() {
         return _injectCount;
@@ -121,6 +123,7 @@ public:
 
     /**
      * Get number of packets that EtherSia has sent
+     * @return the number of packets sent
      */
     size_t getSentCount() {
         return _sentCount;
