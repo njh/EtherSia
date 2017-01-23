@@ -1,12 +1,8 @@
 #include "EtherSia.h"
 #include "util.h"
 
-Socket::Socket(EtherSia &ether) : _ether(ether)
+Socket::Socket(EtherSia &ether) : Socket(ether, (uint16_t)0)
 {
-    _localPort = random(20000, 30000);
-    _remoteAddress.setZero();
-    _remotePort = 0;
-    _writePos = -1;
 }
 
 Socket::Socket(EtherSia &ether, uint16_t localPort) : _ether(ether)
@@ -42,6 +38,10 @@ boolean Socket::setRemoteAddress(IPv6Address &remoteAddress, uint16_t remotePort
 {
     _remotePort = remotePort;
     _remoteAddress = remoteAddress;
+
+    if (_localPort == 0) {
+        _localPort = random(20000, 30000);
+    }
 
     // Work out the MAC address to use
     if (_ether.inOurSubnet(_remoteAddress)) {

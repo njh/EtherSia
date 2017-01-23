@@ -7,8 +7,7 @@
 #test construct_socket
 EtherSia_Dummy ether;
 UDPSocket sock(ether);
-ck_assert_int_gt(sock.localPort(), 20000);
-ck_assert_int_lt(sock.localPort(), 30000);
+ck_assert_int_eq(sock.localPort(), 0);
 ck_assert_int_eq(sock.remotePort(), 0);
 ck_assert(sock.remoteAddress().isZero());
 
@@ -26,6 +25,10 @@ sock.setRemoteAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9", 1234);
 ck_assert_int_eq(sock.remotePort(), 1234);
 IPv6Address expect("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
 ck_assert(sock.remoteAddress() == expect);
+
+// setRemoteAddress() should also assign a local port number
+ck_assert_int_gt(sock.localPort(), 20000);
+ck_assert_int_lt(sock.localPort(), 30000);
 
 #test havePacket_valid
 EtherSia_Dummy ether;
