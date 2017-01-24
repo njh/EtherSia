@@ -14,7 +14,7 @@
  *     Output 3 - D7
  *     Output 4 - D8
  *
- * Buttons are connect to: 
+ * Buttons are connect to:
  *
  *     Button Input 1 - A0
  *     Button Input 2 - A1

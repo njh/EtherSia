@@ -11,7 +11,7 @@ public:
     uint8_t* payload() {
         return NULL;
     }
-    
+
     uint16_t payloadLength() {
         return 0;
     }

@@ -93,7 +93,7 @@ public:
      * @param address the new destination address
      */
     void setEtherDestination(MACAddress& address);
-    
+
     /**
      * Get the EtherType (Ethernet frame type)
      *

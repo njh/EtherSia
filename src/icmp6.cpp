@@ -126,7 +126,7 @@ void EtherSia::icmp6ProcessRA()
     uint8_t *ptr = _buffer + ICMP6_RA_HEADER_OFFSET + ICMP6_RA_HEADER_LEN;
 
     if (_autoConfigurationEnabled == false) {
-        return;    
+        return;
     }
 
     while(remaining > 0) {

@@ -44,7 +44,7 @@ typedef struct ntpStructure {
     /** The time at which the request arrived at the server or the reply arrived at
         the client (fractions of a second) */
     uint32_t receiveTimestampFraction;
-    
+
     /** The time at which the request departed the client or the reply departed
         the server (in seconds) */
     uint32_t transmitTimestampSeconds;
