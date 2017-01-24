@@ -79,6 +79,8 @@ public:
      * @return True if the client is connected
      */
     boolean connected();
+    
+    void checkForTimeout();
 
 protected:
 

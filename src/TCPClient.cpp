@@ -31,6 +31,10 @@ boolean TCPClient::connected()
     return (_state & 0xF0) != 0x00;
 }
 
+void TCPClient::checkForTimeout()
+{
+}
+
 boolean TCPClient::havePacket()
 {
     IPv6Packet& packet = _ether.packet();
