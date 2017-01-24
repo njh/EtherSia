@@ -13,3 +13,8 @@ long random() {return 0;}
 long random(long max) {return max/2;}
 long random(long min, long max) {return ((max-min)/2)+min;}
 void randomSeed(unsigned long) {}
+
+boolean isWhitespace(int c)
+{
+    return (isblank (c) == 0 ? false : true);
+}

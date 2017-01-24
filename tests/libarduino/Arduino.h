@@ -39,10 +39,7 @@ long random(long);
 long random(long, long);
 void randomSeed(unsigned long);
 
-inline boolean isWhitespace(int c)
-{
-    return (isblank (c) == 0 ? false : true);
-}
+boolean isWhitespace(int c);
 
 
 #include "Progmem.h"
