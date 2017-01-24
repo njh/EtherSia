@@ -1,0 +1,28 @@
+#include "EtherSia.h"
+#include "hext.hh"
+#include "util.h"
+
+#suite TCPClient
+
+#test construct_client
+EtherSia_Dummy ether;
+TCPClient client(ether);
+ck_assert_int_eq(client.localPort(), 0);
+ck_assert_int_eq(client.remotePort(), 0);
+ck_assert(client.remoteAddress().isZero());
+ck_assert(client.connected() == false);
+
+
+#test setRemoteAddress
+EtherSia_Dummy ether;
+TCPClient client(ether);
+client.setRemoteAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9", 1234);
+ck_assert_int_eq(client.remotePort(), 1234);
+IPv6Address expect("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
+ck_assert(client.remoteAddress() == expect);
+
+// setRemoteAddress() should also assign a local port number
+ck_assert_int_gt(client.localPort(), 20000);
+ck_assert_int_lt(client.localPort(), 30000);
+
+
