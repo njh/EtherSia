@@ -200,7 +200,7 @@ protected:
 
     /**
      * This method is called when a newline is written using print()
-     * 
+     *
      * Default behaviour is to handle Carriage Return or Line Feed
      * in the normal way, like any other character.
      *
@@ -213,10 +213,10 @@ protected:
 
     /**
      * This method is called when it is time to initialise a new packet
-     * 
+     *
      * Default behaviour is to do nothing.
      *
-     * But some sub-classes my want to use it write a header into the 
+     * But some sub-classes my want to use it write a header into the
      * buffer before appending other character are written using print().
      */
     virtual void writePayloadHeader();

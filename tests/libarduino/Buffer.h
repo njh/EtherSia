@@ -11,7 +11,7 @@ public:
     ~Buffer();
 
     virtual size_t write(uint8_t chr);
-    
+
     uint16_t size() { return _pos; };
 
     operator uint8_t*() { return (uint8_t*)_buffer; };

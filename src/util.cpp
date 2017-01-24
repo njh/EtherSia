@@ -53,7 +53,7 @@ static void printHexDumpAscii(const char* ascii, uint8_t count, Print &p)
     for(i=0; i < (15-count)*3; i++) {
         p.print(' ');
     }
-    
+
     if (count < 7) {
         p.print(' ');
     }

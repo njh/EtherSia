@@ -68,7 +68,7 @@ void TCPServer::sendInternal(uint16_t length, boolean /*isReply*/)
     uint16_t receivedLen = payloadLength();
     if (receivedLen == 0)
         receivedLen = 1;
-        
+
     if (tcpHeader->flags == 0) {
         tcpHeader->flags = TCP_FLAG_ACK | TCP_FLAG_FIN | TCP_FLAG_PSH;
     }

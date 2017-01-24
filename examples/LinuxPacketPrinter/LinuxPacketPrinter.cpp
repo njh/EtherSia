@@ -67,6 +67,6 @@ int main()
             Serial.println();
         }
     }
-    
+
     return 0;
 }

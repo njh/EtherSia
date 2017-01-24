@@ -15,7 +15,7 @@ int main(int argc, char** argv)
         fprintf(stderr, "Usage: ipv6_checksum <filename.hext>\n");
         return -1;
     }
-    
+
     HextFile input(argv[1]);
     IPv6Packet *packet = (IPv6Packet *)input.buffer;
 
@@ -27,7 +27,7 @@ int main(int argc, char** argv)
         fprintf(stderr, "Error: Packet's EtherType is not 0x%4.4x\n", ETHER_TYPE_IPV6);
         return -1;
     }
-    
+
     // Check the version header
     if (packet->version() != 6) {
         fprintf(stderr, "Error: Packet's IP version is not 6\n");

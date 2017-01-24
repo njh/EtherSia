@@ -7,7 +7,7 @@
  * - https://tools.ietf.org/html/rfc4330
  *
  * This example demonstrates of the basics of an SNTP client;
- * A real-world client should enforce RFC4330 properly, such as 
+ * A real-world client should enforce RFC4330 properly, such as
  * the randomised time before sending a query at startup.
  *
  *
