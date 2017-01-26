@@ -52,8 +52,6 @@ void loop()
     if (tcp.havePacket()) {
         char *buf = tcp.payload();
         buf[tcp.payloadLength()] = '\0';
-        Serial.print("Data length: ");
-        Serial.println(tcp.payloadLength(), DEC);
         Serial.print("Data: ");
         Serial.println(buf);
 
