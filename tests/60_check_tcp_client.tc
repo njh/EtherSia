@@ -26,3 +26,21 @@ ck_assert_int_gt(client.localPort(), 20000);
 ck_assert_int_lt(client.localPort(), 30000);
 
 
+#test connect
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
+ether.begin("00:04:a3:2c:2b:b9");
+
+TCPClient client(ether);
+client.setRemoteAddress("2a00:1098:8:68::123", 13);
+ether.clearSent();
+
+client.connect();
+
+HextFile expect("packets/tcp_send_syn.hext");
+frame_t &sent = ether.getLastSent();
+ck_assert_int_eq(sent.length, expect.length);
+ck_assert_mem_eq(sent.packet, expect.buffer, expect.length);
+
+ether.end();
+

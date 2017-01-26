@@ -1,0 +1,24 @@
+00:00:00:00:00:00        # Ethernet Destination
+00:04:a3:2c:2b:b9        # Ethernet Source
+86dd                     # EtherType (IPv6)
+
+60 00 00 00    # IPv6 header
+0018           # Length (24 bytes)
+06             # Protocol (TCP)
+40             # Hop Limit
+
+2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9  # IPv6 Source Address
+2a00:1098:0008:0068:0000:0000:0000:0123  # IPv6 Destination Address
+
+61a9           # TCP Source port number (random)
+000d           # TCP Destination port number (13)
+
+55555555       # TCP Sequence number
+00000000       # TCP Acknowledgement number
+60             # TCP Header length (24 bytes)
+02             # TCP Flags (SYN)
+01ea           # TCP Window size (490 bytes)
+5907           # TCP Checksum
+0000           # TCP Urgent Pointer
+
+02 04 01ea     # Maximum segment size: 490 bytes
