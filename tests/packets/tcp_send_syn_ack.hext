@@ -13,12 +13,12 @@ a4:5e:60:da:58:9d        # Ethernet Destination
 0050           # TCP Source port number (80)
 cfed           # TCP Destination port number (53229)
 
-00000000       # TCP Sequence number
+55555555       # TCP Sequence number
 6fbb7777       # TCP Acknowledgement number
 60             # TCP Header length (24 bytes)
 12             # TCP Flags (SYN, ACK)
 01ea           # TCP Window size (490 bytes)
-62b2           # TCP Checksum
+b807           # TCP Checksum
 0000           # TCP Urgent Pointer
 
 02 04 01ea     # Maximum segment size: 490 bytes
