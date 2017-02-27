@@ -1,0 +1,13 @@
+00:00:00:00:00:00        # Ethernet Destination
+00:04:a3:2c:2b:b9        # Ethernet Source
+86dd                     # EtherType (IPv6)
+
+60 00 00 00              # IPv6 header
+000E                     # Length (14 bytes)
+EE                       # Protocol
+40                       # Hop Limit
+
+2001:1234:0000:0000:0000:0000:0000:0001
+2001:4321:0000:0000:0000:0000:0000:1234
+
+"Hello  World\r\n"

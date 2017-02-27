@@ -1,5 +1,6 @@
 #include "EtherSia.h"
 #include "util.h"
+#include "hext.hh"
 #suite Socket
 
 class DummySocket : public Socket {
@@ -9,15 +10,21 @@ public:
     DummySocket(EtherSia &ether, uint16_t localPort) : Socket(ether, localPort) {};
 
     uint8_t* payload() {
-        return NULL;
+        return (uint8_t *)(_ether.packet().payload());
     }
 
     uint16_t payloadLength() {
-        return 0;
+        return _ether.packet().payloadLength();
     }
 
 protected:
-    void sendInternal(uint16_t, boolean) {};
+    void sendInternal(uint16_t length, boolean /*isReply*/) {
+        IPv6Packet& packet = _ether.packet();
+        packet.setProtocol(0xEE);
+        packet.setPayloadLength(length);
+
+        _ether.send();
+    };
 };
 
 #test construct_socket
@@ -27,12 +34,14 @@ ck_assert_int_eq(sock.localPort(), 0);
 ck_assert_int_eq(sock.remotePort(), 0);
 ck_assert(sock.remoteAddress().isZero());
 
+
 #test construct_socket_with_local
 EtherSia_Dummy ether;
 DummySocket sock(ether, 1234);
 ck_assert_int_eq(sock.localPort(), 1234);
 ck_assert_int_eq(sock.remotePort(), 0);
 ck_assert(sock.remoteAddress().isZero());
+
 
 #test setRemoteAddress_ip
 EtherSia_Dummy ether;
@@ -45,3 +54,57 @@ ck_assert(sock.remoteAddress() == expect);
 // setRemoteAddress() should also assign a local port number
 ck_assert_int_gt(sock.localPort(), 20000);
 ck_assert_int_lt(sock.localPort(), 30000);
+
+
+#test send_buffer
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:1234::1");
+ether.begin("00:04:a3:2c:2b:b9");
+ether.clearSent();
+
+DummySocket socket(ether);
+socket.setRemoteAddress("2001:4321::1234", 1234);
+uint8_t buffer[] = {
+  'H', 'e', 'l', 'l', 'o', ' ',
+  ' ', 'W', 'o', 'r', 'l', 'd', '\r', '\n'
+};
+socket.send(buffer, sizeof(buffer));
+
+HextFile expect("packets/dummy_hello_world.hext");
+frame_t &sent = ether.getLastSent();
+ck_assert_int_eq(sent.length, expect.length);
+ck_assert_mem_eq(sent.packet, expect.buffer, expect.length);
+
+
+#test send_string
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:1234::1");
+ether.begin("00:04:a3:2c:2b:b9");
+ether.clearSent();
+
+DummySocket socket(ether);
+socket.setRemoteAddress("2001:4321::1234", 1234);
+socket.send("Hello  World\r\n");
+
+HextFile expect("packets/dummy_hello_world.hext");
+frame_t &sent = ether.getLastSent();
+ck_assert_int_eq(sent.length, expect.length);
+ck_assert_mem_eq(sent.packet, expect.buffer, expect.length);
+
+
+#test print_and_send
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:1234::1");
+ether.begin("00:04:a3:2c:2b:b9");
+ether.clearSent();
+
+DummySocket socket(ether);
+socket.setRemoteAddress("2001:4321::1234", 1234);
+socket.print("Hello ");
+socket.println(" World");
+socket.send();
+
+HextFile expect("packets/dummy_hello_world.hext");
+frame_t &sent = ether.getLastSent();
+ck_assert_int_eq(sent.length, expect.length);
+ck_assert_mem_eq(sent.packet, expect.buffer, expect.length);
