@@ -2,11 +2,11 @@
 #include "util.h"
 #suite Socket
 
-class ConcreteSocket : public Socket {
+class DummySocket : public Socket {
 
 public:
-    ConcreteSocket(EtherSia &ether) : Socket(ether) {};
-    ConcreteSocket(EtherSia &ether, uint16_t localPort) : Socket(ether, localPort) {};
+    DummySocket(EtherSia &ether) : Socket(ether) {};
+    DummySocket(EtherSia &ether, uint16_t localPort) : Socket(ether, localPort) {};
 
     uint8_t* payload() {
         return NULL;
@@ -22,21 +22,21 @@ protected:
 
 #test construct_socket
 EtherSia_Dummy ether;
-ConcreteSocket sock(ether);
+DummySocket sock(ether);
 ck_assert_int_eq(sock.localPort(), 0);
 ck_assert_int_eq(sock.remotePort(), 0);
 ck_assert(sock.remoteAddress().isZero());
 
 #test construct_socket_with_local
 EtherSia_Dummy ether;
-ConcreteSocket sock(ether, 1234);
+DummySocket sock(ether, 1234);
 ck_assert_int_eq(sock.localPort(), 1234);
 ck_assert_int_eq(sock.remotePort(), 0);
 ck_assert(sock.remoteAddress().isZero());
 
 #test setRemoteAddress_ip
 EtherSia_Dummy ether;
-ConcreteSocket sock(ether);
+DummySocket sock(ether);
 sock.setRemoteAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9", 1234);
 ck_assert_int_eq(sock.remotePort(), 1234);
 IPv6Address expect("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
