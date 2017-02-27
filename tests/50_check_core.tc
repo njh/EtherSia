@@ -76,12 +76,12 @@ EtherSia_Dummy ether;
 ether.setGlobalAddress("2001::1");
 ether.begin(local_mac);
 
-HextFile validPacket("packets/icmp6_router_advertisment.hext");
+HextFile validPacket("packets/udp_valid_oh_hi.hext");
 ether.injectRecievedPacket(validPacket.buffer, validPacket.length);
-ck_assert_int_eq(ether.receivePacket(), 110);
-ck_assert_int_eq(ether.packet().length(), 110);
-ck_assert_int_eq(ether.packet().payloadLength(), 56);
-ck_assert_int_eq(ether.packet().protocol(), IP6_PROTO_ICMP6);
+ck_assert_int_eq(ether.receivePacket(), 68);
+ck_assert_int_eq(ether.packet().length(), 68);
+ck_assert_int_eq(ether.packet().payloadLength(), 14);
+ck_assert_int_eq(ether.packet().protocol(), IP6_PROTO_UDP);
 
 
 #test ignores_ipv4_packet
