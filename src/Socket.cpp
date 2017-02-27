@@ -123,7 +123,7 @@ void Socket::send(uint16_t length, boolean isReply)
 
 void Socket::sendReply() {
     send(true);
-};
+}
 
 void Socket::sendReply(uint16_t length) {
     send(length, true);
