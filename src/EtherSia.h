@@ -377,7 +377,7 @@ protected:
      *
      * Responds to ICMPv6 Pings, Neighbour Solicitations and Router Solicitations
      */
-    void icmp6ProcessPacket();
+    boolean icmp6ProcessPacket();
 
     /**
      * Perform Stateless auto-configuration

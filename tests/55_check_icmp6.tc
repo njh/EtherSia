@@ -45,7 +45,7 @@ ether.clearSent();
 // Receive a Neighbour Solicitation
 HextFile ns_packet("packets/icmp6_neighbour_solicitation_global.hext");
 ether.injectRecievedPacket(ns_packet.buffer, ns_packet.length);
-ck_assert_int_eq(ether.receivePacket(), 78);
+ck_assert_int_eq(ether.receivePacket(), 0);
 
 // Check the response
 HextFile expect("packets/icmp6_neighbour_advertisement_global.hext");
@@ -65,7 +65,7 @@ ether.clearSent();
 // Receive a ping packet
 HextFile echoRequest("packets/icmp6_echo_request.hext");
 ether.injectRecievedPacket(echoRequest.buffer, echoRequest.length);
-ck_assert_int_eq(ether.receivePacket(), echoRequest.length);
+ck_assert_int_eq(ether.receivePacket(), 0);
 
 // Check the response
 HextFile expect("packets/icmp6_echo_response.hext");
