@@ -83,7 +83,7 @@ void TFTPServer::sendError(uint8_t errorCode)
     payload[2] = 0x00;
     payload[3] = errorCode;
 
-    char* errstr;
+    const char* errstr;
     switch(errorCode) {
     case TFTP_NOT_FOUND:
         errstr = PSTR("Not Found");
@@ -97,7 +97,7 @@ void TFTPServer::sendError(uint8_t errorCode)
     }
 
     len += strlen_P(errstr) + 1;
-    strcpy_P(&payload[4], errstr);
+    strcpy_P((char*)&payload[4], errstr);
     this->sendReply(len);
 }
 
