@@ -5,7 +5,7 @@ TFTPServer::TFTPServer(EtherSia &ether, uint16_t localPort) : UDPSocket(ether, l
 {
 }
 
-boolean TFTPServer::handleRequest()
+void TFTPServer::handleRequest()
 {
     if (!havePacket()) {
         // No packet, or it isn't for us

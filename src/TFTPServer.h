@@ -26,9 +26,8 @@ public:
 
     /**
      * Check if a UDP packet is available to be processed on this socket
-     * @return true if there is a valid packet has been received for this socket
      */
-    boolean handleRequest();
+    void handleRequest();
 
 
     const uint8_t TFTP_BLOCK_SIZE = 512;
