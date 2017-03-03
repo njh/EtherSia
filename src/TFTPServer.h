@@ -30,7 +30,7 @@ public:
     void handleRequest();
 
 
-    const uint8_t TFTP_BLOCK_SIZE = 512;
+    const uint16_t TFTP_BLOCK_SIZE = 512;
 
     enum {
         TFTP_OPCODE_READ = 1,
@@ -54,13 +54,14 @@ public:
 protected:
 
     void sendError(uint8_t errorCode);
+    boolean waitForAck(UDPSocket &sock, uint16_t block);
 
     void handleWriteRequest(int8_t fileno, IPv6Address& address, uint16_t port);
     void handleReadRequest(int8_t fileno, IPv6Address& address, uint16_t port);
 
     int8_t openFile(const char* filename);
     void writeBytes(int8_t fileno, uint16_t block, const uint8_t* data, uint16_t len);
-    int8_t readBytes(int8_t fileno, uint16_t block, const uint8_t* data, uint16_t len);
+    int16_t readBytes(int8_t fileno, uint16_t block, uint8_t* data);
 
 };
 

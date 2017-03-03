@@ -437,6 +437,7 @@ protected:
 
 #include "TCPServer.h"
 #include "HTTPServer.h"
+#include "TFTPServer.h"
 #include "Syslog.h"
 
 #include "enc28j60.h"

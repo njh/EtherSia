@@ -71,6 +71,56 @@ void TFTPServer::handleWriteRequest(int8_t fileno, IPv6Address& address, uint16_
 
 void TFTPServer::handleReadRequest(int8_t fileno, IPv6Address& address, uint16_t port)
 {
+    UDPSocket data(_ether);
+    data.setRemoteAddress(address, port);
+
+    for (uint16_t block=1; block<UINT16_MAX;) {
+        uint8_t *payload = data.payload();
+        payload[0] = 0x00;
+        payload[1] = TFTP_OPCODE_DATA;
+        payload[2] = (block & 0xFF00) >> 8;
+        payload[3] = (block & 0xFF);
+
+        Serial.print("Sending block: ");
+        Serial.println(block, DEC);
+
+        uint16_t len = readBytes(fileno, block, &payload[4]);
+        data.send((uint16_t)(len + 4));
+
+        boolean gotAck = waitForAck(data, block);
+        if (gotAck) {
+            block++;
+        } else {
+            // FIXME: abort after retrying N times
+            continue;
+        }
+
+        if (len < TFTP_BLOCK_SIZE) {
+            // No more data to send
+            break;
+        }
+    }
+}
+
+boolean TFTPServer::waitForAck(UDPSocket &sock, uint16_t /*block*/)
+{
+    while(1) {
+        _ether.receivePacket();
+        
+        if (sock.havePacket()) {
+            uint8_t *payload = sock.payload();
+            if (payload[0] == 0x00 && payload[1] == TFTP_OPCODE_ACK) {
+                // FIXME: check the block number
+                
+                // Got Ack
+                return true;
+            }
+        }
+        
+        // FIXME: timeout waiting for ack
+    }
+    
+    return false;
 }
 
 
@@ -111,15 +161,28 @@ int8_t TFTPServer::openFile(const char* filename)
     }
 }
 
-void TFTPServer::writeBytes(int8_t fileno, uint16_t block, const uint8_t* data, uint16_t len)
+void TFTPServer::writeBytes(int8_t fileno, uint16_t /*block*/, const uint8_t* data, uint16_t len)
 {
+    if (fileno != 1) {
+        return;
+    }
+
     Serial.write(data, len);
 }
 
-int8_t TFTPServer::readBytes(int8_t fileno, uint16_t block, const uint8_t* data, uint16_t len)
+int16_t TFTPServer::readBytes(int8_t fileno, uint16_t block, uint8_t* data)
 {
-    // FIXME: implement this
-    return 0;
+    if (fileno != 1) {
+        return 0;
+    }
+
+    if (block > 2) {
+        return 0;
+    }
+
+    for (uint16_t i=0; i<TFTP_BLOCK_SIZE; i++) {
+        data[i] = 0x20 + (i%64);
+    }
+
+    return TFTP_BLOCK_SIZE;
 }
-
-
