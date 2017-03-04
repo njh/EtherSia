@@ -29,8 +29,9 @@ public:
      */
     void handleRequest();
 
-
     const uint16_t TFTP_BLOCK_SIZE = 512;
+    const uint16_t TFTP_TIMEOUT = 100; // 100 milliseconds
+    const uint8_t TFTP_RETRIES = 10;
 
     enum {
         TFTP_OPCODE_READ = 1,

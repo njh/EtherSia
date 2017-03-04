@@ -71,6 +71,7 @@ void TFTPServer::handleReadRequest(int8_t fileno, IPv6Address& address, uint16_t
     UDPSocket data(_ether);
     data.setRemoteAddress(address, port);
 
+    uint8_t retries = 0;
     for (uint16_t block=1; block<UINT16_MAX;) {
         uint8_t *payload = data.payload();
         payload[0] = 0x00;
@@ -78,18 +79,21 @@ void TFTPServer::handleReadRequest(int8_t fileno, IPv6Address& address, uint16_t
         payload[2] = (block & 0xFF00) >> 8;
         payload[3] = (block & 0xFF);
 
-        Serial.print("Sending block: ");
-        Serial.println(block, DEC);
-
         uint16_t len = readBytes(fileno, block, &payload[4]);
         data.send((uint16_t)(len + 4));
 
         boolean gotAck = waitForAck(data, block);
         if (gotAck) {
             block++;
+            retries = 0;
         } else {
-            // FIXME: abort after retrying N times
-            continue;
+            if (++retries > TFTP_RETRIES) {
+                // Too many retries, abort
+                break;
+            } else {
+                // Try sending again
+                continue;
+            }
         }
 
         if (len < TFTP_BLOCK_SIZE) {
@@ -99,24 +103,30 @@ void TFTPServer::handleReadRequest(int8_t fileno, IPv6Address& address, uint16_t
     }
 }
 
-boolean TFTPServer::waitForAck(UDPSocket &sock, uint16_t /*block*/)
+boolean TFTPServer::waitForAck(UDPSocket &sock, uint16_t expectedBlock)
 {
-    while(1) {
+    uint32_t timeout = millis() + TFTP_TIMEOUT;
+    
+    do {
         _ether.receivePacket();
         
         if (sock.havePacket()) {
             uint8_t *payload = sock.payload();
             if (payload[0] == 0x00 && payload[1] == TFTP_OPCODE_ACK) {
-                // FIXME: check the block number
-                
-                // Got Ack
-                return true;
+                uint16_t recievedBlock = bytesToWord(payload[2], payload[3]);
+                if (recievedBlock != expectedBlock) {
+                    // Ack for wrong block
+                    return false;
+                } else {
+                    // Got correct Ack
+                    return true;
+                }
             }
         }
-        
-        // FIXME: timeout waiting for ack
-    }
+
+    } while ((int32_t)(timeout - millis()) > 0);
     
+    // Timed out, nothing received
     return false;
 }
 
@@ -182,7 +192,7 @@ int16_t TFTPServer::readBytes(int8_t fileno, uint16_t block, uint8_t* data)
         return 0;
     }
 
-    if (block > 2) {
+    if (block > 1000) {
         return 0;
     }
 
