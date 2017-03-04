@@ -70,9 +70,10 @@ protected:
     void sendAck(UDPSocket &sock, uint16_t block);
     void sendError(uint8_t errorCode);
 
-    int8_t openFile(const char* filename);
-    void writeBytes(int8_t fileno, uint16_t block, const uint8_t* data, uint16_t len);
-    int16_t readBytes(int8_t fileno, uint16_t block, uint8_t* data);
+
+    virtual int8_t openFile(const char* filename) = 0;
+    virtual void writeBytes(int8_t fileno, uint16_t block, const uint8_t* data, uint16_t len) = 0;
+    virtual int16_t readBytes(int8_t fileno, uint16_t block, uint8_t* data) = 0;
 
 };
 

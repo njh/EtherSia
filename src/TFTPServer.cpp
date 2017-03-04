@@ -193,39 +193,3 @@ void TFTPServer::sendError(uint8_t errorCode)
     strcpy_P((char*)&payload[4], errstr);
     this->sendReply(len);
 }
-
-
-int8_t TFTPServer::openFile(const char* filename)
-{
-    if (strcmp(filename, "serial") == 0) {
-        return 1;
-    } else {
-        return -1;
-    }
-}
-
-void TFTPServer::writeBytes(int8_t fileno, uint16_t /*block*/, const uint8_t* data, uint16_t len)
-{
-    if (fileno != 1) {
-        return;
-    }
-
-    Serial.write(data, len);
-}
-
-int16_t TFTPServer::readBytes(int8_t fileno, uint16_t block, uint8_t* data)
-{
-    if (fileno != 1) {
-        return 0;
-    }
-
-    if (block > 1000) {
-        return 0;
-    }
-
-    for (uint16_t i=0; i<TFTP_BLOCK_SIZE; i++) {
-        data[i] = 0x20 + (i%64);
-    }
-
-    return TFTP_BLOCK_SIZE;
-}

@@ -11,12 +11,14 @@
  */
 
 #include <EtherSia.h>
+#include "CustomTFTPServer.h"
+
 
 /** Ethernet Interface (with Chip Select connected to Pin 10) */
 EtherSia_ENC28J60 ether(10);
 
-TFTPServer tftp(ether);
-
+/** Instance of our custom TFTP server */
+CustomTFTPServer tftp(ether);
 
 void setup() {
     MACAddress macAddress("62:84:98:22:09:2c");
