@@ -29,8 +29,19 @@ public:
      */
     void handleRequest();
 
+
+protected:
+    // The maximum size of payload in a DATA packet
     const uint16_t TFTP_BLOCK_SIZE = 512;
-    const uint16_t TFTP_TIMEOUT = 100; // 100 milliseconds
+
+    // How long to wait for a DATA packet
+    // This has to be high because TFTP clients seem to take a long time to re-send packets
+    const uint16_t TFTP_DATA_TIMEOUT = 10000; // 10 seconds
+
+    // How long to wait for an ACK packet before sending DATA again
+    const uint16_t TFTP_ACK_TIMEOUT = 100; // 100 milliseconds
+
+    // How many times to attempt re-send of data packets that havn't been acknowledged
     const uint8_t TFTP_RETRIES = 10;
 
     enum {
@@ -51,8 +62,6 @@ public:
         TFTP_FILE_ALREADY_EXISTS = 6,
         TFTP_NO_SUCH_USER = 7,
     };
-
-protected:
 
     void handleWriteRequest(int8_t fileno, IPv6Address& address, uint16_t port);
     void handleReadRequest(int8_t fileno, IPv6Address& address, uint16_t port);

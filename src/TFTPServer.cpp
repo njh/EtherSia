@@ -46,29 +46,48 @@ void TFTPServer::handleWriteRequest(int8_t fileno, IPv6Address& address, uint16_
     // Acknowledge the request / Start the transfer
     sendAck(data, 0);
 
-    // FIXME: add timeout
-    while(1) {
+    uint32_t timeout = millis() + TFTP_DATA_TIMEOUT;
+    uint16_t expectedBlock = 1;
+    while (1) {
         _ether.receivePacket();
 
         if (data.havePacket()) {
             uint8_t *payload = data.payload();
 
             if (payload[0] == 0x00 && payload[1] == TFTP_OPCODE_DATA) {
-                // FIXME: check the block number is in sequence
                 uint16_t len = this->payloadLength() - 4;
                 uint16_t block = bytesToWord(payload[2], payload[3]);
-                writeBytes(fileno, block, &payload[4], len);
 
-                // Send acknowledgement back
-                sendAck(data, block);
+                if (block <= expectedBlock) {
+                    // Acknowledge the current or past blocks (could be a duplicate packet)
+                    // But don't acknowledge future blocks
+                    sendAck(data, block);
+                } else {
+                    TFTP_DEBUG("TFTP: Received out of order block");
+                }
 
-                if (len != 512) {
-                    Serial.println("End of Transfer");
-                    break;
+                if (block == expectedBlock) {
+                    writeBytes(fileno, block, &payload[4], len);
+                    expectedBlock++;
+ 
+                    // Update timeout
+                    timeout = millis() + TFTP_DATA_TIMEOUT;
+   
+                    // End of transfer?
+                    if (len != TFTP_BLOCK_SIZE) {
+                        TFTP_DEBUG("TFTP: End of Transfer");
+                        break;
+                    }
                 }
             }
         }
+        
+        if ((int32_t)(timeout - millis()) <= 0) {
+            TFTP_DEBUG("TFTP: Write Request Timeout");
+            return;
+        }
     }
+
 }
 
 void TFTPServer::handleReadRequest(int8_t fileno, IPv6Address& address, uint16_t port)
@@ -113,7 +132,7 @@ void TFTPServer::handleReadRequest(int8_t fileno, IPv6Address& address, uint16_t
 
 boolean TFTPServer::waitForAck(UDPSocket &sock, uint16_t expectedBlock)
 {
-    uint32_t timeout = millis() + TFTP_TIMEOUT;
+    uint32_t timeout = millis() + TFTP_ACK_TIMEOUT;
     
     do {
         _ether.receivePacket();
