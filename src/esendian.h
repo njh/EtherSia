@@ -26,4 +26,8 @@
 #define ntohl(x) htonl(x)
 #endif
 
+/** Convert two bytes to a 16-bit integer */
+#define bytesToWord(high, low) \
+    (((uint16_t)high << 8) + low);
+
 #endif

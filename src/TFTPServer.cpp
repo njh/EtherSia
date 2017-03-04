@@ -52,7 +52,7 @@ void TFTPServer::handleWriteRequest(int8_t fileno, IPv6Address& address, uint16_
             if (payload[0] == 0x00 && payload[1] == TFTP_OPCODE_DATA) {
                 // FIXME: check the block number is in sequence
                 uint16_t len = this->payloadLength() - 4;
-                uint16_t block = payload[2]; // FIXME: ntohs(&payload[2]);
+                uint16_t block = bytesToWord(payload[2], payload[3]);
                 writeBytes(fileno, block, &payload[4], len);
 
                 // Send acknowledgement back
