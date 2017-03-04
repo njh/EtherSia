@@ -1,6 +1,9 @@
 #include "EtherSia.h"
 #include "util.h"
 
+#define TFTP_DEBUG(str)
+//#define TFTP_DEBUG(str) Serial.println(F(str))
+
 TFTPServer::TFTPServer(EtherSia &ether, uint16_t localPort) : UDPSocket(ether, localPort)
 {
 }
@@ -17,18 +20,20 @@ void TFTPServer::handleRequest()
         const char* filename = (char*)(&payload[2]);
         int8_t fileno = openFile(filename);
         if (fileno <= 0) {
+            TFTP_DEBUG("TFTP: Error, file not found");
             sendError(TFTP_NOT_FOUND);
             return;
         }
 
         if (payload[1] == TFTP_OPCODE_READ) {
-            Serial.println("TFTP_OPCODE_READ");
+            TFTP_DEBUG("TFTP: Starting Read request");
             handleReadRequest(fileno, this->packetSource(), this->packetSourcePort());
         } else if (payload[1] == TFTP_OPCODE_WRITE) {
-            Serial.println("TFTP_OPCODE_WRITE");
+            TFTP_DEBUG("TFTP: Starting Write request");
             handleWriteRequest(fileno, this->packetSource(), this->packetSourcePort());
         }
     } else {
+        TFTP_DEBUG("TFTP: error, illegal operation");
         sendError(TFTP_ILLEGAL_OPERATION);
     }
 }
@@ -89,15 +94,18 @@ void TFTPServer::handleReadRequest(int8_t fileno, IPv6Address& address, uint16_t
         } else {
             if (++retries > TFTP_RETRIES) {
                 // Too many retries, abort
+                TFTP_DEBUG("TFTP: abort, too many retries");
                 break;
             } else {
                 // Try sending again
+                TFTP_DEBUG("TFTP: ACK timeout, re-sending packet");
                 continue;
             }
         }
 
         if (len < TFTP_BLOCK_SIZE) {
             // No more data to send
+            TFTP_DEBUG("TFTP: finished sending file");
             break;
         }
     }
