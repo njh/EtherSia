@@ -1,0 +1,11 @@
+#include "Arduino.h"
+#include "EtherSia.h"
+#include "hext.hh"
+#include "util.h"
+
+#suite TFTP Server
+
+#test construct_defaults
+EtherSia_Dummy ether;
+TFTPServer tftp(ether);
+ck_assert_int_eq(tftp.localPort(), 69);
