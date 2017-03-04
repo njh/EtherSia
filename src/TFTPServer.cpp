@@ -38,9 +38,8 @@ void TFTPServer::handleWriteRequest(int8_t fileno, IPv6Address& address, uint16_
     UDPSocket data(_ether);
     data.setRemoteAddress(address, port);
 
-    // Acknowledge/Start the transfer
-    uint8_t ack[] = {0x00, TFTP_OPCODE_ACK, 0x00, 0x00};
-    data.send(ack, (uint16_t)4);
+    // Acknowledge the request / Start the transfer
+    sendAck(data, 0);
 
     // FIXME: add timeout
     while(1) {
@@ -56,9 +55,7 @@ void TFTPServer::handleWriteRequest(int8_t fileno, IPv6Address& address, uint16_
                 writeBytes(fileno, block, &payload[4], len);
 
                 // Send acknowledgement back
-                payload[0] = 0x00;
-                payload[1] = TFTP_OPCODE_ACK;
-                data.send((uint16_t)4);
+                sendAck(data, block);
 
                 if (len != 512) {
                     Serial.println("End of Transfer");
@@ -123,6 +120,15 @@ boolean TFTPServer::waitForAck(UDPSocket &sock, uint16_t /*block*/)
     return false;
 }
 
+void TFTPServer::sendAck(UDPSocket &sock, uint16_t block)
+{
+    uint8_t *payload = sock.payload();
+    payload[0] = 0x00;
+    payload[1] = TFTP_OPCODE_ACK;
+    payload[2] = (block & 0xFF00) >> 8;
+    payload[3] = (block & 0xFF);
+    sock.send((uint16_t)4);
+}
 
 void TFTPServer::sendError(uint8_t errorCode)
 {

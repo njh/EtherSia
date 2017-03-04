@@ -53,11 +53,12 @@ public:
 
 protected:
 
-    void sendError(uint8_t errorCode);
-    boolean waitForAck(UDPSocket &sock, uint16_t block);
-
     void handleWriteRequest(int8_t fileno, IPv6Address& address, uint16_t port);
     void handleReadRequest(int8_t fileno, IPv6Address& address, uint16_t port);
+
+    boolean waitForAck(UDPSocket &sock, uint16_t expectedBlock);
+    void sendAck(UDPSocket &sock, uint16_t block);
+    void sendError(uint8_t errorCode);
 
     int8_t openFile(const char* filename);
     void writeBytes(int8_t fileno, uint16_t block, const uint8_t* data, uint16_t len);
