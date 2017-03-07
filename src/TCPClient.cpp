@@ -26,6 +26,22 @@ void TCPClient::connect()
     send((uint16_t)0, false);
 }
 
+void TCPClient::disconnect()
+{
+    IPv6Packet& packet = _ether.packet();
+    struct tcp_header *tcpHeader = TCP_HEADER_PTR;
+    Serial.print("disconnecting...");
+    _remoteSeqNum += 1;
+    
+    tcpHeader->flags = TCP_FLAG_FIN;
+
+    _state = TCP_STATE_FIN;
+
+    send((uint16_t)0, true);
+    Serial.println("disconnected");
+}
+
+
 boolean TCPClient::connected()
 {
     return (_state & 0xF0) != 0x00;
@@ -52,6 +68,14 @@ boolean TCPClient::havePacket()
     }
 
     // FIXME: check source/destination IP
+    if (packet.destination() != _ether.linkLocalAddress()) {
+        // Wrong IP destination - packet is not for us
+        return false;
+    }
+    if (packet.source() != remoteAddress()) {
+        // Wrong IP source - packet is not from the expected server
+        return false;
+    }
 
     // FIXME: check the sequence numbers are correct
 
