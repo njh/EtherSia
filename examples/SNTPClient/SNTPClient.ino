@@ -133,11 +133,15 @@ void loop() {
 }
 
 
-/** Decode a NTP timestamp and print it to Serial */
-void displayTime(unsigned long secsSince1900)
+/**
+ * Decode a NTP timestamp and print it to Serial
+ *
+ * @param secs The number of seconds since the year 1900
+ */
+void displayTime(unsigned long secs)
 {
     Serial.print("Seconds since Jan 1 1900 = ");
-    Serial.println(secsSince1900);
+    Serial.println(secs);
 
     // now convert NTP time into everyday time:
     Serial.print("Unix time = ");
@@ -146,7 +150,7 @@ void displayTime(unsigned long secsSince1900)
     const unsigned long seventyYears = 2208988800UL;
 
     // subtract seventy years:
-    unsigned long epoch = secsSince1900 - seventyYears;
+    unsigned long epoch = secs - seventyYears;
 
     // print Unix time:
     Serial.println(epoch);
