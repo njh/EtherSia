@@ -68,10 +68,8 @@ public:
     
     /**
      * Close the existing connection to the remote host.
-     * Added on 04/03/2017 by Alex.CUER in order to post datas in an emoncms server
      */
     void disconnect();
-
 
     /**
      * Check if client has successfully connected to the server

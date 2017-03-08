@@ -30,7 +30,6 @@ void TCPClient::disconnect()
 {
     IPv6Packet& packet = _ether.packet();
     struct tcp_header *tcpHeader = TCP_HEADER_PTR;
-    Serial.print("disconnecting...");
     _remoteSeqNum += 1;
     
     tcpHeader->flags = TCP_FLAG_FIN;
@@ -38,7 +37,6 @@ void TCPClient::disconnect()
     _state = TCP_STATE_FIN;
 
     send((uint16_t)0, true);
-    Serial.println("disconnected");
 }
 
 
