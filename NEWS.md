@@ -1,9 +1,43 @@
 Release History
 ===============
 
+
+Version 2.2.0 (2017-03-09)
+--------------------------
+- Added TFTP server
+- Added Socket::transmitPayload()
+- Added IPv6Packet::etherType()
+- Made the Socket class a sub-class of Print
+- Added support for sending UDP packets to machines on the same subnet
+- Added example of manually configuring a static address
+- Added support for manually setting the local router address
+- Added EtherSia::disableAutoconfiguration()
+- Added EtherSia::routerMac()
+- Added EtherSia::inOurSubnet()
+- Added EtherSia::discoverNeighbour()
+- Created WebToggler example
+- Fix for not setting source MAC for ICMP6 NS and RS packets
+- Added EtherSia_Dummy driver class for testing EtherSia
+- Added HTTPServer::redirect()
+- Added methods for inspecting the body of an HTTP request
+- Lots of tests added
+
+
+Version 2.1.0 (2016-10-08)
+--------------------------
+- Added support for W5500 chip
+- Added TCPServer and HTTPServer classes
+
+
+Version 2.0.0 (2016-09-11)
+--------------------------
+- Added support for the W5100 Ethernet Controller in MACRaw mode
+- Added Syslog class and example
+- Refactored ENC28J60 class to be the child of EtherSia
+
+
 Version 1.0.0 (2016-07-31)
 --------------------------
-
 - Initial Release
 - Neighbour Discovery Protocol / Stateless Autoconfiguration
 - UDP Client and Server
