@@ -4,9 +4,22 @@
 
 
 
+/**
+ * Custom TFTP server class
+ *
+ * Supports the following filenames:
+ *   serial: serial port (write only)
+ *   eeprom: the built-in EEPROM (read/write)
+ *
+ */
 class CustomTFTPServer: public TFTPServer {
 
 public:
+    /**
+     * Construct a new custom TFTP server
+     *
+     * @param ether The Ethernet interface to attach the TFTP server to
+     */
     CustomTFTPServer(EtherSia &ether) : TFTPServer(ether) {};
 
     int8_t openFile(const char* filename)

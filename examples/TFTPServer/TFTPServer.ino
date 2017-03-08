@@ -1,6 +1,18 @@
 /**
  * Minimal TFTP Server example (RFC 1350)
  *
+ * This sketch allows you to:
+ *   - write a file to the serial port (using the 'serial' filename)
+ *   - read/write the internal EEPROM (using the 'eeprom' filename)
+ *
+ * On your computer open a TFTP tool and connect to the Arduino.
+ * Switch to 'binary' mode and then upload a local filename to the 'serial'
+ * remote filename.
+ *
+ *    tftp 2a00:1098:8:68:6084:98ff:fe22:092c
+ *    tftp> binary
+ *    tftp> put README.md serial
+ *
  *
  * This example uses a static MAC address, please update with your own.
  *
