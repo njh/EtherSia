@@ -6,7 +6,7 @@
     <tab type="pages" visible="yes" title="Docs" intro=""/>
     <tab type="modules" visible="yes" title="" intro=""/>
     <tab type="hierarchy" visible="yes" title="Classes" intro=""/>
-    <tab type="files" visible="yes" title="" intro=""/>
+    <tab type="filelist" visible="yes" title="Files" intro=""/>
     <tab type="examples" visible="yes" title="" intro=""/>
     <tab type="user" url="https://www.github.com/njh/ethersia" title="GitHub Project"/>
   </navindex>
