@@ -121,6 +121,22 @@ void Socket::send(uint16_t length, boolean isReply)
     sendInternal(length, isReply);
 }
 
+void Socket::sendReply() {
+    send(true);
+}
+
+void Socket::sendReply(uint16_t length) {
+    send(length, true);
+}
+
+void Socket::sendReply(const char *data) {
+    send(data, true);
+}
+
+void Socket::sendReply(const void *data, uint16_t length) {
+    send(data, length, true);
+}
+
 boolean Socket::payloadEquals(const char *str)
 {
     return strncmp((char*)payload(), str, payloadLength()) == 0;

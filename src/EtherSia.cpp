@@ -101,7 +101,11 @@ uint16_t EtherSia::receivePacket()
         _bufferContainsReceived = true;
 
         if (packet.protocol() == IP6_PROTO_ICMP6) {
-            icmp6ProcessPacket();
+            boolean handled = icmp6ProcessPacket();
+            if (handled) {
+                // Packet has already been handled, don't return it
+                return 0;
+            }
         }
     } else {
         // We didn't receive anything

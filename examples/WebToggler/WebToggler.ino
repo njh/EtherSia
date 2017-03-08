@@ -185,7 +185,11 @@ void sendIndex()
     http.sendReply();
 }
 
-/** Get the output number from the path of the HTTP request */
+/**
+ * Get the output number from the path of the HTTP request
+ *
+ * @return the output number, or -1 if it isn't valid
+ */
 int8_t pathToNum()
 {
     // /outputs/X

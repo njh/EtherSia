@@ -180,27 +180,31 @@ MACAddress* EtherSia::icmp6ProcessNA(IPv6Address &expected)
     return &(packet.etherSource());
 }
 
-void EtherSia::icmp6ProcessPacket()
+boolean EtherSia::icmp6ProcessPacket()
 {
     ICMPv6Packet& packet = (ICMPv6Packet&)_ptr;
 
     if (isOurAddress(packet.destination()) == 0) {
         // Packet isn't addressed to us
-        return;
+        return false;
     }
 
     switch(packet.type) {
     case ICMP6_TYPE_NS:
         icmp6NSReply();
-        break;
+        return true;
 
     case ICMP6_TYPE_ECHO:
         icmp6EchoReply();
-        break;
+        return true;
 
     case ICMP6_TYPE_RA:
         icmp6ProcessRA();
-        break;
+        return true;
+
+    default:
+        // We didn't handle the packet
+        return false;
     }
 }
 
