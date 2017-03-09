@@ -16,8 +16,9 @@
  */
 class CustomTFTPServer: public TFTPServer {
 
-  const uint16_t AT24C128_LENGTH = 16384;
-  const uint8_t AT24C128_ADDRESS = 0x50;
+    const uint16_t AT24C128_LENGTH = 16384;
+    const uint8_t AT24C128_ADDRESS = 0x50;
+    const uint8_t AT24C128_BUF_SIZE = 32;   // This is the size of the Arduino buffer
 
 public:
     /**
@@ -46,12 +47,13 @@ public:
 
     void writeBytes(int8_t fileno, uint16_t block, const uint8_t* data, uint16_t len)
     {
+        uint16_t offset = (block-1) * TFTP_BLOCK_SIZE;
+
         if (fileno == 1) {
             // Write straight to serial port
             Serial.write(data, len);
         } else if (fileno == 2) {
             // Handle writing to internal EEPROM
-            uint16_t offset = (block-1) * TFTP_BLOCK_SIZE;
             for(uint16_t i=0; i<len; i++) {
                 uint16_t idx = i+offset;
                 if (idx < EEPROM.length()) {
@@ -60,21 +62,16 @@ public:
             }
         } else if (fileno == 3) {
             // Handle writing to external i2c EEPROM
-            uint16_t offset = (block-1) * TFTP_BLOCK_SIZE;
-            for(uint16_t i=0; i<len; i++) {
-                uint16_t idx = i+offset;
-                if (idx < AT24C128_LENGTH) {
-                    i2c_eeprom_write_byte(AT24C128_ADDRESS, idx, data[i]);
-                }
-            }
+            writeToI2c(offset, data, len);
         }
     }
 
     int16_t readBytes(int8_t fileno, uint16_t block, uint8_t* data)
     {
+        uint16_t offset = (block-1) * TFTP_BLOCK_SIZE;
+
         if (fileno == 2) {
             // Handle reading from internal EEPROM
-            uint16_t offset = (block-1) * TFTP_BLOCK_SIZE;
             uint16_t len = EEPROM.length() - offset;
             if (len > TFTP_BLOCK_SIZE)
                 len = TFTP_BLOCK_SIZE;
@@ -84,14 +81,7 @@ public:
             return len;
         } else if (fileno == 3) {
             // Handle reading from external i2c EEPROM
-            uint16_t offset = (block-1) * TFTP_BLOCK_SIZE;
-            uint16_t len = AT24C128_LENGTH - offset;
-            if (len > TFTP_BLOCK_SIZE)
-                len = TFTP_BLOCK_SIZE;
-            for(uint16_t i=0; i<len; i++) {
-                data[i] = i2c_eeprom_read_byte(AT24C128_ADDRESS, i+offset);
-            }
-            return len;
+            return readFromI2c(offset, data);
         } else {
             // Reading from anything else isn't implemented
             return 0;
@@ -100,28 +90,59 @@ public:
 
 private:
 
-    void i2c_eeprom_write_byte( int deviceaddress, unsigned int eeaddress, byte data ) {
-        Wire.beginTransmission(deviceaddress);
-        Wire.write((int)(eeaddress >> 8));   // MSB
-        Wire.write((int)(eeaddress & 0xFF)); // LSB
-        Wire.write(data);
-        Wire.endTransmission();
- 
-        delay(5);
+    void writeToI2c(uint16_t offset, const uint8_t* data, uint16_t len)
+    {
+        // Handle writing to external i2c EEPROM
+        for(uint16_t i=0; i<len;) {
+            uint16_t eeaddress = i+offset;
+
+            if (eeaddress >= AT24C128_LENGTH)
+                return;
+
+            Wire.beginTransmission(AT24C128_ADDRESS);
+            Wire.write((int)(eeaddress >> 8));   // MSB
+            Wire.write((int)(eeaddress & 0xFF)); // LSB
+
+            // WARNING: this page write only works because the TFTP block size (512)
+            // is divisible by the EEPROM page size (64 bytes)
+            // But it must also fit within the Arduino 32 byte Wire buffer
+            uint16_t end = i + (AT24C128_BUF_SIZE/2);
+            while(i<end && i<len) {
+                Wire.write(data[i++]);
+            }
+            Wire.endTransmission();
+
+            // Give time to allow the EEPROM to write the data
+            delay(5);
+        }
     }
-    
-    byte i2c_eeprom_read_byte( int deviceaddress, unsigned int eeaddress ) {
-        byte rdata = 0xFF;
-        Wire.beginTransmission(deviceaddress);
-        Wire.write((int)(eeaddress >> 8));   // MSB
-        Wire.write((int)(eeaddress & 0xFF)); // LSB
-        Wire.endTransmission();
 
-        Wire.requestFrom(deviceaddress, 1);
+    int16_t readFromI2c(uint16_t offset, uint8_t* data)
+    {
+        uint16_t len = AT24C128_LENGTH - offset;
+        if (len > TFTP_BLOCK_SIZE)
+            len = TFTP_BLOCK_SIZE;
 
-        if (Wire.available()) rdata = Wire.read();
+        for(uint16_t i=0; i<len;) {
+            int eeaddress = i+offset;
+            Wire.beginTransmission(AT24C128_ADDRESS);
+            Wire.write((int)(eeaddress >> 8));   // MSB
+            Wire.write((int)(eeaddress & 0xFF)); // LSB
+            Wire.endTransmission();
 
-        return rdata;
+            Wire.requestFrom(AT24C128_ADDRESS, AT24C128_BUF_SIZE);
+
+            uint16_t end = i + AT24C128_BUF_SIZE;
+            while(i<end) {
+                if (!Wire.available()) {
+                    // No more data available - End of File
+                    Serial.println("No more data available");
+                    return i;
+                }
+                data[i++] = Wire.read();
+            }
+        }
+        return len;
     }
 
 };

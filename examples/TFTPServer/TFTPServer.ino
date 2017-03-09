@@ -39,7 +39,7 @@ void setup() {
     // Setup serial port
     Serial.begin(57600);
     Serial.println("[EtherSia TFTPServer]");
-    
+
     // Setup i2c
     Wire.begin();
 
