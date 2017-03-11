@@ -76,7 +76,17 @@ boolean TCPClient::havePacket()
     }
 
     // FIXME: check the sequence numbers are correct
-
+    if (ntohl(tcpHeader->acknowledgementNum) != _localSeqNum)
+    {
+        //wrong ack number
+        return false;
+    }
+    if (!(tcpHeader->flags & TCP_FLAG_SYN) && (ntohl(tcpHeader->sequenceNum) != _remoteSeqNum))
+    {
+        //wrong seq number
+        return false;
+    }
+    
     if (ntohs(TCP_HEADER_PTR->destinationPort) != _localPort ||
         ntohs(TCP_HEADER_PTR->sourcePort) != _remotePort)
     {
