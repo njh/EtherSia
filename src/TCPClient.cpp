@@ -32,7 +32,7 @@ void TCPClient::disconnect()
     struct tcp_header *tcpHeader = TCP_HEADER_PTR;
     _remoteSeqNum += 1;
     
-    tcpHeader->flags = TCP_FLAG_FIN;
+    tcpHeader->flags = TCP_FLAG_FIN | TCP_FLAG_ACK;
 
     _state = TCP_STATE_FIN;
 
