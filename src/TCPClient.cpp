@@ -131,7 +131,6 @@ boolean TCPClient::havePacket()
     if ((tcpHeader->flags & TCP_FLAG_FIN) && (tcpHeader->flags & TCP_FLAG_ACK)){
         _state = TCP_STATE_DISCONNECTED;
         sendAck();
-        return true;
     }
     
     // Packet contains data that needs to be handled
