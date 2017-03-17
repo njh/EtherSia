@@ -108,7 +108,7 @@ void loop()
           Serial.print(tcp.payloadLength());
           Serial.println(" bytes of data...");
         }
-        dataSent=1;
+        dataSent=true;
     }
     
 
