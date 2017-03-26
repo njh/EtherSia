@@ -128,7 +128,7 @@ boolean TCPClient::havePacket()
 	// FIN is set on incoming packet
     if (tcpHeader->flags & TCP_FLAG_FIN && connected()) {
 
-		Serial.println("SRVFIN!");
+        Serial.println("SRVFIN!");
         
         _remoteSeqNum += 1;
 
