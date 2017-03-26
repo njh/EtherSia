@@ -114,23 +114,25 @@ boolean TCPClient::havePacket()
         }
 
         return false;
-    } else if (tcpHeader->flags & TCP_FLAG_FIN) {
-
-        if (connected()) {
-            // FIN is set on incoming packet
-            _remoteSeqNum += 1;
-
-            _state = TCP_STATE_FIN;
-        } else {
-            _state = TCP_STATE_DISCONNECTED;
-        }
-
     }
 
     // FIXME: change state to disconnected when our FIN is ACKed
     if ((tcpHeader->flags & TCP_FLAG_FIN) && (tcpHeader->flags & TCP_FLAG_ACK)){
-        _state = TCP_STATE_DISCONNECTED;
-        sendAck();
+        if (_state == TCP_STATE_FIN){
+            _state = TCP_STATE_DISCONNECTED;
+            sendAck();
+        }
+    }
+    
+    //when server sends the FIN first
+	// FIN is set on incoming packet
+    if (tcpHeader->flags & TCP_FLAG_FIN && connected()) {
+
+		Serial.println("SRVFIN!");
+        
+        _remoteSeqNum += 1;
+
+        _state = TCP_STATE_FIN;
     }
     
     // Packet contains data that needs to be handled
@@ -138,12 +140,12 @@ boolean TCPClient::havePacket()
         // Got data!
         return true;
     }
-
+    /*
     // FIXME: More graceful way than checking this twice?
     if (tcpHeader->flags & TCP_FLAG_FIN) {
         sendAck();
     }
-
+    */
     // Something else?
     return false;
 }
