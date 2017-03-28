@@ -32,7 +32,7 @@ void TCPClient::disconnect()
     struct tcp_header *tcpHeader = TCP_HEADER_PTR;
     _remoteSeqNum += 1;
     
-    tcpHeader->flags = TCP_FLAG_FIN;
+    tcpHeader->flags = TCP_FLAG_FIN | TCP_FLAG_ACK;
 
     _state = TCP_STATE_FIN;
 
@@ -76,7 +76,17 @@ boolean TCPClient::havePacket()
     }
 
     // FIXME: check the sequence numbers are correct
-
+    if (ntohl(tcpHeader->acknowledgementNum) != _localSeqNum)
+    {
+        //wrong ack number
+        return false;
+    }
+    if (!(tcpHeader->flags & TCP_FLAG_SYN) && (ntohl(tcpHeader->sequenceNum) != _remoteSeqNum))
+    {
+        //wrong seq number
+        return false;
+    }
+    
     if (ntohs(TCP_HEADER_PTR->destinationPort) != _localPort ||
         ntohs(TCP_HEADER_PTR->sourcePort) != _remotePort)
     {
@@ -104,32 +114,38 @@ boolean TCPClient::havePacket()
         }
 
         return false;
-    } else if (tcpHeader->flags & TCP_FLAG_FIN) {
-
-        if (connected()) {
-            // FIN is set on incoming packet
-            _remoteSeqNum += 1;
-
-            _state = TCP_STATE_FIN;
-        } else {
-            _state = TCP_STATE_DISCONNECTED;
-        }
-
     }
 
     // FIXME: change state to disconnected when our FIN is ACKed
+    if ((tcpHeader->flags & TCP_FLAG_FIN) && (tcpHeader->flags & TCP_FLAG_ACK)){
+        if (_state == TCP_STATE_FIN){
+            _state = TCP_STATE_DISCONNECTED;
+            sendAck();
+        }
+    }
+    
+    //when server sends the FIN first
+	// FIN is set on incoming packet
+    if (tcpHeader->flags & TCP_FLAG_FIN && connected()) {
 
+        Serial.println("SRVFIN!");
+        
+        _remoteSeqNum += 1;
+
+        _state = TCP_STATE_FIN;
+    }
+    
     // Packet contains data that needs to be handled
     if (payloadLength() > 0) {
         // Got data!
         return true;
     }
-
+    /*
     // FIXME: More graceful way than checking this twice?
     if (tcpHeader->flags & TCP_FLAG_FIN) {
         sendAck();
     }
-
+    */
     // Something else?
     return false;
 }
