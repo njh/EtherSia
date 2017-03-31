@@ -19,6 +19,7 @@ Design Decisions
 3. Should work within the constraints of an [Uno] - 32k ROM and 2k RAM
 4. Should follow the [Style Guide] and avoid using complex C features like Pointers and Callbacks
 5. Decouple the core from protocols where possible, to allow for program size optimisations
+6. Only use statically allocated memory to avoid leaks and keep memory usage down
 
 
 Limitations
