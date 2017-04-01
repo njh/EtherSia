@@ -29,6 +29,12 @@ public:
     MACAddress(const char *macstr);
 
     /**
+     * Constructor for MAC address from an array of 6 bytes
+     * @param macaddr a 48-bit (6 byte) MAC address
+     */
+    MACAddress(const byte macaddr[6]);
+
+    /**
      * Constructor for MAC address from 6-octets.
      * @param one The first octet of the address
      * @param two The second octet of the address

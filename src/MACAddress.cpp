@@ -17,6 +17,11 @@ MACAddress::MACAddress(uint8_t one, uint8_t two, uint8_t three, uint8_t four, ui
     _address[5] = six;
 }
 
+MACAddress::MACAddress(const byte macaddr[6])
+{
+    memcpy(_address, macaddr, sizeof(_address));
+}
+
 MACAddress::MACAddress(const char *macstr)
 {
     fromString(macstr);
