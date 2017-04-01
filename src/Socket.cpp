@@ -13,6 +13,16 @@ Socket::Socket(EtherSia &ether, uint16_t localPort) : _ether(ether)
     _writePos = -1;
 }
 
+boolean Socket::setRemoteAddress(const __FlashStringHelper* remoteAddress, uint16_t remotePort)
+{
+    char temp[64];
+
+    // Copy out of Flash Memory
+    strncpy_P(temp, (const char*)remoteAddress, sizeof(temp)-1);
+
+    return setRemoteAddress(temp, remotePort);
+}
+
 boolean Socket::setRemoteAddress(const char *remoteAddress, uint16_t remotePort)
 {
     if (containsColon(remoteAddress)) {
