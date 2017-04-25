@@ -436,6 +436,7 @@ protected:
 };
 
 #include "TCPServer.h"
+#include "TCPClient.h"
 #include "HTTPServer.h"
 #include "TFTPServer.h"
 #include "Syslog.h"
