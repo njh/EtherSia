@@ -58,11 +58,6 @@ void loop()
     
     ether.receivePacket();
     availableData=tcp.havePacket();
-
-    
-    //in case millis has returned to 0 between two consecutive connections 
-    //a return to zero of millis() which can occur after 50 days 
-    if(millis()-lastConnect < 0)lastConnect =0;
     
     if (!tcp.connected() && (long)(millis() - lastConnect) >= 30000) { 
         if(DEBUG) {
