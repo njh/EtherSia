@@ -72,9 +72,7 @@ public:
     void disconnect();
 
     /**
-     * Check if client has successfully connected to the server
-     *
-     * @return True if the client is connected
+     * Send an Ack
      */
     void sendAck();
 
@@ -85,21 +83,35 @@ public:
      */
     boolean connected();
     
-    void checkForTimeout();
+	uint8_t version(){return _version;}
 
 protected:
 
     enum {
-        // 'Disconnected' states
-        TCP_STATE_DISCONNECTED = 0x00,
-        TCP_STATE_WAIT_SYN_ACK = 0x01,
-        TCP_STATE_FIN = 0x02,
-        TCP_STATE_TIMEOUT = 0x03,
- 
-        // 'Connected' states
-        TCP_STATE_CONNECTED = 0x10,
-        TCP_STATE_WAIT_ACK = 0x20,
+        
+        TCP_STATE_DISCONNECTED = 0x00,//0000
+        TCP_STATE_WAIT_SYN_ACK = 0x01,//0001
+        //we will not use the SYN_RECVD state as client will only do active open
+        //TCP_STATE_SYN_RECVD = 0x02,// 0010
+        TCP_STATE_CONNECTED = 0x03,//   0011
+        TCP_STATE_FIN_WAIT1 = 0x04,//   0100
+        TCP_STATE_FIN_WAIT2 = 0x05,//   0101
+        TCP_STATE_CLOSING = 0x06,//     0110
+        TCP_STATE_TIME_WAIT = 0x07,//   0111
+        TCP_STATE_LAST_ACK = 0x08,//    1000
+
+        TCP_STATE_MASK = 0x0f,//1111
+
+        TCP_STATE_STOPPED = 0x10,//10000
+
+        UIP_ACKDATA = 1,//1
+        UIP_NEWDATA = 2,//10
+        UIP_CLOSE = 16,//10000
+        UIP_ABORT = 32,//100000
+        UIP_CONNECTED = 64,//1000000
     };
+	
+	
 
     /**
      * Protocol specific function that is called by send(), sendReply() etc.
@@ -110,8 +122,20 @@ protected:
     virtual void sendInternal(uint16_t length, boolean isReply);
     
     uint8_t _state;
+    uint8_t _appliFlags;
+
+    uint16_t _unAckLen;
+
     uint32_t _remoteSeqNum;
     uint32_t _localSeqNum;
+
+    uint8_t _version=4;
+
+    uint8_t _timer=1;
+    uint8_t _sa;
+    uint8_t _sv;
+    uint8_t _nrtx;
+    uint8_t _rto;
 
 };
 
