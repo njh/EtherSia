@@ -43,6 +43,11 @@ void MACAddress::setIPv6Multicast(const uint8_t *address)
     _address[5] = address[15];
 }
 
+boolean MACAddress::isIPv6Multicast()
+{
+    return _address[0] == 0x33 && _address[1] == 0x33;
+}
+
 boolean MACAddress::fromString(const char *macstr)
 {
     uint8_t pos=0;

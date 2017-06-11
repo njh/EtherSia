@@ -64,6 +64,13 @@ public:
     void setIPv6Multicast(const uint8_t* address);
 
     /**
+     * Check if the MAC address is an IPv6 multicast address.
+     * An IPv6 multicast MAC looks like the pattern: 33:33:xx:xx:xx:xx
+     * @return true if it is an IPv6 multicast address
+     */
+    boolean isIPv6Multicast();
+
+    /**
      * Get an individual octet from the MAC address.
      * Indexed from 0 to 5.
      * @param index The byte number from the address to get
