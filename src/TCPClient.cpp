@@ -28,15 +28,9 @@ void TCPClient::connect()
 
 void TCPClient::disconnect()
 {
-    IPv6Packet& packet = _ether.packet();
-    struct tcp_header *tcpHeader = TCP_HEADER_PTR;
-    _remoteSeqNum += 1;
-    
-    tcpHeader->flags = TCP_FLAG_FIN;
-
     _state = TCP_STATE_FIN;
 
-    send((uint16_t)0, true);
+    sendAck();
 }
 
 
