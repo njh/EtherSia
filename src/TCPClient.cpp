@@ -59,13 +59,13 @@ boolean TCPClient::havePacket()
         return false;
     }
 
-    // FIXME: check source/destination IP
-    if (packet.destination() != _ether.linkLocalAddress()) {
-        // Wrong IP destination - packet is not for us
+    if (!_ether.isOurAddress(packetDestination())) {
+        // Wrong destination address
         return false;
     }
-    if (packet.source() != remoteAddress()) {
-        // Wrong IP source - packet is not from the expected server
+
+    if (packetSource() != _remoteAddress) {
+        // Wrong source address
         return false;
     }
 
