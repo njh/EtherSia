@@ -32,6 +32,16 @@ MACAddress::operator uint8_t*()
     return _address;
 }
 
+boolean MACAddress::operator==(const MACAddress& address) const
+{
+    return memcmp(_address, address._address, sizeof(_address)) == 0;
+}
+
+boolean MACAddress::operator!=(const MACAddress& address) const
+{
+    return !(*this == address);
+}
+
 // See RFC2464 section 7
 void MACAddress::setIPv6Multicast(const uint8_t *address)
 {

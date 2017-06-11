@@ -58,6 +58,20 @@ public:
     operator uint8_t*();
 
     /**
+     * Check if the address equals another MAC address.
+     * @param address the second address to compare to
+     * @return true if the two addresses are the same
+     */
+    boolean operator==(const MACAddress& address) const;
+
+    /**
+     * Check if the address is not equal to another MAC address.
+     * @param address the second address to compare to
+     * @return true if the two addresses are the same
+     */
+    boolean operator!=(const MACAddress& address) const;
+
+    /**
      * Calculate the multicast MAC address for an IPv6 address.
      * @param address An IPv6 address as an array of 16-bytes
      */
