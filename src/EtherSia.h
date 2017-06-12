@@ -371,6 +371,11 @@ protected:
     /** Flag indicating if the buffer contains a valid packet we received */
     boolean _autoConfigurationEnabled;
 
+    /**
+     * Checks the Ethernet Layer 2 addresses
+     * @return true if packet should be accepted
+     */
+    boolean checkEthernetAddresses(IPv6Packet &packet);
 
     /**
      * Process a received ICMPv6 packet in the packet buffer
