@@ -1,4 +1,4 @@
-00:00:00:00:00:00        # Ethernet Destination
+ca:2f:6d:70:f9:5f        # Ethernet Destination
 00:04:a3:2c:2b:b9        # Ethernet Source
 86dd                     # EtherType (IPv6)
 

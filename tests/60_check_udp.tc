@@ -59,8 +59,10 @@ ck_assert(sock.payloadEquals("Hello") == true);
 
 
 #test send_string
+MACAddress routerMac = MACAddress("ca:2f:6d:70:f9:5f");
 EtherSia_Dummy ether;
 ether.setGlobalAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
+ether.setRouter(routerMac);
 ether.begin("00:04:a3:2c:2b:b9");
 ether.clearSent();
 

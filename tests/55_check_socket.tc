@@ -70,8 +70,10 @@ ck_assert_int_lt(sock.localPort(), 30000);
 
 
 #test send_buffer
+MACAddress routerMac = MACAddress("ca:2f:6d:70:f9:5f");
 EtherSia_Dummy ether;
 ether.setGlobalAddress("2001:1234::1");
+ether.setRouter(routerMac);
 ether.begin("00:04:a3:2c:2b:b9");
 ether.clearSent();
 
@@ -90,8 +92,10 @@ ck_assert_mem_eq(sent.packet, expect.buffer, expect.length);
 
 
 #test send_string
+MACAddress routerMac = MACAddress("ca:2f:6d:70:f9:5f");
 EtherSia_Dummy ether;
 ether.setGlobalAddress("2001:1234::1");
+ether.setRouter(routerMac);
 ether.begin("00:04:a3:2c:2b:b9");
 ether.clearSent();
 
@@ -106,8 +110,10 @@ ck_assert_mem_eq(sent.packet, expect.buffer, expect.length);
 
 
 #test print_and_send
+MACAddress routerMac = MACAddress("ca:2f:6d:70:f9:5f");
 EtherSia_Dummy ether;
 ether.setGlobalAddress("2001:1234::1");
+ether.setRouter(routerMac);
 ether.begin("00:04:a3:2c:2b:b9");
 ether.clearSent();
 
