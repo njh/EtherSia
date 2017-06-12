@@ -115,3 +115,20 @@ HextFile validPacket("packets/udp_multicast.hext");
 ether.injectRecievedPacket(validPacket.buffer, validPacket.length);
 ck_assert(ether.receivePacket() == 0);
 ck_assert(ether.bufferContainsReceived() == false);
+
+
+#test setRouter
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:1234::1");
+ether.begin(local_mac);
+ether.clearSent();
+
+HextFile naResponse("packets/icmp6_neighbour_advertisement_global2.hext");
+ether.injectRecievedPacket(naResponse.buffer, naResponse.length);
+
+boolean result = ether.setRouter("2001:1234::5000");
+ck_assert(result == true);
+
+MACAddress routerMac = ether.routerMac();
+ck_assert_mem_eq(routerMac, "\x01\x02\x03\x04\x05\x06", 6);
+ether.end();
