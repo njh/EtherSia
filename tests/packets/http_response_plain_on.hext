@@ -3,7 +3,7 @@ a4:5e:60:da:58:9d        # Ethernet Destination
 86dd                     # EtherType (IPv6)
 
 60 0d 14 5e    # IPv6 header
-0047           # Length (71 bytes)
+0059           # Length (89 bytes)
 06             # Protocol (TCP)
 40             # Hop Limit
 
@@ -18,12 +18,13 @@ bb55a9fd       # TCP Acknowledgement number
 60             # TCP Header length (24 bytes)
 19             # TCP Flags (ACK, FIN, PSH)
 01ea           # TCP Window size (490 bytes)
-9702           # TCP Checksum
+8ff4           # TCP Checksum
 0000           # TCP Urgent Pointer
 
 02 04 01ea     # Maximum segment size: 490 bytes
 
 "HTTP/1.0 200 OK\r\n"
+"Server: EtherSia\r\n"
 "Content-Type: text/plain\r\n"
 "\r\n"
 "on"

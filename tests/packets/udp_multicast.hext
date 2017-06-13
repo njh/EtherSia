@@ -1,0 +1,17 @@
+33:33:00:00:00:01        # Ethernet Destination
+ca:2f:6d:70:f9:5f        # Ethernet Source
+86dd                     # EtherType (IPv6)
+
+60 00 00 00              # IPv6 header
+0017                     # Length (23 bytes)
+11                       # UDP Protocol
+ff                       # Hop Limit
+
+2001:0000:0000:0000:0000:0000:0000:0001  # IPv6 Source Address
+ff02:0000:0000:0000:0000:0000:0000:0001  # IPv6 Destination Address
+
+61a8                          # UDP Source Port
+0be0                          # UDP Destination Port
+0017                          # Length (23 bytes)
+7bde                          # Checksum
+"Hello All Nodes"             # UDP Payload

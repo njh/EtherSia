@@ -25,6 +25,7 @@ void HTTPServer::printStatus(const __FlashStringHelper* status)
 {
     print(F("HTTP/1.0 "));
     println(status);
+    println(F("Server: EtherSia"));
 }
 
 void HTTPServer::printHeaders(const __FlashStringHelper* contentType, const __FlashStringHelper* status)

@@ -29,6 +29,12 @@ public:
     MACAddress(const char *macstr);
 
     /**
+     * Constructor for MAC address from an array of 6 bytes
+     * @param macaddr a 48-bit (6 byte) MAC address
+     */
+    MACAddress(const byte macaddr[6]);
+
+    /**
      * Constructor for MAC address from 6-octets.
      * @param one The first octet of the address
      * @param two The second octet of the address
@@ -52,10 +58,31 @@ public:
     operator uint8_t*();
 
     /**
+     * Check if the address equals another MAC address.
+     * @param address the second address to compare to
+     * @return true if the two addresses are the same
+     */
+    boolean operator==(const MACAddress& address) const;
+
+    /**
+     * Check if the address is not equal to another MAC address.
+     * @param address the second address to compare to
+     * @return true if the two addresses are the same
+     */
+    boolean operator!=(const MACAddress& address) const;
+
+    /**
      * Calculate the multicast MAC address for an IPv6 address.
      * @param address An IPv6 address as an array of 16-bytes
      */
     void setIPv6Multicast(const uint8_t* address);
+
+    /**
+     * Check if the MAC address is an IPv6 multicast address.
+     * An IPv6 multicast MAC looks like the pattern: 33:33:xx:xx:xx:xx
+     * @return true if it is an IPv6 multicast address
+     */
+    boolean isIPv6Multicast();
 
     /**
      * Get an individual octet from the MAC address.

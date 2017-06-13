@@ -46,6 +46,17 @@ public:
     boolean setRemoteAddress(const char *remoteAddress, uint16_t remotePort);
 
     /**
+     * Set the remote address (as a string in flash memory) and port to send packets to
+     *
+     * If the remote address looks like a hostname, it will be looked up using DNS.
+     *
+     * @param remoteAddress The remote address or hostname (as a flash string - use the F() macro)
+     * @param remotePort The port number to send packets to
+     * @return true if the remote address was set successfully
+     */
+    boolean setRemoteAddress(const __FlashStringHelper* remoteAddress, uint16_t remotePort);
+
+    /**
      * Set the remote address and port to send packets to
      *
      * @param remoteAddress The remote address as a 16-byte array

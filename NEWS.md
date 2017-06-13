@@ -2,6 +2,12 @@ Release History
 ===============
 
 
+Version 2.3.0 (2017-06-04)
+--------------------------
+- Added 'Server: EtherSia' to HTTP responses
+- Added support for passing a flash string to setRemoteAddress()
+- MACAddress: added new constructor from 6-byte array
+
 Version 2.2.0 (2017-03-09)
 --------------------------
 - Added TFTP server

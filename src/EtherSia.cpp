@@ -87,13 +87,31 @@ boolean EtherSia::setRouter(IPv6Address &address) {
     }
 }
 
+boolean EtherSia::checkEthernetAddresses(IPv6Packet &packet) {
+
+    // Check destination address
+    if (!packet.etherDestination().isIPv6Multicast() && !(packet.etherDestination() == _localMac)) {
+        // Destination not multicast address and not for us
+        return false;
+    }
+
+    // Check source address
+    if (packet.etherSource() == _localMac) {
+        // Source address is ours - sometimes we seem to receive packets we sent
+        // This has been seen on Ethernet cross-over cables
+        return false;
+    }
+
+    return true;
+}
+
 uint16_t EtherSia::receivePacket()
 {
     uint16_t len = readFrame(_buffer, sizeof(_buffer));
 
     if (len) {
         IPv6Packet& packet = (IPv6Packet&)_ptr;
-        if (!packet.isValid()) {
+        if (!packet.isValid() || !checkEthernetAddresses(packet)) {
             _bufferContainsReceived = false;
             return 0;
         }
