@@ -442,6 +442,7 @@ protected:
 
 #include "TCPServer.h"
 #include "HTTPServer.h"
+#include "MQTTSN.h"
 #include "TFTPServer.h"
 #include "Syslog.h"
 
