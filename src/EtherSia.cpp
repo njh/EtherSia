@@ -142,7 +142,7 @@ void EtherSia::prepareSend()
     _bufferContainsReceived = false;
 
     packet.init();
-    if (packet.destination().isLinkLocal()) {
+    if (packet.destination().isLinkLocal() || _globalAddress.isZero()) {
         packet.setSource(_linkLocalAddress);
     } else {
         packet.setSource(_globalAddress);
