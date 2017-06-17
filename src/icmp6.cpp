@@ -43,17 +43,19 @@ void EtherSia::icmp6EchoReply()
     icmp6PacketSend();
 }
 
-void EtherSia::icmp6SendNS(IPv6Address &targetAddress)
+void EtherSia::icmp6SendNS(IPv6Address &targetAddress, boolean zeroSource)
 {
     ICMPv6Packet& packet = (ICMPv6Packet&)_ptr;
 
-    prepareSend();
-    packet.setPayloadLength(ICMP6_HEADER_LEN + ICMP6_NS_HEADER_LEN);
-    packet.setHopLimit(255);
-    packet.source().setZero();
     packet.destination().setSolicitedNodeMulticastAddress(targetAddress);
     packet.etherDestination().setIPv6Multicast(packet.destination());
+    prepareSend();
+    if (zeroSource) {
+        packet.source().setZero();
+    }
 
+    packet.setPayloadLength(ICMP6_HEADER_LEN + ICMP6_NS_HEADER_LEN);
+    packet.setHopLimit(255);
     packet.type = ICMP6_TYPE_NS;
     packet.code = 0;
 
@@ -244,7 +246,7 @@ MACAddress* EtherSia::discoverNeighbour(IPv6Address& address, uint8_t attempts)
 
     while (count < attempts) {
         if ((long)(millis() - nextNeighbourSolicitation) >= 0) {
-            icmp6SendNS(address);
+            icmp6SendNS(address, false);
             nextNeighbourSolicitation = millis() + NEIGHBOUR_SOLICITATION_TIMEOUT;
             count++;
         }
