@@ -395,8 +395,9 @@ protected:
      * Send a ICMPv6 Neighbour Solicitation (NS) for specified IPv6 Address
      *
      * @param targetAddress The IPv6 address to be resolved
+     * @param sourceAddress The IPv6 address to send from
      */
-    void icmp6SendNS(IPv6Address &targetAddress);
+    void icmp6SendNS(IPv6Address &targetAddress, IPv6Address &sourceAddress);
 
     /**
      * Send a reply to a ICMPv6 Neighbour Solicitation (NS) request (if it is our address)

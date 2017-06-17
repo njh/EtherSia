@@ -32,7 +32,8 @@ boolean EtherSia::begin()
     delay(500);
 
     // Send link local Neighbour Solicitation for Duplicate Address Detection
-    icmp6SendNS(_linkLocalAddress);
+    IPv6Address zero;
+    icmp6SendNS(_linkLocalAddress, zero);
 
     // Perform stateless auto-configuration if enabled
     if (_autoConfigurationEnabled) {
@@ -141,7 +142,7 @@ void EtherSia::prepareSend()
     _bufferContainsReceived = false;
 
     packet.init();
-    if (packet.destination().isLinkLocal()) {
+    if (packet.destination().isLinkLocal() || _globalAddress.isZero()) {
         packet.setSource(_linkLocalAddress);
     } else {
         packet.setSource(_globalAddress);

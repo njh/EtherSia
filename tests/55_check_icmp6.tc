@@ -76,7 +76,29 @@ ck_assert_mem_eq(sent.packet, expect.buffer, expect.length);
 ether.end();
 
 
-#test discoverNeighbour
+#test discoverNeighbour_linklocal
+EtherSia_Dummy ether;
+ether.disableAutoconfiguration();
+ether.begin("ca:2f:6d:70:f9:5f");
+ether.clearSent();
+
+HextFile naResponse("packets/icmp6_neighbour_advertisement_linklocal.hext");
+ether.injectRecievedPacket(naResponse.buffer, naResponse.length);
+
+MACAddress *response = ether.discoverNeighbour("fe80::82c:8cff:feba:662d");
+ck_assert_ptr_ne(response, NULL);
+ck_assert_mem_eq(response, "\x0a\x2c\x8c\xba\x66\x2d", 6);
+
+// Check the NS packet that was sent looks correct
+HextFile expect("packets/icmp6_neighbour_solicitation_linklocal.hext");
+ck_assert_int_eq(ether.getSentCount(), 1);
+frame_t &sent = ether.getLastSent();
+ck_assert_int_eq(sent.length, expect.length);
+ck_assert_mem_eq(sent.packet, expect.buffer, expect.length);
+ether.end();
+
+
+#test discoverNeighbour_global
 EtherSia_Dummy ether;
 ether.setGlobalAddress("2001:1234::1");
 ether.begin("ca:2f:6d:70:f9:5f");

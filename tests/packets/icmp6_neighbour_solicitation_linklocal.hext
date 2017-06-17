@@ -1,4 +1,4 @@
-33:33:ff:00:50:00        # Ethernet Destination
+33:33:ff:ba:66:2d        # Ethernet Destination
 ca:2f:6d:70:f9:5f        # Ethernet Source
 86dd                     # EtherType (IPv6)
 
@@ -7,12 +7,12 @@ ca:2f:6d:70:f9:5f        # Ethernet Source
 3a                       # Protocol
 ff                       # Hop Limit
 
-2001:1234:0000:0000:0000:0000:0000:0001  # IPv6 Source Address
-ff02:0000:0000:0000:0000:0001:ff00:5000  # IPv6 Destination Address
+fe80:0000:0000:0000:c82f:6dff:fe70:f95f  # IPv6 Source Address
+ff02:0000:0000:0000:0000:0001:ffba:662d  # IPv6 Destination Address
 
 87                       # ICMPv6 neighbour solicitation (135)
 00                       # ICMPv6 Code
-763c                     # Checksum
+eeaa                     # Checksum
 00 00 00 00              # Reserved
 
-2001:1234:0000:0000:0000:0000:0000:5000
+fe80:0000:0000:0000:082c:8cff:feba:662d
