@@ -1,0 +1,23 @@
+ca:2f:6d:70:f9:5f        # Ethernet Destination
+0a:2c:8c:ba:66:2d        # Ethernet Source
+86dd                     # EtherType (IPv6)
+
+60 00 00 00              # IPv6 header
+0020                     # Length (16 bytes)
+3a                       # Protocol
+ff                       # Hop Limit
+
+fe80:0000:0000:0000:082c:8cff:feba:662d  # IPv6 Source Address
+fe80:0000:0000:0000:14d3:bc4d:240b:5895  # IPv6 Destination Address
+
+88                       # ICMPv6 neighbour advertisement (136)
+00                       # ICMPv6 Code
+fb23                     # Checksum
+40                       # Flags: solicited
+00 00 00                 # Reserved
+
+fe80:0000:0000:0000:082c:8cff:feba:662d
+
+02                       # Option: Target Link Address
+01                       # Option Length (8 bytes)
+0a:2c:8c:ba:66:2d        # Target address
