@@ -3,6 +3,41 @@
 #include "ICMPv6Packet.h"
 
 
+
+void EtherSia::icmp6ErrorReply(uint8_t type, uint8_t code)
+{
+    ICMPv6Packet& packet = (ICMPv6Packet&)_ptr;
+    uint16_t payloadLen = IP6_HEADER_LEN + packet.payloadLength();
+    const uint16_t payloadMax = ETHERSIA_MAX_PACKET_SIZE - ICMP6_ERROR_HEADER_OFFSET - ICMP6_ERROR_HEADER_LEN;
+
+    // Make sure payloadLen isn't too long
+    if (payloadLen > payloadMax)
+        payloadLen = payloadMax;
+
+    // Copy the packet we received to the end of the new ICMPv6 packet
+    memmove(
+        packet.payload() + ICMP6_HEADER_LEN + ICMP6_ERROR_HEADER_LEN,
+        packet.payload() - IP6_HEADER_LEN,
+        payloadLen
+    );
+
+    // Now create the new reply packet
+    prepareReply();
+    packet.setPayloadLength(ICMP6_HEADER_LEN + ICMP6_ERROR_HEADER_LEN + payloadLen);
+    packet.type = type;
+    packet.code = code;
+
+    if (type == ICMP6_TYPE_PARAM_PROB) {
+        // Set pointer to the 'next header' field
+        packet.err.pointer = 0x07;
+    } else {
+        // Set the 'unused' field to zero
+        packet.err.unused = 0;
+    }
+
+    icmp6PacketSend();
+}
+
 void EtherSia::icmp6NSReply()
 {
     ICMPv6Packet& packet = (ICMPv6Packet&)_ptr;

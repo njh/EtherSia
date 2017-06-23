@@ -110,6 +110,9 @@ void loop() {
             pollingInterval = DEFAULT_POLLING_INTERVAL;
             nextRequest = millis() + (pollingInterval * 1000);
         }
+    } else {
+        // Reject any other incoming packets
+        ether.rejectPacket();
     }
 
     if ((long)(millis() - nextRequest) >= 0) {

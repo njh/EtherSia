@@ -81,4 +81,7 @@ void loop()
         udp.send();
         nextMessage = millis() + 5000;
     }
+
+    // Reject any incoming connections
+    ether.rejectPacket();
 }

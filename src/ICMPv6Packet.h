@@ -6,12 +6,18 @@
 #ifndef ICMPV6_PACKET_H
 #define ICMPV6_PACKET_H
 
+#define ICMP6_TYPE_UNREACHABLE    1
+#define ICMP6_TYPE_PARAM_PROB     4
 #define ICMP6_TYPE_ECHO           128
 #define ICMP6_TYPE_ECHO_REPLY     129
 #define ICMP6_TYPE_RS             133
 #define ICMP6_TYPE_RA             134
 #define ICMP6_TYPE_NS             135
 #define ICMP6_TYPE_NA             136
+#define ICMP6_TYPE_NA             136
+
+#define ICMP6_CODE_PORT_UNREACHABLE  4
+#define ICMP6_CODE_UNRECOGNIZED_NH   4
 
 #define ICMP6_NA_FLAG_S           (1 << 6)
 
@@ -26,6 +32,25 @@
 /* The length of the header of an ICMPv6 packet */
 #define ICMP6_HEADER_LEN          (4)
 #define ICMP6_HEADER_OFFSET       (ETHER_HEADER_LEN + IP6_HEADER_LEN)
+
+
+/**
+ * Structure for accessing the fields of a ICMP6 Error packet
+ * @private
+ */
+struct icmp6_error_header {
+    union {
+        uint32_t unused;
+        uint32_t pointer;
+        uint32_t mtu;
+    } __attribute__((__packed__));
+    // IPv6 Packet payload follows
+} __attribute__((__packed__));
+#define ICMP6_ERROR_HEADER_LEN       (4)
+#define ICMP6_ERROR_HEADER_OFFSET    (ICMP6_HEADER_OFFSET + ICMP6_HEADER_LEN)
+
+/* Verify that compiler gets the structure size correct */
+static_assert(sizeof(struct icmp6_error_header) == ICMP6_ERROR_HEADER_LEN, "Size is not correct");
 
 
 /**
@@ -124,6 +149,7 @@ public:
     uint16_t checksum;
 
     union {
+        struct icmp6_error_header err;
         struct icmp6_ra_header ra;
         struct icmp6_rs_header rs;
         struct icmp6_na_header na;

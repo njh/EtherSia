@@ -232,6 +232,18 @@ public:
     uint16_t receivePacket();
 
     /**
+     * Check the received packet, and reply with a rejection packet.
+     *
+     * - If the packet has already been replied to, it is ignored
+     * - If it was sent to a multicast address, it is ignored
+     * - If it is a TCP packet, a TCP RST reply is sent
+     * - It it was sent to a UDP port, an ICMPv6 Destination Unreachable reply is sent
+     * - If it is an unknown protocol, an ICMPv6 Unrecognised Next Header reply is sent
+     * 
+     */
+    void rejectPacket();
+
+    /**
      * Check if the packet buffer contains a valid received packet
      *
      * @return
@@ -398,6 +410,14 @@ protected:
      * @param sourceAddress The IPv6 address to send from
      */
     void icmp6SendNS(IPv6Address &targetAddress, IPv6Address &sourceAddress);
+
+    /**
+     * Send a ICMPv6 Neighbour Solicitation (NS) for specified IPv6 Address
+     *
+     * @param type The IPv6 address to be resolved
+     * @param code The IPv6 address to send from
+     */
+    void icmp6ErrorReply(uint8_t type, uint8_t code);
 
     /**
      * Send a reply to a ICMPv6 Neighbour Solicitation (NS) request (if it is our address)

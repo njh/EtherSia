@@ -1,4 +1,5 @@
 #include "EtherSia.h"
+#include "ICMPv6Packet.h"
 #include "util.h"
 
 // https://developers.google.com/speed/public-dns/
@@ -133,6 +134,29 @@ uint16_t EtherSia::receivePacket()
     }
 
     return len;
+}
+
+void EtherSia::rejectPacket()
+{
+    IPv6Packet& packet = (IPv6Packet&)_ptr;
+
+    // Ignore packets we have already replied to
+    if (!_bufferContainsReceived)
+        return;
+
+    // Ignore multicast packets
+    if (packet.destination().isMulticast())
+        return;
+
+    if (packet.protocol() == IP6_PROTO_TCP) {
+        // FIXME: Reply with TCP RST packet
+    } else if (packet.protocol() == IP6_PROTO_UDP) {
+        // Reply with ICMPv6 Port Unreachable
+        icmp6ErrorReply(ICMP6_TYPE_UNREACHABLE, ICMP6_CODE_PORT_UNREACHABLE);
+    } else {
+        // Reply with Unrecognised Next Header
+        icmp6ErrorReply(ICMP6_TYPE_PARAM_PROB, ICMP6_CODE_UNRECOGNIZED_NH);
+    }
 }
 
 void EtherSia::prepareSend()
