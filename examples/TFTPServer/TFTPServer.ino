@@ -60,5 +60,8 @@ void setup() {
 void loop() {
     ether.receivePacket();
 
-    tftp.handleRequest();
+    if (!tftp.handleRequest()) {
+        // If TFTP didn't handle the request, reject the packet
+        ether.rejectPacket();
+    }
 }

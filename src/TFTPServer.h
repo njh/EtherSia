@@ -39,8 +39,10 @@ public:
      * Handle TFTP packets
      *
      * This method must be called to check the packets in loop() after receivePacket()
+     *
+     * @return Returns true if the incoming packet was a TFTP one
      */
-    void handleRequest();
+    boolean handleRequest();
 
 
     /// The maximum size of payload in a DATA packet

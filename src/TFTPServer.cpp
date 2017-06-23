@@ -8,11 +8,11 @@ TFTPServer::TFTPServer(EtherSia &ether, uint16_t localPort) : UDPSocket(ether, l
 {
 }
 
-void TFTPServer::handleRequest()
+boolean TFTPServer::handleRequest()
 {
     if (!havePacket()) {
         // No packet, or it isn't for us
-        return;
+        return false;
     }
 
     uint8_t *payload = this->payload();
@@ -22,7 +22,7 @@ void TFTPServer::handleRequest()
         if (fileno <= 0) {
             TFTP_DEBUG("TFTP: Error, file not found");
             sendError(TFTP_NOT_FOUND);
-            return;
+            return true;
         }
 
         if (payload[1] == TFTP_OPCODE_READ) {
@@ -36,6 +36,8 @@ void TFTPServer::handleRequest()
         TFTP_DEBUG("TFTP: error, illegal operation");
         sendError(TFTP_ILLEGAL_OPERATION);
     }
+
+    return true;
 }
 
 void TFTPServer::handleWriteRequest(int8_t fileno, IPv6Address& address, uint16_t port)
