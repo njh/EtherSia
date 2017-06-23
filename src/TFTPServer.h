@@ -19,7 +19,7 @@
  * - writeBytes()
  * - readBytes()
  *
- * Warning: after a read or write request is initiated other packets are 
+ * Warning: after a read or write request is initiated other packets are
  * ignored until the transfer is complete.
  *
  */
@@ -65,7 +65,7 @@ protected:
      * @return a positive fileno if successful, a negative number if unsuccessful
      */
     virtual int8_t openFile(const char* filename) = 0;
-    
+
     /**
      * Write bytes received in a TFTP transfer
      *

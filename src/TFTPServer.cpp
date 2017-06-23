@@ -69,10 +69,10 @@ void TFTPServer::handleWriteRequest(int8_t fileno, IPv6Address& address, uint16_
                 if (block == expectedBlock) {
                     writeBytes(fileno, block, &payload[4], len);
                     expectedBlock++;
- 
+
                     // Update timeout
                     timeout = millis() + TFTP_DATA_TIMEOUT;
-   
+
                     // End of transfer?
                     if (len != TFTP_BLOCK_SIZE) {
                         TFTP_DEBUG("TFTP: End of Transfer");
@@ -81,7 +81,7 @@ void TFTPServer::handleWriteRequest(int8_t fileno, IPv6Address& address, uint16_
                 }
             }
         }
-        
+
         if ((int32_t)(timeout - millis()) <= 0) {
             TFTP_DEBUG("TFTP: Write Request Timeout");
             return;
@@ -133,10 +133,10 @@ void TFTPServer::handleReadRequest(int8_t fileno, IPv6Address& address, uint16_t
 boolean TFTPServer::waitForAck(UDPSocket &sock, uint16_t expectedBlock)
 {
     uint32_t timeout = millis() + TFTP_ACK_TIMEOUT;
-    
+
     do {
         _ether.receivePacket();
-        
+
         if (sock.havePacket()) {
             uint8_t *payload = sock.payload();
             if (payload[0] == 0x00 && payload[1] == TFTP_OPCODE_ACK) {
@@ -152,7 +152,7 @@ boolean TFTPServer::waitForAck(UDPSocket &sock, uint16_t expectedBlock)
         }
 
     } while ((int32_t)(timeout - millis()) > 0);
-    
+
     // Timed out, nothing received
     return false;
 }
