@@ -17,7 +17,7 @@
 #define ICMP6_TYPE_NA             136
 
 #define ICMP6_CODE_PORT_UNREACHABLE  4
-#define ICMP6_CODE_UNRECOGNIZED_NH   4
+#define ICMP6_CODE_UNRECOGNIZED_NH   1
 
 #define ICMP6_NA_FLAG_S           (1 << 6)
 

@@ -29,7 +29,7 @@ void EtherSia::icmp6ErrorReply(uint8_t type, uint8_t code)
 
     if (type == ICMP6_TYPE_PARAM_PROB) {
         // Set pointer to the 'next header' field
-        packet.err.pointer = 0x07;
+        packet.err.pointer = htonl(0x06);
     } else {
         // Set the 'unused' field to zero
         packet.err.unused = 0;
