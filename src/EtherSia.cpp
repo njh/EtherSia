@@ -149,7 +149,8 @@ void EtherSia::rejectPacket()
         return;
 
     if (packet.protocol() == IP6_PROTO_TCP) {
-        // FIXME: Reply with TCP RST packet
+        // Reply with TCP RST packet
+        tcpSendRSTReply();
     } else if (packet.protocol() == IP6_PROTO_UDP) {
         // Reply with ICMPv6 Port Unreachable
         icmp6ErrorReply(ICMP6_TYPE_UNREACHABLE, ICMP6_CODE_PORT_UNREACHABLE);
@@ -205,4 +206,29 @@ void EtherSia::send()
     _bufferContainsReceived = false;
 
     sendFrame(_buffer, packet.length());
+}
+
+void EtherSia::tcpSendRSTReply()
+{
+    IPv6Packet& packet = (IPv6Packet&)_ptr;
+    struct tcp_header *tcpHeader = TCP_HEADER_PTR;
+    uint32_t seqNum = htonl(tcpHeader->sequenceNum);
+    uint16_t sourcePort = tcpHeader->sourcePort;
+
+    prepareReply();
+    tcpHeader->sourcePort = tcpHeader->destinationPort;
+    tcpHeader->destinationPort = sourcePort;
+    tcpHeader->sequenceNum = 0;
+    tcpHeader->acknowledgementNum = htonl(seqNum + 1);
+    tcpHeader->dataOffset = (TCP_MINIMUM_HEADER_LEN / 4) << 4;
+    tcpHeader->flags = TCP_FLAG_ACK | TCP_FLAG_RST;
+    tcpHeader->window = 0;
+    tcpHeader->urgentPointer = 0;
+
+    packet.setPayloadLength(TCP_MINIMUM_HEADER_LEN);
+
+    tcpHeader->checksum = 0;
+    tcpHeader->checksum = htons(packet.calculateChecksum());
+
+    send();
 }

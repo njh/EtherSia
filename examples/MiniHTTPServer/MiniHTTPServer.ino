@@ -56,7 +56,13 @@ void loop() {
         http.println(F("This is some plain text"));
         http.sendReply();
 
-    } else {
+    } else if (http.havePacket()) {
+        // Some other HTTP request, return 404
         http.notFound();
+
+    } else {
+        // Some other packet, reply with rejection
+        ether.rejectPacket();
+
     }
 }

@@ -234,12 +234,16 @@ public:
     /**
      * Check the received packet, and reply with a rejection packet.
      *
+     * Calling this function is optional. If you don't call it the
+     * packet will just be ignored. This is similar to the difference
+     * between drop and reject on a firewall.
+     *
      * - If the packet has already been replied to, it is ignored
      * - If it was sent to a multicast address, it is ignored
      * - If it is a TCP packet, a TCP RST reply is sent
      * - It it was sent to a UDP port, an ICMPv6 Destination Unreachable reply is sent
      * - If it is an unknown protocol, an ICMPv6 Unrecognised Next Header reply is sent
-     * 
+     *
      */
     void rejectPacket();
 
@@ -342,6 +346,11 @@ public:
      * @return An pointer to a MAC address or NULL if the discovery failed
      */
     MACAddress* discoverNeighbour(IPv6Address& address, uint8_t attempts=NEIGHBOUR_SOLICITATION_ATTEMPTS);
+
+    /**
+     * Send a reply with a TCP RST packet
+     */
+    void tcpSendRSTReply();
 
     /**
      * Send an Ethernet frame
