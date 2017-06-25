@@ -80,8 +80,8 @@ ether.clearSent();
 DummySocket socket(ether);
 socket.setRemoteAddress("2001:4321::1234", 1234);
 uint8_t buffer[] = {
-  'H', 'e', 'l', 'l', 'o', ' ',
-  ' ', 'W', 'o', 'r', 'l', 'd', '\r', '\n'
+    'H', 'e', 'l', 'l', 'o', ' ',
+    ' ', 'W', 'o', 'r', 'l', 'd', '\r', '\n'
 };
 socket.send(buffer, sizeof(buffer));
 

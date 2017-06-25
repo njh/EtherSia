@@ -1,4 +1,5 @@
 #include "EtherSia.h"
+#include "ICMPv6Packet.h"
 #include "util.h"
 
 // https://developers.google.com/speed/public-dns/
@@ -135,6 +136,33 @@ uint16_t EtherSia::receivePacket()
     return len;
 }
 
+void EtherSia::rejectPacket()
+{
+    IPv6Packet& packet = (IPv6Packet&)_ptr;
+
+    // Ignore packets we have already replied to
+    if (!_bufferContainsReceived)
+        return;
+
+    // Ignore multicast packets
+    if (packet.destination().isMulticast())
+        return;
+
+    if (packet.protocol() == IP6_PROTO_TCP) {
+        // Reply with TCP RST packet
+        tcpSendRSTReply();
+    } else if (packet.protocol() == IP6_PROTO_UDP) {
+        // Reply with ICMPv6 Port Unreachable
+        icmp6ErrorReply(ICMP6_TYPE_UNREACHABLE, ICMP6_CODE_PORT_UNREACHABLE);
+    } else if (packet.protocol() == IP6_PROTO_ICMP6) {
+        // Ignore ICMPv6 packets
+        return;
+    } else {
+        // Reply with Unrecognised Next Header
+        icmp6ErrorReply(ICMP6_TYPE_PARAM_PROB, ICMP6_CODE_UNRECOGNIZED_NH);
+    }
+}
+
 void EtherSia::prepareSend()
 {
     IPv6Packet& packet = (IPv6Packet&)_ptr;
@@ -181,4 +209,29 @@ void EtherSia::send()
     _bufferContainsReceived = false;
 
     sendFrame(_buffer, packet.length());
+}
+
+void EtherSia::tcpSendRSTReply()
+{
+    IPv6Packet& packet = (IPv6Packet&)_ptr;
+    struct tcp_header *tcpHeader = TCP_HEADER_PTR;
+    uint32_t seqNum = htonl(tcpHeader->sequenceNum);
+    uint16_t sourcePort = tcpHeader->sourcePort;
+
+    prepareReply();
+    tcpHeader->sourcePort = tcpHeader->destinationPort;
+    tcpHeader->destinationPort = sourcePort;
+    tcpHeader->sequenceNum = 0;
+    tcpHeader->acknowledgementNum = htonl(seqNum + 1);
+    tcpHeader->dataOffset = (TCP_MINIMUM_HEADER_LEN / 4) << 4;
+    tcpHeader->flags = TCP_FLAG_ACK | TCP_FLAG_RST;
+    tcpHeader->window = 0;
+    tcpHeader->urgentPointer = 0;
+
+    packet.setPayloadLength(TCP_MINIMUM_HEADER_LEN);
+
+    tcpHeader->checksum = 0;
+    tcpHeader->checksum = htons(packet.calculateChecksum());
+
+    send();
 }

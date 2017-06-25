@@ -132,3 +132,81 @@ ck_assert(result == true);
 MACAddress routerMac = ether.routerMac();
 ck_assert_mem_eq(routerMac, "\x01\x02\x03\x04\x05\x06", 6);
 ether.end();
+
+
+#test rejectUDPPacket
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
+ether.begin("00:04:a3:2c:2b:b9");
+ether.clearSent();
+
+HextFile udpPacket("packets/udp_valid_hello.hext");
+ether.injectRecievedPacket(udpPacket.buffer, udpPacket.length);
+ck_assert_int_eq(ether.receivePacket(), 67);
+
+ether.rejectPacket();
+ck_assert_int_eq(ether.getSentCount(), 1);
+
+// Check the NS packet that was sent looks correct
+HextFile expect("packets/icmp6_port_unreachable.hext");
+frame_t &sent = ether.getLastSent();
+ck_assert_int_eq(sent.length, expect.length);
+ck_assert_mem_eq(sent.packet, expect.buffer, expect.length);
+ether.end();
+
+
+#test rejectTCPPacket
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
+ether.begin("00:04:a3:2c:2b:b9");
+ether.clearSent();
+
+HextFile tcpSynPacket("packets/tcp_receive_syn.hext");
+ether.injectRecievedPacket(tcpSynPacket.buffer, tcpSynPacket.length);
+ck_assert_int_eq(ether.receivePacket(), 98);
+
+ether.rejectPacket();
+ck_assert_int_eq(ether.getSentCount(), 1);
+
+// Check the NS packet that was sent looks correct
+HextFile expect("packets/tcp_send_rst.hext");
+frame_t &sent = ether.getLastSent();
+ck_assert_int_eq(sent.length, expect.length);
+ck_assert_mem_eq(sent.packet, expect.buffer, expect.length);
+ether.end();
+
+
+#test rejectIcmpPacket_ignore
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
+ether.begin("00:04:a3:2c:2b:b9");
+ether.clearSent();
+
+HextFile icmpPacket("packets/icmp6_unknown_type.hext");
+ether.injectRecievedPacket(icmpPacket.buffer, icmpPacket.length);
+ck_assert_int_eq(ether.receivePacket(), 67);
+
+ether.rejectPacket();
+ck_assert_int_eq(ether.getSentCount(), 0);
+ether.end();
+
+
+#test rejectUnknownProtocolPacket
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
+ether.begin("00:04:a3:2c:2b:b9");
+ether.clearSent();
+
+HextFile icmpPacket("packets/ipv6_unknown_protocol.hext");
+ether.injectRecievedPacket(icmpPacket.buffer, icmpPacket.length);
+ck_assert_int_eq(ether.receivePacket(), 67);
+
+ether.rejectPacket();
+ck_assert_int_eq(ether.getSentCount(), 1);
+
+// Check the NS packet that was sent looks correct
+HextFile expect("packets/icmp6_unrecognized_next_header.hext");
+frame_t &sent = ether.getLastSent();
+ck_assert_int_eq(sent.length, expect.length);
+ck_assert_mem_eq(sent.packet, expect.buffer, expect.length);
+ether.end();

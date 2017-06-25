@@ -19,7 +19,7 @@
  * - writeBytes()
  * - readBytes()
  *
- * Warning: after a read or write request is initiated other packets are 
+ * Warning: after a read or write request is initiated other packets are
  * ignored until the transfer is complete.
  *
  */
@@ -39,8 +39,10 @@ public:
      * Handle TFTP packets
      *
      * This method must be called to check the packets in loop() after receivePacket()
+     *
+     * @return Returns true if the incoming packet was a TFTP one
      */
-    void handleRequest();
+    boolean handleRequest();
 
 
     /// The maximum size of payload in a DATA packet
@@ -65,7 +67,7 @@ protected:
      * @return a positive fileno if successful, a negative number if unsuccessful
      */
     virtual int8_t openFile(const char* filename) = 0;
-    
+
     /**
      * Write bytes received in a TFTP transfer
      *

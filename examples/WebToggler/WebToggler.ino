@@ -241,8 +241,13 @@ void loop()
         }
 
     // No matches - return 404 Not Found page
-    } else {
+    } else if (http.havePacket()) {
         http.notFound();
+
+    } else {
+        // Some other packet, reply with rejection
+        ether.rejectPacket();
+
     }
 
     // Reset the watchdog
