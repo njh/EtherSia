@@ -57,5 +57,8 @@ void loop()
 
         // We must acknowledge that we received the packet 
         tcp.sendAck();
+    } else {
+        // Reject any other packets
+        ether.rejectPacket();
     }
 }
