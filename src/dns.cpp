@@ -149,15 +149,7 @@ IPv6Address* EtherSia::lookupHostname(const char* hostname)
     udp.setRemoteAddress(_dnsServerAddress, DNS_PORT_NUMBER);
 
     while (requestCount <= DNS_REQUEST_ATTEMPTS) {
-        receivePacket();
-
-        if (udp.havePacket()) {
-            IPv6Address *address = dnsProcessReply(udp.payload(), udp.payloadLength(), id);
-            if (address) {
-                return address;
-            }
-        }
-
+        // Is it time to send a request packet?
         if ((long)(millis() - nextRequest) >= 0) {
             uint16_t len = dnsMakeRequest(udp.payload(), hostname, id);
             if (len) {
@@ -165,6 +157,15 @@ IPv6Address* EtherSia::lookupHostname(const char* hostname)
                 nextRequest = millis() + DNS_REQUEST_TIMEOUT;
             }
             requestCount++;
+        }
+
+        // Have we received a reply?
+        receivePacket();
+        if (udp.havePacket()) {
+            IPv6Address *address = dnsProcessReply(udp.payload(), udp.payloadLength(), id);
+            if (address) {
+                return address;
+            }
         }
     }
 
