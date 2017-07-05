@@ -69,6 +69,25 @@ ck_assert_int_gt(sock.localPort(), 20000);
 ck_assert_int_lt(sock.localPort(), 30000);
 
 
+#test setRemoteAddress_hostname
+MACAddress routerMac = MACAddress("ca:2f:6d:70:f9:5f");
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
+ether.setRouter(routerMac);
+ether.begin("00:04:a3:2c:2b:b9");
+ether.clearSent();
+
+HextFile dnsResponsePacket("packets/udp_dns_response.hext");
+ether.injectRecievedPacket(dnsResponsePacket.buffer, dnsResponsePacket.length);
+
+DummySocket sock(ether);
+ck_assert(sock.setRemoteAddress("ipv6.aelius.com", 4321) == true);
+ck_assert_int_eq(sock.remotePort(), 4321);
+IPv6Address expect("2001:41c8:0051:07cf:0000:0000:0000:0006");
+ck_assert(sock.remoteAddress() == expect);
+ether.end();
+
+
 #test setRemoteAddress_invalid_ip
 EtherSia_Dummy ether;
 DummySocket sock(ether);
