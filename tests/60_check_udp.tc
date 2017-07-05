@@ -184,6 +184,9 @@ HextFile expect("packets/udp_reply_oh_hi.hext");
 frame_t &sent = ether.getLastSent();
 ck_assert_int_eq(sent.length, expect.length);
 ck_assert_mem_eq(sent.packet, expect.buffer, expect.length);
+
+// This should return false now, as packet no-longer contains the packet we received
+ck_assert(sock.havePacket() == false);
 ether.end();
 
 
@@ -205,5 +208,8 @@ HextFile expect("packets/udp_reply_oh_hi.hext");
 frame_t &sent = ether.getLastSent();
 ck_assert_int_eq(sent.length, expect.length);
 ck_assert_mem_eq(sent.packet, expect.buffer, expect.length);
+
+// This should return false now, as packet no-longer contains the packet we received
+ck_assert(sock.havePacket() == false);
 ether.end();
 
