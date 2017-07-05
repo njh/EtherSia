@@ -58,6 +58,23 @@ ck_assert_mem_eq(sock.payload(), expect_payload, 5);
 ck_assert(sock.payloadEquals("Hello") == true);
 
 
+#test havePacket_with_nd
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
+ether.begin("00:04:a3:2c:2b:b9");
+ether.clearSent();
+
+HextFile naResponse("packets/icmp6_neighbour_advertisement_global3.hext");
+ether.injectRecievedPacket(naResponse.buffer, naResponse.length);
+
+UDPSocket sock(ether, 1008);
+sock.setRemoteAddress("2001:08b0:ffd5:0003:a65e:60ff:feda:589d", 64006);
+HextFile valid_udp("packets/udp_valid_hello.hext");
+ether.injectRecievedPacket(valid_udp.buffer, valid_udp.length);
+ck_assert_int_eq(ether.receivePacket(), 67);
+ck_assert(sock.havePacket() == true);
+
+
 #test havePacket_wrong_protocol
 EtherSia_Dummy ether;
 ether.setGlobalAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
@@ -91,6 +108,40 @@ ether.begin("00:04:a3:2c:2b:b9");
 ether.clearSent();
 
 UDPSocket sock(ether, 1008);
+HextFile valid_udp("packets/udp_valid_hello.hext");
+ether.injectRecievedPacket(valid_udp.buffer, valid_udp.length);
+ck_assert_int_eq(ether.receivePacket(), 67);
+ck_assert(sock.havePacket() == false);
+
+
+#test havePacket_wrong_source_port
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
+ether.begin("00:04:a3:2c:2b:b9");
+ether.clearSent();
+
+HextFile naResponse("packets/icmp6_neighbour_advertisement_global3.hext");
+ether.injectRecievedPacket(naResponse.buffer, naResponse.length);
+
+UDPSocket sock(ether, 1008);
+sock.setRemoteAddress("2001:08b0:ffd5:0003:a65e:60ff:feda:589d", 64005);
+HextFile valid_udp("packets/udp_valid_hello.hext");
+ether.injectRecievedPacket(valid_udp.buffer, valid_udp.length);
+ck_assert_int_eq(ether.receivePacket(), 67);
+ck_assert(sock.havePacket() == false);
+
+
+#test havePacket_wrong_source_address
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
+ether.begin("00:04:a3:2c:2b:b9");
+ether.clearSent();
+
+HextFile naResponse("packets/icmp6_neighbour_advertisement_global4.hext");
+ether.injectRecievedPacket(naResponse.buffer, naResponse.length);
+
+UDPSocket sock(ether, 1008);
+sock.setRemoteAddress("2001:08b0:ffd5:0003:0000:0000:0000:0001", 64006);
 HextFile valid_udp("packets/udp_valid_hello.hext");
 ether.injectRecievedPacket(valid_udp.buffer, valid_udp.length);
 ck_assert_int_eq(ether.receivePacket(), 67);
