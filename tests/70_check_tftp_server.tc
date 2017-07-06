@@ -59,9 +59,9 @@ ether.begin("00:04:a3:2c:2b:b9");
 ether.clearSent();
 
 CustomTFTPServer tftp(ether);
-HextFile tftp_invalid_op("packets/udp_tftp_read_foobar.hext");
-ether.injectRecievedPacket(tftp_invalid_op.buffer, tftp_invalid_op.length);
-ck_assert_int_eq(ether.receivePacket(), tftp_invalid_op.length);
+HextFile tftp_read_foobar("packets/udp_tftp_read_foobar.hext");
+ether.injectRecievedPacket(tftp_read_foobar.buffer, tftp_read_foobar.length);
+ck_assert_int_eq(ether.receivePacket(), tftp_read_foobar.length);
 ck_assert(tftp.handleRequest() == true);
 
 HextFile expect("packets/udp_tftp_reply_not_found.hext");
@@ -78,8 +78,8 @@ ether.begin("00:04:a3:2c:2b:b9");
 ether.clearSent();
 
 CustomTFTPServer tftp(ether);
-HextFile tftp_invalid_op("packets/udp_valid_hello.hext");
-ether.injectRecievedPacket(tftp_invalid_op.buffer, tftp_invalid_op.length);
-ck_assert_int_eq(ether.receivePacket(), tftp_invalid_op.length);
+HextFile not_tftp("packets/udp_valid_hello.hext");
+ether.injectRecievedPacket(not_tftp.buffer, not_tftp.length);
+ck_assert_int_eq(ether.receivePacket(), not_tftp.length);
 ck_assert(tftp.handleRequest() == false);
 
