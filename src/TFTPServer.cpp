@@ -145,6 +145,7 @@ boolean TFTPServer::waitForAck(UDPSocket &sock, uint16_t expectedBlock)
                 uint16_t recievedBlock = bytesToWord(payload[2], payload[3]);
                 if (recievedBlock != expectedBlock) {
                     // Ack for wrong block
+                    TFTP_DEBUG("TFTP: Received ack for wrong block");
                     return false;
                 } else {
                     // Got correct Ack

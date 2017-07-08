@@ -13,6 +13,7 @@ doxygen: examples.txt
 clean:
 	rm -rf html
 	rm -f doxygen.log
+	rm -f examples.txt
 
 upload: doxygen
 	rsync -avz -e ssh html/ njh@www.aelius.com:~/public_html/ethersia/

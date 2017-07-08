@@ -1,0 +1,21 @@
+a4:5e:60:da:58:9d        # Ethernet Destination
+00:04:a3:2c:2b:b9        # Ethernet Source
+86dd                     # EtherType (IPv6)
+
+60 00 00 00              # IPv6 header
+0018                     # Length (24 bytes)
+11                       # Protocol
+40                       # Hop Limit
+
+2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9  # IPv6 Source Address
+2001:08b0:ffd5:0003:a65e:60ff:feda:589d  # IPv6 Destination Address
+
+61a8                     # UDP Source Port (69)
+fa06                     # UDP Destination Port
+0018                     # Length (24 bytes)
+d25e                     # Checksum
+
+0003                     # TFTP Data
+0001                     # Block Number
+
+"Hello World\n"
