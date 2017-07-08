@@ -14,10 +14,23 @@ ff02:0000:0000:0000:0000:0000:0000:0001  # IPv6 Destination Address
 00                       # ICMPv6 Code
 6508                     # Checksum
 
-40 00 03 84 00 00 00 00 00 00 00 00 01 01
+40                       # ICMPv6 RA: Current Hop Limit
+00                       # ICMPv6 RA: Flags
+0384                     # ICMPv6 RA: Router Lifetime
+00000000                 # ICMPv6 RA: Reachable Time
+00000000                 # ICMPv6 RA: Re-trans Timer
 
+01                       # ICMPv6 Option 1: Source Link-Layer Address
+01                       # ICMPv6 Option Length: 8 bytes
 3c:61:04:d4:8d:88        # Router MAC
 
-03 04 40 c0 00 27 8d 00 00 09 3a 80 00 00 00 00
+03                       # ICMPv6 Option 3: Prefix Information
+04                       # ICMPv6 Option Length: 32 bytes
+
+40                       # ICMPv6 Prefix: Length
+c0                       # ICMPv6 Prefix: Flags (On-link flag & Autoconf Flag)
+00278d00                 # ICMPv6 Prefix: Valid Lifetime (30 days)
+00093a80                 # ICMPv6 Prefix: Preferred Lifetime (7 days)
+00000000                 # ICMPv6 Prefix: Reserved
 
 2001:08b0:ffd5:0003:0000:0000:0000:0000  # IPv6 prefix
