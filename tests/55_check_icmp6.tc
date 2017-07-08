@@ -36,6 +36,20 @@ ck_assert(ether.globalAddress() == addr);
 ether.end();
 
 
+#test handles_router_solicitation_with_dns
+EtherSia_Dummy ether;
+HextFile router_advertisment("packets/icmp6_router_advertisment_with_dns.hext");
+ether.injectRecievedPacket(router_advertisment.buffer, router_advertisment.length);
+ether.begin("ca:2f:6d:70:f9:5f");
+
+IPv6Address addr("2001:08b0:ffd5:0003:c82f:6dff:fe70:f95f");
+ck_assert(ether.globalAddress() == addr);
+
+IPv6Address dnsAddr("2001:8b0::2020");
+ck_assert(ether.dnsServerAddress() == dnsAddr);
+ether.end();
+
+
 #test neighbour_solicitation
 EtherSia_Dummy ether;
 ether.setGlobalAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");

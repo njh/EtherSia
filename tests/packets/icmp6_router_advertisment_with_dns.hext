@@ -1,0 +1,57 @@
+33:33:00:00:00:01        # Ethernet Destination
+3c:61:04:d4:8d:88        # Ethernet Source
+86dd                     # EtherType (IPv6)
+
+60 00 00 00              # IPv6 header
+0078                     # Length
+3a                       # ICMPv6 Protocol
+ff                       # Hop Limit
+
+fe80:0000:0000:0000:3e61:04ff:fed4:8d88  # IPv6 Source Address
+ff02:0000:0000:0000:0000:0000:0000:0001  # IPv6 Destination Address
+
+86                       # ICMPv6 router advertisement (134)
+00                       # ICMPv6 Code
+44dd                     # Checksum
+
+40                       # ICMPv6 RA: Current Hop Limit
+00                       # ICMPv6 RA: Flags
+0384                     # ICMPv6 RA: Router Lifetime
+00000000                 # ICMPv6 RA: Reachable Time
+00000000                 # ICMPv6 RA: Re-trans Timer
+
+01                       # ICMPv6 Option 1: Source Link-Layer Address
+01                       # ICMPv6 Option Length: 8 bytes
+3c:61:04:d4:8d:88        # Router MAC
+
+
+03                       # ICMPv6 Option 3: Prefix Information
+04                       # ICMPv6 Option Length: 32 bytes
+
+40                       # ICMPv6 Prefix: Length
+c0                       # ICMPv6 Prefix: Flags (On-link flag & Autoconf Flag)
+00278d00                 # ICMPv6 Prefix: Valid Lifetime (30 days)
+00093a80                 # ICMPv6 Prefix: Preferred Lifetime (7 days)
+00000000                 # ICMPv6 Prefix: Reserved
+
+2001:08b0:ffd5:0003:0000:0000:0000:0000  # IPv6 prefix
+
+
+19                       # ICMPv6 Option 25: Recursive DNS Server
+05                       # ICMPv6 Option Length: 40 bytes
+
+0000                     # ICMPv6 RDNS: Reserved
+ffffffff                 # ICMPv6 RDNS: Lifetime - infinite
+
+2001:08b0:0000:0000:0000:0000:0000:2020  # Recursive DNS Server Address
+2001:08b0:0000:0000:0000:0000:0000:2021  # Recursive DNS Server Address
+
+
+1F                       # ICMPv6 Option 31: DNS Search list
+03                       # ICMPv6 Option Length: 24 bytes
+
+0000                     # ICMPv6 DNS Search: Reserved
+ffffffff                 # ICMPv6 DNS Search: Lifetime - infinite
+
+"aelius.co.uk"           # Domain name
+00 00 00 00              # Padding
