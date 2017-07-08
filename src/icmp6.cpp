@@ -155,7 +155,7 @@ void EtherSia::icmp6ProcessPrefix(struct icmp6_prefix_information *pi)
 
 void EtherSia::icmp6ProcessRA()
 {
-    IPv6Packet& packet = (IPv6Packet&)_ptr;
+    ICMPv6Packet& packet = (ICMPv6Packet&)_ptr;
     int16_t remaining = packet.payloadLength() - ICMP6_HEADER_LEN - ICMP6_RA_HEADER_LEN;
     uint8_t *ptr = _buffer + ICMP6_RA_HEADER_OFFSET + ICMP6_RA_HEADER_LEN;
 
