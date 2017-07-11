@@ -46,7 +46,7 @@ boolean PingClient::havePacket()
         return false;
     }
 
-    if (packet.echo.identifier != this->_identifier) {
+    if (ntohs(packet.echo.identifier) != this->_identifier) {
         // Wrong ICMPv6 Echo identifier
         Serial.println("Wrong ICMPv6 Echo identifier");
         return false;
@@ -85,8 +85,8 @@ void PingClient::sendInternal(uint16_t length, boolean /*isReply*/)
     
     packet.type = ICMP6_TYPE_ECHO;
     packet.code = 0;
-    packet.echo.identifier = this->_identifier;
     packet.echo.sequenceNumber = htons(this->_sequenceNumber++);
+    packet.echo.identifier = htons(this->_identifier);
     packet.checksum = 0;
     packet.checksum = htons(packet.calculateChecksum());
 
