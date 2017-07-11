@@ -470,6 +470,7 @@ protected:
     void icmp6PacketSend();
 };
 
+#include "PingClient.h"
 #include "TCPServer.h"
 #include "HTTPServer.h"
 #include "TFTPServer.h"
