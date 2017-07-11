@@ -85,12 +85,16 @@ void PingClient::sendInternal(uint16_t length, boolean /*isReply*/)
     
     packet.type = ICMP6_TYPE_ECHO;
     packet.code = 0;
-    packet.echo.sequenceNumber = htons(this->_sequenceNumber++);
     packet.echo.identifier = htons(this->_identifier);
+    packet.echo.sequenceNumber = htons(this->_sequenceNumber);
+
     packet.checksum = 0;
     packet.checksum = htons(packet.calculateChecksum());
 
     _ether.send();
+
+    // Increment the sequence number for the next packet
+    this->_sequenceNumber++;
 }
 
 uint8_t* PingClient::payload()
