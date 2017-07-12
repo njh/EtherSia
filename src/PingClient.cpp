@@ -19,43 +19,36 @@ boolean PingClient::havePacket()
     ICMPv6Packet& packet = (ICMPv6Packet&)_ether.packet();
 
     if (!_ether.bufferContainsReceived()) {
-        Serial.println("!bufferContainsReceived");
         return false;
     }
 
     if (packet.protocol() != IP6_PROTO_ICMP6) {
         // Wrong protocol
-        Serial.println("Wrong protocol");
-        return false;
-    }
-
-    if (!_ether.isOurAddress(packetDestination())) {
-        // Wrong destination address
-        Serial.println("Wrong destination address");
-        return false;
-    }
-
-    if (!_remoteAddress.isZero() && packetSource() != _remoteAddress) {
-        // Wrong source address
-        Serial.println("Wrong source address");
         return false;
     }
 
     if (packet.type != ICMP6_TYPE_ECHO_REPLY) {
         // Wrong ICMPv6 type
-        Serial.println("Wrong ICMPv6 type");
+        return false;
+    }
+
+    if (!_ether.isOurAddress(packetDestination())) {
+        // Wrong destination address
+        return false;
+    }
+
+    if (!_remoteAddress.isZero() && packetSource() != _remoteAddress) {
+        // Wrong source address
         return false;
     }
 
     if (ntohs(packet.echo.identifier) != this->_identifier) {
         // Wrong ICMPv6 Echo identifier
-        Serial.println("Wrong ICMPv6 Echo identifier");
         return false;
     }
 
     if (ntohs(packet.echo.sequenceNumber) != (this->_sequenceNumber-1)) {
         // Sequence numbers didn't match
-        Serial.println("Sequence numbers didn't match");
         return false;
     }
 
