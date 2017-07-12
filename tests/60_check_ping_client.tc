@@ -10,6 +10,8 @@ PingClient ping(ether);
 ck_assert(ping.remoteAddress().isZero());
 ck_assert_int_eq(ping.identifier(), 21845);
 ck_assert_int_eq(ping.sequenceNumber(), 0);
+ck_assert_int_eq(ping.timeLastSent(), 0);
+ck_assert_int_eq(ping.timeLastRecieved(), 0);
 
 #test setRemoteAddress_ip
 EtherSia_Dummy ether;
@@ -36,6 +38,7 @@ ck_assert_int_eq(ether.receivePacket(), 70);
 ck_assert(ping.havePacket() == true);
 ck_assert(ping.gotReply() == true);
 ck_assert_int_eq(ping.payloadLength(), 8);
+ck_assert_int_eq(ping.timeLastRecieved(), 100);
 ether.end();
 
 
@@ -56,4 +59,5 @@ frame_t &sent = ether.getLastSent();
 ck_assert_int_eq(sent.length, expect.length);
 ck_assert_mem_eq(sent.packet, expect.buffer, expect.length);
 ck_assert(ping.gotReply() == false);
+ck_assert_int_eq(ping.timeLastSent(), 100);
 ether.end();

@@ -18,10 +18,10 @@ EtherSia_ENC28J60 ether(10);
 PingClient ping(ether);
 
 void setup() {
-    MACAddress macAddress("0a:2c:8c:ba:66:2d");
+    MACAddress macAddress("c2:6b:46:ef:30:4d");
 
     // Setup serial port
-    Serial.begin(38400);
+    Serial.begin(115200);
     Serial.println("[EtherSia PingClient]");
 
     // Start Ethernet
@@ -58,8 +58,19 @@ void loop()
 
     if (ping.havePacket()) {
         // We got a reply
-        Serial.print("Pong! icmp_seq=");
-        Serial.println(ping.sequenceNumber(), DEC);
+        Serial.print(ether.packet().payloadLength());
+        Serial.print(" bytes from ");
+        ether.packet().source().print();
+
+        Serial.print(", icmp_seq=");
+        Serial.print(ping.sequenceNumber(), DEC);
+
+        Serial.print(" hlim=");
+        Serial.print(ether.packet().hopLimit(), DEC);
+
+        Serial.print(" time=");
+        Serial.print(ping.lastRoundTripTime() / 1000, DEC);
+        Serial.println(" ms");
     } else {
         // Reject any incoming connections
         ether.rejectPacket();

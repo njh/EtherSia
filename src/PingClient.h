@@ -93,6 +93,33 @@ public:
      */
     uint16_t sequenceNumber() { return _sequenceNumber; }
     
+    /**
+     * Set the ICMPv6 Echo sequence number for the next packet to be sent
+     *
+     * @param seqNum The ICMPv6 Echo identifier
+     */
+    void setSequenceNumber(uint16_t seqNum) { _sequenceNumber = seqNum; }
+    
+     /**
+      * Get the time (in micro-seconds) that a ping was last sent
+      *
+      * @return The last time a ping was sent (in microseconds)
+      */
+    uint32_t timeLastSent() { return _timeLastSent; }
+    
+     /**
+      * Get the time (in micro-seconds) that a ping was last received
+      *
+      * @return The last time a ping was received (in microseconds)
+      */
+    uint32_t timeLastRecieved() { return _timeLastRecieved; }
+
+     /**
+      * Get the time (in micro-seconds) that a ping was last received
+      *
+      * @return The last time a ping was received (in microseconds)
+      */
+    uint32_t lastRoundTripTime();
 
      /**
       * Check if we received a reply for the last echo packet sent
@@ -100,12 +127,6 @@ public:
       * @return True if we have received a reply for the last echo sent
       */
     boolean gotReply() { return _gotReply; }
-    /**
-     * Set the ICMPv6 Echo sequence number for the next packet to be sent
-     *
-     * @param seqNum The ICMPv6 Echo identifier
-     */
-    void setSequenceNumber(uint16_t seqNum) { _sequenceNumber = seqNum; }
 
 protected:
 
@@ -113,6 +134,8 @@ protected:
     uint16_t _sequenceNumber;   /**< Sequence number for next ICMPv6 echo packet sent */
 
     boolean _gotReply;          /**< True if we have received a reply for the last echo sent */
+    uint32_t _timeLastSent;     /**< Time in microseconds that the last echo packet was sent */
+    uint32_t _timeLastRecieved; /**< Time in microseconds that the last echo packet was received */
 
     /**
      * Send a ICMPv6 Ping packet

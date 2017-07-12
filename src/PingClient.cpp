@@ -7,6 +7,8 @@ PingClient::PingClient(EtherSia &ether) : Socket(ether)
     this->_identifier = random();
     this->_sequenceNumber = 0;
     this->_gotReply = false;
+    this->_timeLastSent = 0;
+    this->_timeLastRecieved = 0;
 }
 
 boolean PingClient::setRemoteAddress(const char *remoteAddress)
@@ -54,6 +56,7 @@ boolean PingClient::havePacket()
 
     // Everthing matched up
     this->_gotReply = true;
+    this->_timeLastRecieved = micros();
     return true;
 }
 
@@ -105,4 +108,9 @@ uint16_t PingClient::payloadLength()
 {
     ICMPv6Packet& packet = (ICMPv6Packet&)_ether.packet();
     return packet.payloadLength() - ICMP6_HEADER_LEN - ICMP6_ECHO_HEADER_LEN;
+}
+
+uint32_t PingClient::lastRoundTripTime()
+{
+    return _timeLastRecieved - _timeLastSent;
 }
