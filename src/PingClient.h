@@ -35,7 +35,15 @@ public:
     boolean setRemoteAddress(const char *remoteAddress);
 
     /**
-     * Check if a Ping packet is has been received on the Ethernet interface
+     * Check if a Echo Reply packet is has been received
+     *
+     * This function performs the following checks:
+     * - that it is a ping packet
+     * - that the IPv6 address is for us
+     * - that the source address is the address we sent the ping to
+     * - that the ICMPv6 echo identifier matches the one we sent
+     * - the the sequence number matches the last ping sent
+     *
      * @return true if there is a valid ping packet has been received
      */
     boolean havePacket();
@@ -101,8 +109,8 @@ public:
 
 protected:
 
-    uint16_t _identifier;
-    uint16_t _sequenceNumber;
+    uint16_t _identifier;       /**< Identifier to put in ICMPv6 echo packets */
+    uint16_t _sequenceNumber;   /**< Sequence number for next ICMPv6 echo packet sent */
 
     boolean _gotReply;          /**< True if we have received a reply for the last echo sent */
 

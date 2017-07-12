@@ -1,5 +1,5 @@
 /**
- * Example of sending Ping packets periodically
+ * Example of sending ICMPv6 Ping packets periodically
  *
  * This example uses a static MAC address, please update with your own.
  *
