@@ -45,6 +45,12 @@ void loop()
     // Is it time to send a ping?
     static unsigned long nextPing = millis();
     if ((long)(millis() - nextPing) >= 0) {
+        // Did the last ping timeout?
+        if (ping.sequenceNumber() > 0 && ping.gotReply() == false) {
+            Serial.print("Request timeout for icmp_seq ");
+            Serial.println(ping.sequenceNumber(), DEC);
+        }
+
         // Send a ping
         ping.send();
         nextPing = millis() + 1000;

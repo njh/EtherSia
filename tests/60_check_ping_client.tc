@@ -34,6 +34,7 @@ HextFile echo_reply("packets/icmp6_echo_response2.hext");
 ether.injectRecievedPacket(echo_reply.buffer, echo_reply.length);
 ck_assert_int_eq(ether.receivePacket(), 70);
 ck_assert(ping.havePacket() == true);
+ck_assert(ping.gotReply() == true);
 ck_assert_int_eq(ping.payloadLength(), 8);
 ether.end();
 
@@ -54,4 +55,5 @@ HextFile expect("packets/icmp6_echo_request2.hext");
 frame_t &sent = ether.getLastSent();
 ck_assert_int_eq(sent.length, expect.length);
 ck_assert_mem_eq(sent.packet, expect.buffer, expect.length);
+ck_assert(ping.gotReply() == false);
 ether.end();

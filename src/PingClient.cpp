@@ -6,6 +6,7 @@ PingClient::PingClient(EtherSia &ether) : Socket(ether)
 {
     this->_identifier = random();
     this->_sequenceNumber = 0;
+    this->_gotReply = false;
 }
 
 boolean PingClient::setRemoteAddress(const char *remoteAddress)
@@ -59,6 +60,7 @@ boolean PingClient::havePacket()
     }
 
     // Everthing matched up
+    this->_gotReply = true;
     return true;
 }
 
@@ -95,6 +97,9 @@ void PingClient::sendInternal(uint16_t length, boolean /*isReply*/)
 
     // Increment the sequence number for the next packet
     this->_sequenceNumber++;
+    this->_gotReply = false;
+    this->_timeLastSent = micros();
+    this->_timeLastRecieved = 0;
 }
 
 uint8_t* PingClient::payload()

@@ -85,6 +85,13 @@ public:
      */
     uint16_t sequenceNumber() { return _sequenceNumber; }
     
+
+     /**
+      * Check if we received a reply for the last echo packet sent
+      *
+      * @return True if we have received a reply for the last echo sent
+      */
+    boolean gotReply() { return _gotReply; }
     /**
      * Set the ICMPv6 Echo sequence number for the next packet to be sent
      *
@@ -96,6 +103,8 @@ protected:
 
     uint16_t _identifier;
     uint16_t _sequenceNumber;
+
+    boolean _gotReply;          /**< True if we have received a reply for the last echo sent */
 
     /**
      * Send a ICMPv6 Ping packet
