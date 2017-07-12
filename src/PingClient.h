@@ -84,7 +84,7 @@ public:
      *
      * @param identifier The ICMPv6 Echo identifier to use
      */
-    void setIdentifer(uint16_t identifier) { _identifier = identifier; }
+    void setIdentifier(uint16_t identifier) { _identifier = identifier; }
     
     /**
      * Get the ICMPv6 Echo sequence number for the next packet to be sent
