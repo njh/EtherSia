@@ -122,6 +122,15 @@ public:
     uint32_t lastRoundTripTime();
 
      /**
+      * Get the sequence number of the last packet to be sent/received
+      *
+      * If no packet has been sent, the result of this function is undefined.
+      *
+      * @return The sequence number of the last packet sent
+      */
+    uint32_t lastSequenceNumber();
+
+     /**
       * Check if we received a reply for the last echo packet sent
       *
       * @return True if we have received a reply for the last echo sent

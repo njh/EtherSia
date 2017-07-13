@@ -40,6 +40,7 @@ ck_assert_mem_eq(sent.packet, expect.buffer, expect.length);
 ck_assert(ping.gotReply() == false);
 ck_assert(ping.havePacket() == false);
 ck_assert_int_eq(ping.timeLastSent(), 100);
+ck_assert_int_eq(ping.lastSequenceNumber(), 0);
 ether.end();
 
 
@@ -61,6 +62,7 @@ ck_assert(ping.havePacket() == true);
 ck_assert(ping.gotReply() == true);
 ck_assert_int_eq(ping.payloadLength(), 8);
 ck_assert_int_eq(ping.timeLastRecieved(), 100);
+ck_assert_int_eq(ping.lastSequenceNumber(), 0);
 ether.end();
 
 

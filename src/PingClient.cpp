@@ -49,7 +49,7 @@ boolean PingClient::havePacket()
         return false;
     }
 
-    if (ntohs(packet.echo.sequenceNumber) != (this->_sequenceNumber-1)) {
+    if (ntohs(packet.echo.sequenceNumber) != lastSequenceNumber()) {
         // Sequence numbers didn't match
         return false;
     }
@@ -113,4 +113,9 @@ uint16_t PingClient::payloadLength()
 uint32_t PingClient::lastRoundTripTime()
 {
     return _timeLastRecieved - _timeLastSent;
+}
+
+uint32_t PingClient::lastSequenceNumber()
+{
+    return _sequenceNumber - 1;
 }

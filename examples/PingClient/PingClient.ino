@@ -48,7 +48,7 @@ void loop()
         // Did the last ping timeout?
         if (ping.sequenceNumber() > 0 && ping.gotReply() == false) {
             Serial.print("Request timeout for icmp_seq ");
-            Serial.println(ping.sequenceNumber(), DEC);
+            Serial.println(ping.lastSequenceNumber(), DEC);
         }
 
         // Send a ping
@@ -63,7 +63,7 @@ void loop()
         ether.packet().source().print();
 
         Serial.print(", icmp_seq=");
-        Serial.print(ping.sequenceNumber(), DEC);
+        Serial.print(ping.lastSequenceNumber(), DEC);
 
         Serial.print(" hlim=");
         Serial.print(ether.packet().hopLimit(), DEC);
