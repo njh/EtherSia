@@ -105,8 +105,7 @@ private:
     // Previously defined in contiki/core/sys/clock.h
     void clock_delay_usec(uint16_t dt);
 
-    uint8_t bank;
-
+    uint8_t _bank;
     int8_t _cs;
 
 };

@@ -146,7 +146,7 @@ uint8_t
 EtherSia_ENC28J60::is_mac_mii_reg(uint8_t reg)
 {
     /* MAC or MII register (otherwise, ETH register)? */
-    switch(bank) {
+    switch(_bank) {
     case MACONX_BANK:
         return reg < EIE;
     case MAADRX_BANK:
@@ -212,7 +212,7 @@ void
 EtherSia_ENC28J60::setregbank(uint8_t new_bank)
 {
     writereg(ECON1, (readreg(ECON1) & 0xfc) | (new_bank & 0x03));
-    bank = new_bank;
+    _bank = new_bank;
 }
 /*---------------------------------------------------------------------------*/
 void
@@ -264,7 +264,7 @@ EtherSia_ENC28J60::softreset(void)
     /* The System Command (soft reset) is 1 1 1 1 1 1 1 1 */
     enc28j60_arch_spi_write(0xff);
     enc28j60_arch_spi_deselect();
-    bank = ERXTX_BANK;
+    _bank = ERXTX_BANK;
 }
 
 /*---------------------------------------------------------------------------*/
@@ -683,7 +683,7 @@ EtherSia_ENC28J60::EtherSia_ENC28J60(int8_t cs)
 {
     _cs = cs;
 
-    bank = ERXTX_BANK;
+    _bank = ERXTX_BANK;
 }
 
 
