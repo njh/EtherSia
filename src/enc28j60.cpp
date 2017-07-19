@@ -682,17 +682,6 @@ EtherSia_ENC28J60::readFrame(uint8_t *buffer, uint16_t bufsize)
 EtherSia_ENC28J60::EtherSia_ENC28J60(int8_t cs)
 {
     _cs = cs;
-    _clk = _mosi = _miso = -1;
-
-    bank = ERXTX_BANK;
-}
-
-EtherSia_ENC28J60::EtherSia_ENC28J60(int8_t clk, int8_t miso, int8_t mosi, int8_t cs)
-{
-    _cs = cs;
-    _clk = clk;
-    _mosi = mosi;
-    _miso = miso;
 
     bank = ERXTX_BANK;
 }
@@ -704,21 +693,15 @@ EtherSia_ENC28J60::enc28j60_arch_spi_init(void)
     pinMode(_cs, OUTPUT);
     digitalWrite(_cs, HIGH);
 
-    if (_clk == -1) { // hardware SPI!
-        SPI.begin();
+    SPI.begin();
 
 #ifdef __SAM3X8E__
-        SPI.setClockDivider (9); // 9.3 MHz
+    SPI.setClockDivider (9); // 9.3 MHz
 #else
-        SPI.setClockDivider(SPI_CLOCK_DIV2); // 8 MHz
+    SPI.setClockDivider(SPI_CLOCK_DIV2); // 8 MHz
 #endif
 
-        SPI.setDataMode(SPI_MODE0);
-    } else {
-        pinMode(_clk, OUTPUT);
-        pinMode(_mosi, OUTPUT);
-        pinMode(_miso, INPUT);
-    }
+    SPI.setDataMode(SPI_MODE0);
 }
 
 uint8_t

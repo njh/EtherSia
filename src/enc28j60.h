@@ -51,15 +51,6 @@ public:
      */
     EtherSia_ENC28J60(int8_t cs=10);
 
-    /**
-     * Constructor for using software SPI, with custom set of pins
-     * @param clk the SPI Clock pin
-     * @param miso the SPI Master In / Slave Out pin
-     * @param mosi the SPI Master Out / Slave In pin
-     * @param cs the Arduino Chip Select / Slave Select pin
-     */
-    EtherSia_ENC28J60(int8_t clk, int8_t miso, int8_t mosi, int8_t cs);
-
     // Tell the compiler we want to use begin() from the base class
     using EtherSia::begin;
 
@@ -116,7 +107,7 @@ private:
 
     uint8_t bank;
 
-    int8_t _cs, _clk, _mosi, _miso;
+    int8_t _cs;
 
 };
 
