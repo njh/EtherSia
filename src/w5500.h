@@ -50,7 +50,7 @@ class EtherSia_W5500 : public EtherSia {
 public:
     /**
      * Constructor that uses the default hardware SPI pins
-     * @param cs the Arduino Chip Select / Slave Select pin (default 10)
+     * @param cs the Arduino Chip Select / Slave Select pin (default 10 on Uno)
      */
     EtherSia_W5500(int8_t cs=SS);
 

@@ -37,6 +37,8 @@
 #ifndef ENC28J60_H
 #define ENC28J60_H
 
+#include <SPI.h>
+
 #include "EtherSia.h"
 
 /**
@@ -47,9 +49,9 @@ class EtherSia_ENC28J60 : public EtherSia {
 public:
     /**
      * Constructor that uses the default hardware SPI pins
-     * @param cs the Arduino Chip Select / Slave Select pin (default 10)
+     * @param cs the Arduino Chip Select / Slave Select pin (default 10 on Uno)
      */
-    EtherSia_ENC28J60(int8_t cs=10);
+    EtherSia_ENC28J60(int8_t cs=SS);
 
     // Tell the compiler we want to use begin() from the base class
     using EtherSia::begin;
