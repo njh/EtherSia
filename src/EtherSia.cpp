@@ -187,13 +187,12 @@ void EtherSia::prepareReply()
 
     _bufferContainsReceived = false;
 
+    packet.init();
     if (isOurAddress(packet.destination()) == ADDRESS_TYPE_GLOBAL) {
         replySourceAddress = &_globalAddress;
     } else {
         replySourceAddress = &_linkLocalAddress;
     }
-
-    packet.setHopLimit(IP6_DEFAULT_HOP_LIMIT);
 
     packet.setDestination(packet.source());
     packet.setSource(*replySourceAddress);

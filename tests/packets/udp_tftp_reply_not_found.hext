@@ -2,7 +2,7 @@ a4:5e:60:da:58:9d        # Ethernet Destination
 00:04:a3:2c:2b:b9        # Ethernet Source
 86dd                     # EtherType (IPv6)
 
-60 03 b1 b7              # IPv6 header
+60 00 00 00              # IPv6 header
 0016                     # Length (22 bytes)
 11                       # Protocol
 40                       # Hop Limit
