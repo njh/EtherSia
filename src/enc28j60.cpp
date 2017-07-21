@@ -679,6 +679,10 @@ EtherSia_ENC28J60::readFrame(uint8_t *buffer, uint16_t bufsize)
    ----------------------------------------
 */
 
+// The ENC28J60 SPI Interface supports clock speeds up to 20 MHz
+static const SPISettings spiSettings(20000000, MSBFIRST, SPI_MODE0);
+
+
 EtherSia_ENC28J60::EtherSia_ENC28J60(int8_t cs)
 {
     _cs = cs;
@@ -694,14 +698,6 @@ EtherSia_ENC28J60::enc28j60_arch_spi_init(void)
     digitalWrite(_cs, HIGH);
 
     SPI.begin();
-
-#ifdef __SAM3X8E__
-    SPI.setClockDivider (9); // 9.3 MHz
-#else
-    SPI.setClockDivider(SPI_CLOCK_DIV2); // 8 MHz
-#endif
-
-    SPI.setDataMode(SPI_MODE0);
 }
 
 uint8_t
@@ -719,6 +715,7 @@ EtherSia_ENC28J60::enc28j60_arch_spi_read(void)
 void
 EtherSia_ENC28J60::enc28j60_arch_spi_select(void)
 {
+    SPI.beginTransaction(spiSettings);
     digitalWrite(_cs, LOW);
 }
 
@@ -726,6 +723,7 @@ void
 EtherSia_ENC28J60::enc28j60_arch_spi_deselect(void)
 {
     digitalWrite(_cs, HIGH);
+    SPI.endTransaction();
 }
 
 void

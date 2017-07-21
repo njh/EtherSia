@@ -106,20 +106,14 @@ private:
      * @note This function help not to access wrong address. If you do not describe this function or register any functions,
      * null function is called.
      */
-    inline void wizchip_cs_select()
-    {
-        digitalWrite(_cs, LOW);
-    }
+    void wizchip_cs_select();
 
     /**
      * Default function to deselect chip.
      * @note This function help not to access wrong address. If you do not describe this function or register any functions,
      * null function is called.
      */
-    inline void wizchip_cs_deselect()
-    {
-        digitalWrite(_cs, HIGH);
-    }
+    void wizchip_cs_deselect();
 
     /**
      * Read a 1 byte value from a register.
