@@ -183,22 +183,13 @@ void EtherSia::prepareSend()
 void EtherSia::prepareReply()
 {
     IPv6Packet& packet = (IPv6Packet&)_ptr;
-    IPv6Address *replySourceAddress;
+    IPv6Address destination = packet.source();
+    MACAddress etherDestination = packet.etherSource();
 
-    _bufferContainsReceived = false;
+    prepareSend();
 
-    packet.init();
-    if (isOurAddress(packet.destination()) == ADDRESS_TYPE_GLOBAL) {
-        replySourceAddress = &_globalAddress;
-    } else {
-        replySourceAddress = &_linkLocalAddress;
-    }
-
-    packet.setDestination(packet.source());
-    packet.setSource(*replySourceAddress);
-
-    packet.setEtherDestination(packet.etherSource());
-    packet.setEtherSource(_localMac);
+    packet.setDestination(destination);
+    packet.setEtherDestination(etherDestination);
 }
 
 void EtherSia::send()
