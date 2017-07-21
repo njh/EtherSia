@@ -70,6 +70,21 @@ ck_assert_mem_eq(sent.packet, expect.buffer, expect.length);
 ether.end();
 
 
+#test neighbour_solicitation_wrong_target
+EtherSia_Dummy ether;
+// This global adress doesn't match the target in the Neighbour Solicitation
+ether.setGlobalAddress("2001:08b0:ffd5:0003:ffff:ffff:fe2c:2bb9");
+ether.begin("00:04:a3:2c:2b:b9");
+ether.clearSent();
+
+// Receive a Neighbour Solicitation
+HextFile ns_packet("packets/icmp6_neighbour_solicitation_global.hext");
+ether.injectRecievedPacket(ns_packet.buffer, ns_packet.length);
+ck_assert_int_eq(ether.receivePacket(), 0);
+ck_assert_int_eq(ether.getSentCount(), 0);
+ether.end();
+
+
 #test echo_response
 EtherSia_Dummy ether;
 ether.setGlobalAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
