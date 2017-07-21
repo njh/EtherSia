@@ -32,6 +32,11 @@ static const uint8_t MOSI = 11;
 static const uint8_t MISO = 12;
 static const uint8_t SCK  = 13;
 
+class SPISettings {
+public:
+  SPISettings(uint32_t /*clock*/, uint8_t /*bitOrder*/, uint8_t /*dataMode*/) {
+  }
+};
 
 class SPIClass {
 public:
@@ -40,6 +45,9 @@ public:
   static uint8_t transfer(uint8_t val);
 
   static void end();
+
+  static void beginTransaction(SPISettings settings);
+  static void endTransaction();
 
   static void setBitOrder(uint8_t bitOrder);
   static void setDataMode(uint8_t dataMode);
