@@ -68,6 +68,22 @@ struct icmp6_echo_header {
 static_assert(sizeof(struct icmp6_echo_header) == ICMP6_ECHO_HEADER_LEN, "Size is not correct");
 
 
+
+/**
+ * Structure for options that store a Link address
+ * @private
+ */
+struct icmp6_option_mac {
+    uint8_t type;
+    uint8_t len;
+    MACAddress mac;
+} __attribute__((__packed__));
+#define ICMP6_OPTION_MAC_LEN       (8)
+
+/* Verify that compiler gets the structure size correct */
+static_assert(sizeof(struct icmp6_option_mac) == ICMP6_OPTION_MAC_LEN, "Size is not correct");
+
+
 /**
  * Structure for accessing the fields of a ICMP6 Router Solicitation packet
  * @private
@@ -75,9 +91,7 @@ static_assert(sizeof(struct icmp6_echo_header) == ICMP6_ECHO_HEADER_LEN, "Size i
 struct icmp6_rs_header {
     uint8_t reserved[4];
 
-    uint8_t option_type;
-    uint8_t option_len;
-    MACAddress option_mac;
+    struct icmp6_option_mac option1;
 } __attribute__((__packed__));
 #define ICMP6_RS_HEADER_LEN       (12)
 #define ICMP6_RS_HEADER_OFFSET    (ICMP6_HEADER_OFFSET + ICMP6_HEADER_LEN)
@@ -143,8 +157,10 @@ struct icmp6_na_header {
     uint8_t flags;
     uint8_t reserved[3];
     IPv6Address target;
+
+    struct icmp6_option_mac option1;
 } __attribute__((__packed__));
-#define ICMP6_NA_HEADER_LEN       (20)
+#define ICMP6_NA_HEADER_LEN       (28)
 #define ICMP6_NA_HEADER_OFFSET    (ICMP6_HEADER_OFFSET + ICMP6_HEADER_LEN)
 
 /* Verify that compiler gets the structure size correct */

@@ -52,17 +52,16 @@ void EtherSia::icmp6NSReply()
     packet.setHopLimit(255);
 
     // We should now send a neighbor advertisement back to where the neighbor solicication came from.
-    packet.setPayloadLength(ICMP6_HEADER_LEN + ICMP6_NA_HEADER_LEN + 8);
+    packet.setPayloadLength(ICMP6_HEADER_LEN + ICMP6_NA_HEADER_LEN);
     packet.type = ICMP6_TYPE_NA;
     packet.code = 0;
     packet.na.flags = ICMP6_NA_FLAG_S; // Solicited flag.
     memset(packet.na.reserved, 0, sizeof(packet.na.reserved));
 
     // Set the target link address option
-    uint8_t* ptr = _buffer + ICMP6_NA_HEADER_OFFSET + ICMP6_NA_HEADER_LEN;
-    ptr[0] = ICMP6_OPTION_TARGET_LINK_ADDRESS;
-    ptr[1] = 1;  // Options length, 1 = 8 bytes
-    memcpy(&ptr[2], _localMac, 6);
+    packet.na.option1.type = ICMP6_OPTION_TARGET_LINK_ADDRESS;
+    packet.na.option1.len = ICMP6_OPTION_MAC_LEN / 8;
+    packet.na.option1.mac = _localMac;
 
     icmp6PacketSend();
 }
@@ -112,9 +111,9 @@ void EtherSia::icmp6SendRS()
     packet.code = 0;
 
     memset(packet.rs.reserved, 0, sizeof(packet.rs.reserved));
-    packet.rs.option_type = ICMP6_OPTION_SOURCE_LINK_ADDRESS;
-    packet.rs.option_len = 1;
-    packet.rs.option_mac = _localMac;
+    packet.rs.option1.type = ICMP6_OPTION_SOURCE_LINK_ADDRESS;
+    packet.rs.option1.len = ICMP6_OPTION_MAC_LEN / 8;
+    packet.rs.option1.mac = _localMac;
 
     icmp6PacketSend();
 }
@@ -193,25 +192,16 @@ void EtherSia::icmp6ProcessRA()
 MACAddress* EtherSia::icmp6ProcessNA(IPv6Address &expected)
 {
     ICMPv6Packet& packet = (ICMPv6Packet&)_ptr;
-    int16_t remaining = packet.payloadLength() - ICMP6_HEADER_LEN - ICMP6_NA_HEADER_LEN;
-    uint8_t *ptr = _buffer + ICMP6_NA_HEADER_OFFSET + ICMP6_NA_HEADER_LEN;
-
     if (packet.na.target != expected) {
         return NULL;
     }
 
-    // Iterate through options
-    while(remaining > 0) {
-        switch(ptr[0]) {
-        case ICMP6_OPTION_TARGET_LINK_ADDRESS:
-            return (MACAddress*)&ptr[2];
-        }
-
-        remaining -= (8 * ptr[1]);
-        ptr += (8 * ptr[1]);
+    // Check for option
+    if (packet.na.option1.type == ICMP6_OPTION_TARGET_LINK_ADDRESS) {
+        return &(packet.na.option1.mac);
+    } else {
+        return &(packet.etherSource());
     }
-
-    return &(packet.etherSource());
 }
 
 boolean EtherSia::icmp6ProcessPacket()
