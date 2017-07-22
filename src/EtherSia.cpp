@@ -156,7 +156,6 @@ void EtherSia::rejectPacket()
         icmp6ErrorReply(ICMP6_TYPE_UNREACHABLE, ICMP6_CODE_PORT_UNREACHABLE);
     } else if (packet.protocol() == IP6_PROTO_ICMP6) {
         // Ignore ICMPv6 packets
-        return;
     } else {
         // Reply with Unrecognised Next Header
         icmp6ErrorReply(ICMP6_TYPE_PARAM_PROB, ICMP6_CODE_UNRECOGNIZED_NH);
