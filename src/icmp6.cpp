@@ -85,13 +85,23 @@ void EtherSia::icmp6SendNS(IPv6Address &targetAddress, IPv6Address &sourceAddres
     packet.etherDestination().setIPv6Multicast(packet.destination());
     prepareSend();
     packet.setSource(sourceAddress);
-    packet.setPayloadLength(ICMP6_HEADER_LEN + ICMP6_NS_HEADER_LEN);
     packet.setHopLimit(255);
     packet.type = ICMP6_TYPE_NS;
     packet.code = 0;
 
     memset(packet.ns.reserved, 0, sizeof(packet.ns.reserved));
     packet.ns.target = targetAddress;
+    
+    if (sourceAddress.isZero()) {
+        // No source link-layer address option
+        packet.setPayloadLength(ICMP6_HEADER_LEN + ICMP6_NS_HEADER_LEN - ICMP6_OPTION_MAC_LEN);
+    } else {
+        // Set link-layer address for the sender
+        packet.ns.option1.type = ICMP6_OPTION_SOURCE_LINK_ADDRESS;
+        packet.ns.option1.len = ICMP6_OPTION_MAC_LEN / 8;
+        packet.ns.option1.mac = _localMac;
+        packet.setPayloadLength(ICMP6_HEADER_LEN + ICMP6_NS_HEADER_LEN);
+    }
 
     icmp6PacketSend();
 }

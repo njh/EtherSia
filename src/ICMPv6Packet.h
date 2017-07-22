@@ -141,8 +141,10 @@ struct icmp6_prefix_information {
 struct icmp6_ns_header {
     uint8_t reserved[4];
     IPv6Address target;
+
+    struct icmp6_option_mac option1;
 } __attribute__((__packed__));
-#define ICMP6_NS_HEADER_LEN       (20)
+#define ICMP6_NS_HEADER_LEN       (28)
 #define ICMP6_NS_HEADER_OFFSET    (ICMP6_HEADER_OFFSET + ICMP6_HEADER_LEN)
 
 /* Verify that compiler gets the structure size correct */
