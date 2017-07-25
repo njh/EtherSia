@@ -29,6 +29,12 @@ public:
     MACAddress(const char *macstr);
 
     /**
+     * Constructor for MAC address from a Flash string (use the F() macro)
+     * @param macstr a human readable string containing a 17 character MAC address
+     */
+    MACAddress(const __FlashStringHelper *macstr);
+
+    /**
      * Constructor for MAC address from an array of 6 bytes
      * @param macaddr a 48-bit (6 byte) MAC address
      */
@@ -51,6 +57,13 @@ public:
      * @return true if successful, false if parsing failed
      */
     boolean fromString(const char *macstr);
+
+    /**
+     * Parse a flash string MAC address into a MACAddress object (use the F() macro)
+     * @param macstr a human readable string containing a 17 character MAC address
+     * @return true if successful, false if parsing failed
+     */
+    boolean fromString(const __FlashStringHelper *macstr);
 
     /**
      * Cast the MAC address to an array of octets.
