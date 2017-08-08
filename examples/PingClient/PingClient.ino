@@ -68,8 +68,9 @@ void loop()
         Serial.print(" hlim=");
         Serial.print(ether.packet().hopLimit(), DEC);
 
+        float rtt = ping.lastRoundTripTime() / 1000.0;
         Serial.print(" time=");
-        Serial.print(ping.lastRoundTripTime() / 1000, DEC);
+        Serial.print(rtt);
         Serial.println(" ms");
     } else {
         // Reject any incoming connections
