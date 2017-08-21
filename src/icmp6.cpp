@@ -172,6 +172,14 @@ void EtherSia::icmp6ProcessRA()
         return;
     }
 
+    if(_prefixRestrictionEnabled == true) {
+        struct icmp6_prefix_information *icmp_p = (struct icmp6_prefix_information*)&ptr[2];
+        IPv6Prefix advertised_prefix(&icmp_p->prefix, icmp_p->prefix_length);
+        if(!_whitelistedPrefix.contains(&advertised_prefix)) {
+            return;
+        }
+    }
+
     while(remaining > 0) {
         switch(ptr[0]) {
         case ICMP6_OPTION_SOURCE_LINK_ADDRESS:

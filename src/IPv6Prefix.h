@@ -90,7 +90,7 @@ public:
     operator uint8_t*();
 
     /**
-     * Set the prefix to all-zeros (::)
+     * Set the prefix to all-zeros (::/0)
      */
     void setZero();
 

@@ -35,20 +35,26 @@ boolean IPv6Prefix::fromString(const char *prefixstr)
     char address[45];
     for (uint8_t i = 0; i < strlen(prefixstr); i++) {
         if (address_chars_read > 45) {
+            // Aboort if more than 45 Addres characters are read
             return false;
         } else if (!size_reached && prefixstr[i] == '/') {
+            // Begin to read prefix if seperator is read
             size_reached = true;
+            // Zero address memory and write the read address to it
             memset(address, 0, 45);
             memcpy((void *) address, prefixstr, address_chars_read);
-            boolean success = _address.fromString(address);
-            if (success != true) return false;
+            // Abort if address is invalid
+            if (_address.fromString(address) != true) return false;
         } else if (!size_reached) {
+            // Increment address character counter
             address_chars_read++;
         } else if (size_reached) {
             if(prefixstr[i] >= 48 && prefixstr[i] <= 57 && prefix_chars_read < 3) {
+                // Read prefix size chars
                 prefix_chars[prefix_chars_read] = prefixstr[i] - 48;
                 prefix_chars_read++;
             } else {
+                // Abort on invalid characters and more than 4 prefix characters
                 return false;
             }
         }
@@ -56,6 +62,7 @@ boolean IPv6Prefix::fromString(const char *prefixstr)
     uint8_t multiplier = 1;
     uint8_t length = 0;
     for (int8_t i = prefix_chars_read; i > 0; i--) {
+        // Calculate Prefix size from characters
         length += prefix_chars[i - 1] * multiplier;
         multiplier = multiplier * 10;
     }
@@ -70,12 +77,6 @@ boolean IPv6Prefix::fromString(const __FlashStringHelper *prefixstr)
     return fromString(ramStr);
 }
 
-void IPv6Prefix::setZero()
-{
-    _address.setZero();
-    _length = 0;
-}
-
 const IPv6Address* IPv6Prefix::address() const
 {
     return &_address;
@@ -88,9 +89,12 @@ uint8_t IPv6Prefix::getLength() const
 
 boolean IPv6Prefix::setLength(uint8_t prefix_length) 
 {
+    // Abort and return false if size is greater than 128
     if(prefix_length > 128) return false;
+    // save it otherwise
     _length = prefix_length;
     
+    // Bits to mask (intial value == prefix_length)
     uint8_t to_mask = this->getLength();
     for(uint8_t i=0; i<16; i++) {
         uint8_t mask = 0xFF;
@@ -103,6 +107,7 @@ boolean IPv6Prefix::setLength(uint8_t prefix_length)
         } else {
             to_mask = to_mask - 8;
         }
+        // mask address
         this->_address[i] = this->_address[i] & mask;
     }
 
@@ -112,6 +117,7 @@ boolean IPv6Prefix::setLength(uint8_t prefix_length)
 boolean IPv6Prefix::contains(const IPv6Prefix *prefix) 
 {
     if(prefix->getLength() < this->getLength()) {
+        // If candidate prefix is smaller than current prefix, return false
         return false;
     }
     
@@ -124,6 +130,12 @@ boolean IPv6Prefix::contains(const IPv6Prefix *prefix)
 IPv6Prefix::operator uint8_t*()
 {
     return _address;
+}
+
+void IPv6Prefix::setZero()
+{
+    _address.setZero();
+    _length = 0;
 }
 
 boolean IPv6Prefix::operator==(const IPv6Prefix& prefix) const
