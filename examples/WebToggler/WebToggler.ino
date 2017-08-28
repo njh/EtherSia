@@ -40,6 +40,11 @@
  *
  *     curl -X POST http://[2001:dead:beef::9cb3:19ff:fec7:1b10]/outputs/1
  *
+ *
+ * WARNING: this index page in this example is over 750 bytes. You must increase
+ * the ETHERSIA_MAX_PACKET_SIZE in EtherSia.h to over 900 bytes for this example 
+ * to work.
+ *
  * Uses a hard-code MAC address. Get your own
  * Random Locally Administered MAC Address here:
  *
@@ -184,6 +189,10 @@ void sendIndex()
     http.print(F("</table></form></body></html>"));
     http.sendReply();
 }
+
+// Ensure that the ethernet packet buffer is big enough (HTML=750 bytes, Headers=140 bytes)
+static_assert(ETHERSIA_MAX_PACKET_SIZE >= 900, "ETHERSIA_MAX_PACKET_SIZE should be 900 bytes or more");
+
 
 /**
  * Get the output number from the path of the HTTP request
