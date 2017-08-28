@@ -73,6 +73,7 @@ void loop() {
             needNewServer = false;
         } else {
             // Something went wrong, sleep for a minute, then try again
+            Serial.println("Error looking up remote host");
             delay(60000);
             return;
         }
