@@ -1,12 +1,28 @@
 Release History
 ===============
 
+Version 2.4.0 (2017-08-28)
+--------------------------
+- Added PingClient class and example
+- Added EtherSia::rejectPacket()
+- Added MACAddress::operator==
+- Added MACAddress::isIPv6Multicast()
+- Added checks for Ethernet source and destination address
+- Added support for constructing IPv6Address and MACAddress from a flash string
+- Switched to using SPISettings class to configure SPI
+- Set Traffic Class and Flow Label to 0 when sending replies
+- Changed TFTPServer::handleRequest() to return boolean
+- Use link local address when sending, if there is no global IP
+- Bug fix for Neighbour Discovery for link local address
+- Bug fix for neighbour discovery setting wrong source address
+
 
 Version 2.3.0 (2017-06-04)
 --------------------------
 - Added 'Server: EtherSia' to HTTP responses
 - Added support for passing a flash string to setRemoteAddress()
 - MACAddress: added new constructor from 6-byte array
+
 
 Version 2.2.0 (2017-03-09)
 --------------------------
