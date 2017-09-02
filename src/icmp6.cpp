@@ -6,7 +6,7 @@
 
 void EtherSia::icmp6ErrorReply(uint8_t type, uint8_t code)
 {
-    ICMPv6Packet& packet = (ICMPv6Packet&)_ptr;
+    ICMPv6Packet<IPv6Packet>& packet = (ICMPv6Packet<IPv6Packet>&)_ptr;
     uint16_t payloadLen = IP6_HEADER_LEN + packet.payloadLength();
     const uint16_t payloadMax = ETHERSIA_MAX_PACKET_SIZE - ICMP6_ERROR_HEADER_OFFSET - ICMP6_ERROR_HEADER_LEN;
 
@@ -40,7 +40,7 @@ void EtherSia::icmp6ErrorReply(uint8_t type, uint8_t code)
 
 void EtherSia::icmp6NSReply()
 {
-    ICMPv6Packet& packet = (ICMPv6Packet&)_ptr;
+    ICMPv6Packet<IPv6Packet>& packet = (ICMPv6Packet<IPv6Packet>&)_ptr;
 
     // Does the Neighbour Solicitation target belong to us?
     uint8_t type = isOurAddress(packet.ns.target);
@@ -68,7 +68,7 @@ void EtherSia::icmp6NSReply()
 
 void EtherSia::icmp6EchoReply()
 {
-    ICMPv6Packet& packet = (ICMPv6Packet&)_ptr;
+    ICMPv6Packet<IPv6Packet>& packet = (ICMPv6Packet<IPv6Packet>&)_ptr;
     prepareReply();
 
     packet.type = ICMP6_TYPE_ECHO_REPLY;
@@ -79,7 +79,7 @@ void EtherSia::icmp6EchoReply()
 
 void EtherSia::icmp6SendNS(IPv6Address &targetAddress, IPv6Address &sourceAddress)
 {
-    ICMPv6Packet& packet = (ICMPv6Packet&)_ptr;
+    ICMPv6Packet<IPv6Packet>& packet = (ICMPv6Packet<IPv6Packet>&)_ptr;
 
     packet.destination().setSolicitedNodeMulticastAddress(targetAddress);
     packet.etherDestination().setIPv6Multicast(packet.destination());
@@ -108,7 +108,7 @@ void EtherSia::icmp6SendNS(IPv6Address &targetAddress, IPv6Address &sourceAddres
 
 void EtherSia::icmp6SendRS()
 {
-    ICMPv6Packet& packet = (ICMPv6Packet&)_ptr;
+    ICMPv6Packet<IPv6Packet>& packet = (ICMPv6Packet<IPv6Packet>&)_ptr;
 
     prepareSend();
     packet.setPayloadLength(ICMP6_HEADER_LEN + ICMP6_RS_HEADER_LEN);
@@ -130,7 +130,7 @@ void EtherSia::icmp6SendRS()
 
 void EtherSia::icmp6PacketSend()
 {
-    ICMPv6Packet& packet = (ICMPv6Packet&)_ptr;
+    ICMPv6Packet<IPv6Packet>& packet = (ICMPv6Packet<IPv6Packet>&)_ptr;
 
     packet.setProtocol(IP6_PROTO_ICMP6);
     packet.checksum = 0;
@@ -164,7 +164,7 @@ void EtherSia::icmp6ProcessPrefix(struct icmp6_prefix_information *pi)
 
 void EtherSia::icmp6ProcessRA()
 {
-    ICMPv6Packet& packet = (ICMPv6Packet&)_ptr;
+    ICMPv6Packet<IPv6Packet>& packet = (ICMPv6Packet<IPv6Packet>&)_ptr;
     int16_t remaining = packet.payloadLength() - ICMP6_HEADER_LEN - ICMP6_RA_HEADER_LEN;
     uint8_t *ptr = _buffer + ICMP6_RA_HEADER_OFFSET + ICMP6_RA_HEADER_LEN;
 
@@ -201,7 +201,7 @@ void EtherSia::icmp6ProcessRA()
 
 MACAddress* EtherSia::icmp6ProcessNA(IPv6Address &expected)
 {
-    ICMPv6Packet& packet = (ICMPv6Packet&)_ptr;
+    ICMPv6Packet<IPv6Packet>& packet = (ICMPv6Packet<IPv6Packet>&)_ptr;
     if (packet.na.target != expected) {
         return NULL;
     }
@@ -216,7 +216,7 @@ MACAddress* EtherSia::icmp6ProcessNA(IPv6Address &expected)
 
 boolean EtherSia::icmp6ProcessPacket()
 {
-    ICMPv6Packet& packet = (ICMPv6Packet&)_ptr;
+    ICMPv6Packet<IPv6Packet>& packet = (ICMPv6Packet<IPv6Packet>&)_ptr;
 
     if (isOurAddress(packet.destination()) == 0) {
         // Packet isn't addressed to us
@@ -272,7 +272,7 @@ MACAddress* EtherSia::discoverNeighbour(const char* addrstr)
 
 MACAddress* EtherSia::discoverNeighbour(IPv6Address& address, uint8_t attempts)
 {
-    ICMPv6Packet& packet = (ICMPv6Packet&)_ptr;
+    ICMPv6Packet<IPv6Packet>& packet = (ICMPv6Packet<IPv6Packet>&)_ptr;
     IPv6Address *sourceAddress = NULL;
     unsigned long nextNeighbourSolicitation = millis();
     uint8_t count = 0;

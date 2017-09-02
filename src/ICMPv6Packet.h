@@ -174,7 +174,7 @@ static_assert(sizeof(struct icmp6_na_header) == ICMP6_NA_HEADER_LEN, "Size is no
  * Class for accessing the fields of a ICMP6 packet
  * @private
  */
-class ICMPv6Packet : public IPv6Packet {
+template<class T> class ICMPv6Packet : public T {
 
 public:
     uint8_t type;
