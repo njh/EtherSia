@@ -128,14 +128,48 @@ void EtherSia::icmp6SendRS()
     icmp6PacketSend();
 }
 
+void EtherSia::icmp6SendMLR()
+{
+    ICMPv6Packet<IPv6HopByHopPacket>& packet = (ICMPv6Packet<IPv6HopByHopPacket>&)_ptr;
+
+    prepareSend();
+    packet.setPayloadLength(IPV6_HBH_MLD_OPTION_LENGTH + ICMP6_HEADER_LEN + ICMP6_MLD_HEADER_LEN);
+    packet.setHopLimit(1);
+    packet.setSource(_linkLocalAddress);
+    packet.destination().setSolicitedNodeMulticastAddress(_globalAddress);
+    packet.etherDestination().setIPv6Multicast(packet.destination());
+
+    packet.type = ICMP6_TYPE_MLR;
+    packet.code = 0;
+
+    packet.setNextHeader(IP6_PROTO_ICMP6);
+    packet.setHopByHopLength(0);
+    packet.setMLDRouterAlert();
+
+    memset(packet.mld.reserved, 0, sizeof(packet.rs.reserved));
+    packet.mld.max_response_delay = 0;
+    packet.mld.target.setSolicitedNodeMulticastAddress(_globalAddress);
+    icmp6PacketSend(true);
+}
+
 void EtherSia::icmp6PacketSend()
 {
-    ICMPv6Packet<IPv6Packet>& packet = (ICMPv6Packet<IPv6Packet>&)_ptr;
+    icmp6PacketSend(false);
+}
 
-    packet.setProtocol(IP6_PROTO_ICMP6);
-    packet.checksum = 0;
-    packet.checksum = htons(packet.calculateChecksum());
-
+void EtherSia::icmp6PacketSend(bool hbh)
+{
+    if(hbh){
+        ICMPv6Packet<IPv6HopByHopPacket>& packet = (ICMPv6Packet<IPv6HopByHopPacket>&)_ptr;
+        packet.setProtocol(IP6_PROTO_HBH);
+        packet.checksum = 0;
+        packet.checksum = htons(packet.calculateChecksum()) /*0xe979*/;
+    } else {
+        ICMPv6Packet<IPv6Packet>& packet = (ICMPv6Packet<IPv6Packet>&)_ptr;
+        packet.setProtocol(IP6_PROTO_ICMP6);
+        packet.checksum = 0;
+        packet.checksum = htons(packet.calculateChecksum());
+    }
     send();
 }
 
