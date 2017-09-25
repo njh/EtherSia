@@ -1,0 +1,186 @@
+#include "Arduino.h"
+#include "hext.hh"
+#include "EtherSia.h"
+
+#include "IPv6Packet.h"
+#suite IPv6HopByHopPacket
+
+
+#test new_packet
+IPv6HopByHopPacket packet;
+uint8_t zeroMac[6] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+uint8_t zeroAddress[16] = {
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+};
+ck_assert_mem_eq(packet.etherSource(), zeroMac, 6);
+ck_assert_mem_eq(packet.etherDestination(), zeroMac, 6);
+ck_assert_int_eq(packet.version(), 6);
+ck_assert_int_eq(packet.hopLimit(), IP6_DEFAULT_HOP_LIMIT);
+ck_assert_mem_eq(packet.source(), zeroAddress, 16);
+ck_assert_mem_eq(packet.destination(), zeroAddress, 16);
+
+
+#test isValid_null_packet
+uint8_t buffer[sizeof(IPv6HopByHopPacket)];
+memset(buffer, 0, sizeof(buffer));
+IPv6HopByHopPacket *packet = (IPv6HopByHopPacket *)buffer;
+ck_assert(packet->isValid() == false);
+
+
+#test icmp6MulticastListenerQueryIsValid
+HextFile rs("packets/icmp6_multicast_listener_query.hext");
+IPv6HopByHopPacket *packet = (IPv6HopByHopPacket *)rs.buffer;
+ck_assert(packet-> calculateChecksum() == 0);
+
+
+#test icmp6MulticastListenerReportIsValid
+HextFile rs("packets/icmp6_multicast_listener_report.hext");
+IPv6HopByHopPacket *packet = (IPv6HopByHopPacket *)rs.buffer;
+ck_assert(packet-> calculateChecksum() == 0);
+
+
+#test isValid_wrong_version
+HextFile rs("packets/icmp6_multicast_listener_report.hext");
+rs.buffer[14] = 0x40;
+IPv6HopByHopPacket *packet = (IPv6HopByHopPacket *)rs.buffer;
+ck_assert(packet->isValid() == false);
+
+#test isValid_wrong_checksum
+HextFile rs("packets/icmp6_multicast_listener_report.hext");
+// Tamper with the source address
+rs.buffer[0x40] = 0x00;
+rs.buffer[0x41] = 0xFF;
+IPv6HopByHopPacket *packet = (IPv6HopByHopPacket *)rs.buffer;
+ck_assert(packet->isValid() == false);
+
+#test invalidate
+HextFile rs("packets/icmp6_multicast_listener_report.hext");
+IPv6HopByHopPacket *packet = (IPv6HopByHopPacket *)rs.buffer;
+ck_assert(packet->isValid() == true);
+packet->invalidate();
+ck_assert(packet->isValid() == false);
+
+#test etherType
+HextFile rs("packets/icmp6_multicast_listener_report.hext");
+IPv6HopByHopPacket *packet = (IPv6HopByHopPacket *)rs.buffer;
+ck_assert_int_eq(packet->etherType(), 0x86dd);
+
+#test version
+HextFile rs("packets/icmp6_multicast_listener_report.hext");
+IPv6HopByHopPacket *packet = (IPv6HopByHopPacket *)rs.buffer;
+ck_assert_int_eq(packet->version(), 6);
+
+#test length
+HextFile rs("packets/icmp6_multicast_listener_report.hext");
+IPv6HopByHopPacket *packet = (IPv6HopByHopPacket *)rs.buffer;
+ck_assert_int_eq(packet->length(), 86);
+
+#test payloadLength
+HextFile rs("packets/icmp6_multicast_listener_report.hext");
+IPv6HopByHopPacket *packet = (IPv6HopByHopPacket *)rs.buffer;
+ck_assert_int_eq(packet->payloadLength(), 32);
+
+#test setPayloadLength
+IPv6HopByHopPacket packet;
+packet.setPayloadLength(256);
+ck_assert_int_eq(packet.payloadLength(), 256);
+
+#test protocol
+HextFile rs("packets/icmp6_multicast_listener_report.hext");
+IPv6HopByHopPacket *packet = (IPv6HopByHopPacket *)rs.buffer;
+ck_assert_int_eq(packet->protocol(), IP6_PROTO_HBH);
+
+#test setProtocol
+IPv6HopByHopPacket packet;
+packet.setProtocol(IP6_PROTO_TCP);
+ck_assert_int_eq(packet.protocol(), IP6_PROTO_TCP);
+
+#test hopLimit
+HextFile rs("packets/icmp6_multicast_listener_report.hext");
+IPv6HopByHopPacket *packet = (IPv6HopByHopPacket *)rs.buffer;
+ck_assert_int_eq(packet->hopLimit(), 1);
+
+#test setHopLimit
+IPv6HopByHopPacket packet;
+packet.setHopLimit(10);
+ck_assert_int_eq(packet.hopLimit(), 10);
+
+#test etherSource
+HextFile rs("packets/icmp6_multicast_listener_report.hext");
+MACAddress expect("c8:5b:76:f4:21:34");
+IPv6HopByHopPacket *packet = (IPv6HopByHopPacket *)rs.buffer;
+ck_assert_mem_eq(packet->etherSource(), expect, 6);
+
+#test setEtherSource
+MACAddress addr("01:23:45:67:89:10");
+IPv6HopByHopPacket packet;
+packet.setEtherSource(addr);
+ck_assert_mem_eq(packet.etherSource(), addr, 6);
+
+#test etherDestination
+HextFile rs("packets/icmp6_multicast_listener_report.hext");
+MACAddress expect("33:33:ff:36:14:b9");
+IPv6HopByHopPacket *packet = (IPv6HopByHopPacket *)rs.buffer;
+ck_assert_mem_eq(packet->etherDestination(), expect, 6);
+
+#test setEtherDestination
+MACAddress addr("01:23:45:67:89:10");
+IPv6HopByHopPacket packet;
+packet.setEtherDestination(addr);
+ck_assert_mem_eq(packet.etherDestination(), addr, 6);
+
+#test source
+HextFile rs("packets/icmp6_multicast_listener_report.hext");
+IPv6Address expect("fe80::f697:307e:e636:14b9");
+IPv6HopByHopPacket *packet = (IPv6HopByHopPacket *)rs.buffer;
+ck_assert_mem_eq(packet->source(), expect, 16);
+
+#test setSource
+IPv6Address addr("fe80::c58e:e533:e358:7006");
+IPv6HopByHopPacket packet;
+packet.setSource(addr);
+ck_assert_mem_eq(packet.source(), addr, 16);
+
+#test destination
+HextFile rs("packets/icmp6_multicast_listener_report.hext");
+IPv6Address expect("ff02::0001:ff36:14b9");
+IPv6HopByHopPacket *packet = (IPv6HopByHopPacket *)rs.buffer;
+ck_assert_mem_eq(packet->destination(), expect, 16);
+
+#test setDestination
+IPv6Address addr("2001:4860:4860::8888");
+IPv6HopByHopPacket packet;
+packet.setDestination(addr);
+ck_assert_mem_eq(packet.destination(), addr, 16);
+
+#test calculateChecksum
+HextFile rs("packets/icmp6_multicast_listener_report.hext");
+IPv6HopByHopPacket *packet = (IPv6HopByHopPacket *)rs.buffer;
+// Calculation comes out as 0 because of the checksum field in the ICMP6 header
+ck_assert_int_eq(packet->calculateChecksum(), 0x0000);
+
+#test constructPacket
+IPv6HopByHopPacket packet;
+packet.etherSource().fromString("a6:69:c0:80:da:3b");
+packet.etherDestination().fromString("36:b4:40:75:3b:a6");
+packet.setProtocol(0);
+packet.setPayloadLength(8);
+packet.source().fromString("fe80::a469:c0ff:fe80:da3b");
+packet.destination().fromString("fe80::34b4:40ff:fe75:3ba6");
+packet.setNextHeader(254);
+packet.setHopLimit(1);
+
+HextFile expect("packets/ipv6hbh_empty.hext");
+ck_assert_int_eq(sizeof(IPv6HopByHopPacket), expect.length);
+ck_assert_mem_eq(&packet, expect.buffer, expect.length);
+
+
+#test castReference
+HextFile rs("packets/icmp6_multicast_listener_report.hext");
+
+IPv6HopByHopPacket *packetRef = (IPv6HopByHopPacket *)rs.buffer;
+ck_assert(packetRef->isValid());
+
+IPv6HopByHopPacket& packet = (IPv6HopByHopPacket &)rs.buffer;
+ck_assert(packet.isValid());
