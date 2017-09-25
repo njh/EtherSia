@@ -31,6 +31,11 @@ struct router_alert {
 class IPv6HopByHopPacket : public IPv6Packet {
     public:
         /**
+         * Constructor for new empty IPv6 Hop-by-Hop packet
+         */
+         IPv6HopByHopPacket();
+
+        /**
          * Set the type of the Hop by Hop packet payload
          * @param header typecode of the payload type
          */

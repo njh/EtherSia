@@ -3,6 +3,12 @@
 #include "EtherSia.h"
 #include "IPv6HopByHopPacket.h"
 
+IPv6HopByHopPacket::IPv6HopByHopPacket()
+{
+    memset(this, 0, sizeof(IPv6HopByHopPacket));
+    init();
+}
+
 void IPv6HopByHopPacket::setNextHeader(uint8_t header) {
     _next_header = header;
 }
