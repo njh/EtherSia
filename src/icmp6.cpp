@@ -183,8 +183,6 @@ void EtherSia::icmp6ProcessRA()
                 struct icmp6_prefix_information *icmp_p = (struct icmp6_prefix_information*)&ptr[2];
                 IPv6Prefix advertised_prefix(&icmp_p->prefix, icmp_p->prefix_length);
                 if(!_whitelistedPrefix.contains(&advertised_prefix)) {
-                    _whitelistedPrefix.println();
-                    advertised_prefix.println();
                     return;
                 }
             }
