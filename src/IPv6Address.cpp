@@ -13,6 +13,11 @@ IPv6Address::IPv6Address(const char *addrstr)
     fromString(addrstr);
 }
 
+IPv6Address::IPv6Address(const __FlashStringHelper *addrstr)
+{
+    fromString(addrstr);
+}
+
 void IPv6Address::setZero()
 {
     memset(_address, 0, sizeof(_address));
@@ -180,6 +185,14 @@ boolean IPv6Address::fromString(const char *addrstr)
 
     // Success
     return 1;
+}
+
+boolean IPv6Address::fromString(const __FlashStringHelper *addrstr)
+{
+    char ramStr[40];
+    // Copy the string from flash program memory into RAM
+    strcpy_P(ramStr, (const char*)addrstr);
+    return fromString(ramStr);
 }
 
 uint8_t IPv6Address::type()

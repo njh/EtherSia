@@ -50,7 +50,7 @@ class EtherSia_W5100 : public EtherSia {
 public:
     /**
      * Constructor that uses the default hardware SPI pins
-     * @param cs the Arduino Chip Select / Slave Select pin (default 10)
+     * @param cs the Arduino Chip Select / Slave Select pin (default 10 on Uno)
      */
     EtherSia_W5100(int8_t cs=SS);
 
@@ -106,20 +106,14 @@ private:
      * @note This function help not to access wrong address. If you do not describe this function or register any functions,
      * null function is called.
      */
-    inline void wizchip_cs_select()
-    {
-        digitalWrite(_cs, LOW);
-    }
+    void wizchip_cs_select();
 
     /**
      * Default function to deselect chip.
      * @note This function help not to access wrong address. If you do not describe this function or register any functions,
      * null function is called.
      */
-    inline void wizchip_cs_deselect()
-    {
-        digitalWrite(_cs, HIGH);
-    }
+    void wizchip_cs_deselect();
 
     /**
      * Read a 1 byte value from a register.

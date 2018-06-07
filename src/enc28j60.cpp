@@ -146,7 +146,7 @@ uint8_t
 EtherSia_ENC28J60::is_mac_mii_reg(uint8_t reg)
 {
     /* MAC or MII register (otherwise, ETH register)? */
-    switch(bank) {
+    switch(_bank) {
     case MACONX_BANK:
         return reg < EIE;
     case MAADRX_BANK:
@@ -212,7 +212,7 @@ void
 EtherSia_ENC28J60::setregbank(uint8_t new_bank)
 {
     writereg(ECON1, (readreg(ECON1) & 0xfc) | (new_bank & 0x03));
-    bank = new_bank;
+    _bank = new_bank;
 }
 /*---------------------------------------------------------------------------*/
 void
@@ -264,7 +264,7 @@ EtherSia_ENC28J60::softreset(void)
     /* The System Command (soft reset) is 1 1 1 1 1 1 1 1 */
     enc28j60_arch_spi_write(0xff);
     enc28j60_arch_spi_deselect();
-    bank = ERXTX_BANK;
+    _bank = ERXTX_BANK;
 }
 
 /*---------------------------------------------------------------------------*/
@@ -679,22 +679,15 @@ EtherSia_ENC28J60::readFrame(uint8_t *buffer, uint16_t bufsize)
    ----------------------------------------
 */
 
+// The ENC28J60 SPI Interface supports clock speeds up to 20 MHz
+static const SPISettings spiSettings(20000000, MSBFIRST, SPI_MODE0);
+
+
 EtherSia_ENC28J60::EtherSia_ENC28J60(int8_t cs)
 {
     _cs = cs;
-    _clk = _mosi = _miso = -1;
 
-    bank = ERXTX_BANK;
-}
-
-EtherSia_ENC28J60::EtherSia_ENC28J60(int8_t clk, int8_t miso, int8_t mosi, int8_t cs)
-{
-    _cs = cs;
-    _clk = clk;
-    _mosi = mosi;
-    _miso = miso;
-
-    bank = ERXTX_BANK;
+    _bank = ERXTX_BANK;
 }
 
 
@@ -704,21 +697,7 @@ EtherSia_ENC28J60::enc28j60_arch_spi_init(void)
     pinMode(_cs, OUTPUT);
     digitalWrite(_cs, HIGH);
 
-    if (_clk == -1) { // hardware SPI!
-        SPI.begin();
-
-#ifdef __SAM3X8E__
-        SPI.setClockDivider (9); // 9.3 MHz
-#else
-        SPI.setClockDivider(SPI_CLOCK_DIV2); // 8 MHz
-#endif
-
-        SPI.setDataMode(SPI_MODE0);
-    } else {
-        pinMode(_clk, OUTPUT);
-        pinMode(_mosi, OUTPUT);
-        pinMode(_miso, INPUT);
-    }
+    SPI.begin();
 }
 
 uint8_t
@@ -736,6 +715,7 @@ EtherSia_ENC28J60::enc28j60_arch_spi_read(void)
 void
 EtherSia_ENC28J60::enc28j60_arch_spi_select(void)
 {
+    SPI.beginTransaction(spiSettings);
     digitalWrite(_cs, LOW);
 }
 
@@ -743,6 +723,7 @@ void
 EtherSia_ENC28J60::enc28j60_arch_spi_deselect(void)
 {
     digitalWrite(_cs, HIGH);
+    SPI.endTransaction();
 }
 
 void

@@ -9,3 +9,5 @@ void SPIClass::end() {}
 void SPIClass::setBitOrder(uint8_t) {}
 void SPIClass::setDataMode(uint8_t) {}
 void SPIClass::setClockDivider(uint8_t) {}
+void SPIClass::beginTransaction(SPISettings /*settings*/) {}
+void SPIClass::endTransaction() {}

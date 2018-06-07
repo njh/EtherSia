@@ -21,7 +21,7 @@ public:
 
     /**
      * Construct a UDP socket
-     * The local port number will be sent to a random port number
+     * The local port number will be set to a random port number
      *
      * @param ether The Ethernet interface to attach the socket to
      */

@@ -47,12 +47,26 @@ public:
     IPv6Address(const char *addrstr);
 
     /**
+     * Constructor from a human readable IPv6 address Flash string (use the F() macro)
+     * @param addrstr the address to parse
+     */
+    IPv6Address(const __FlashStringHelper *addrstr);
+
+    /**
      * Set address to the a human readable IPv6 string
      * The address string can contain double colon :: notation to save space
      * @param addrstr an IPv6 address as a null-terminated string
      * @return true if the string was parsed successfully
      */
     boolean fromString(const char *addrstr);
+
+    /**
+     * Set address to the a human readable IPv6 Flash string (use the F() macro)
+     * The address string can contain double colon :: notation to save space
+     * @param addrstr an IPv6 address as a null-terminated string
+     * @return true if the string was parsed successfully
+     */
+    boolean fromString(const __FlashStringHelper *addrstr);
 
     /**
      * Get the IPv6 address type

@@ -1,6 +1,17 @@
 # Request for AAAA ipv6.aelius.com
-12 34 01 00 00 01 00 00
-00 00 00 00 04 69 70 76
-36 06 61 65 6c 69 75 73
-03 63 6f 6d 00 00 1c 00
-01
+
+1234      # Request ID
+0100      # Flags (Recursion Desired)
+0001      # QD: Question Count
+0000      # AN: Answer Count
+0000      # NS: Name Server Count
+0000      # AR: Additional Record Count
+
+# Response to question
+04 "ipv6"
+06 "aelius"
+03 "com"
+00
+
+001c    # Type 28 - IP6 Address
+0001    # Class 1 - Internet

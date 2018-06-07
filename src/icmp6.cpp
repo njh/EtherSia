@@ -3,6 +3,41 @@
 #include "ICMPv6Packet.h"
 
 
+
+void EtherSia::icmp6ErrorReply(uint8_t type, uint8_t code)
+{
+    ICMPv6Packet& packet = (ICMPv6Packet&)_ptr;
+    uint16_t payloadLen = IP6_HEADER_LEN + packet.payloadLength();
+    const uint16_t payloadMax = ETHERSIA_MAX_PACKET_SIZE - ICMP6_ERROR_HEADER_OFFSET - ICMP6_ERROR_HEADER_LEN;
+
+    // Make sure payloadLen isn't too long
+    if (payloadLen > payloadMax)
+        payloadLen = payloadMax;
+
+    // Copy the packet we received to the end of the new ICMPv6 packet
+    memmove(
+        packet.payload() + ICMP6_HEADER_LEN + ICMP6_ERROR_HEADER_LEN,
+        packet.payload() - IP6_HEADER_LEN,
+        payloadLen
+    );
+
+    // Now create the new reply packet
+    prepareReply();
+    packet.setPayloadLength(ICMP6_HEADER_LEN + ICMP6_ERROR_HEADER_LEN + payloadLen);
+    packet.type = type;
+    packet.code = code;
+
+    if (type == ICMP6_TYPE_PARAM_PROB) {
+        // Set pointer to the 'next header' field
+        packet.err.pointer = htonl(0x06L);
+    } else {
+        // Set the 'unused' field to zero
+        packet.err.unused = 0;
+    }
+
+    icmp6PacketSend();
+}
+
 void EtherSia::icmp6NSReply()
 {
     ICMPv6Packet& packet = (ICMPv6Packet&)_ptr;
@@ -17,17 +52,16 @@ void EtherSia::icmp6NSReply()
     packet.setHopLimit(255);
 
     // We should now send a neighbor advertisement back to where the neighbor solicication came from.
-    packet.setPayloadLength(ICMP6_HEADER_LEN + ICMP6_NA_HEADER_LEN + 8);
+    packet.setPayloadLength(ICMP6_HEADER_LEN + ICMP6_NA_HEADER_LEN);
     packet.type = ICMP6_TYPE_NA;
     packet.code = 0;
     packet.na.flags = ICMP6_NA_FLAG_S; // Solicited flag.
     memset(packet.na.reserved, 0, sizeof(packet.na.reserved));
 
     // Set the target link address option
-    uint8_t* ptr = _buffer + ICMP6_NA_HEADER_OFFSET + ICMP6_NA_HEADER_LEN;
-    ptr[0] = ICMP6_OPTION_TARGET_LINK_ADDRESS;
-    ptr[1] = 1;  // Options length, 1 = 8 bytes
-    memcpy(&ptr[2], _localMac, 6);
+    packet.na.option1.type = ICMP6_OPTION_TARGET_LINK_ADDRESS;
+    packet.na.option1.len = ICMP6_OPTION_MAC_LEN / 8;
+    packet.na.option1.mac = _localMac;
 
     icmp6PacketSend();
 }
@@ -43,22 +77,31 @@ void EtherSia::icmp6EchoReply()
     icmp6PacketSend();
 }
 
-void EtherSia::icmp6SendNS(IPv6Address &targetAddress)
+void EtherSia::icmp6SendNS(IPv6Address &targetAddress, IPv6Address &sourceAddress)
 {
     ICMPv6Packet& packet = (ICMPv6Packet&)_ptr;
 
-    prepareSend();
-    packet.setPayloadLength(ICMP6_HEADER_LEN + ICMP6_NS_HEADER_LEN);
-    packet.setHopLimit(255);
-    packet.source().setZero();
     packet.destination().setSolicitedNodeMulticastAddress(targetAddress);
     packet.etherDestination().setIPv6Multicast(packet.destination());
-
+    prepareSend();
+    packet.setSource(sourceAddress);
+    packet.setHopLimit(255);
     packet.type = ICMP6_TYPE_NS;
     packet.code = 0;
 
     memset(packet.ns.reserved, 0, sizeof(packet.ns.reserved));
     packet.ns.target = targetAddress;
+    
+    if (sourceAddress.isZero()) {
+        // No source link-layer address option
+        packet.setPayloadLength(ICMP6_HEADER_LEN + ICMP6_NS_HEADER_LEN - ICMP6_OPTION_MAC_LEN);
+    } else {
+        // Set link-layer address for the sender
+        packet.ns.option1.type = ICMP6_OPTION_SOURCE_LINK_ADDRESS;
+        packet.ns.option1.len = ICMP6_OPTION_MAC_LEN / 8;
+        packet.ns.option1.mac = _localMac;
+        packet.setPayloadLength(ICMP6_HEADER_LEN + ICMP6_NS_HEADER_LEN);
+    }
 
     icmp6PacketSend();
 }
@@ -78,9 +121,9 @@ void EtherSia::icmp6SendRS()
     packet.code = 0;
 
     memset(packet.rs.reserved, 0, sizeof(packet.rs.reserved));
-    packet.rs.option_type = ICMP6_OPTION_SOURCE_LINK_ADDRESS;
-    packet.rs.option_len = 1;
-    packet.rs.option_mac = _localMac;
+    packet.rs.option1.type = ICMP6_OPTION_SOURCE_LINK_ADDRESS;
+    packet.rs.option1.len = ICMP6_OPTION_MAC_LEN / 8;
+    packet.rs.option1.mac = _localMac;
 
     icmp6PacketSend();
 }
@@ -121,7 +164,7 @@ void EtherSia::icmp6ProcessPrefix(struct icmp6_prefix_information *pi)
 
 void EtherSia::icmp6ProcessRA()
 {
-    IPv6Packet& packet = (IPv6Packet&)_ptr;
+    ICMPv6Packet& packet = (ICMPv6Packet&)_ptr;
     int16_t remaining = packet.payloadLength() - ICMP6_HEADER_LEN - ICMP6_RA_HEADER_LEN;
     uint8_t *ptr = _buffer + ICMP6_RA_HEADER_OFFSET + ICMP6_RA_HEADER_LEN;
 
@@ -159,25 +202,16 @@ void EtherSia::icmp6ProcessRA()
 MACAddress* EtherSia::icmp6ProcessNA(IPv6Address &expected)
 {
     ICMPv6Packet& packet = (ICMPv6Packet&)_ptr;
-    int16_t remaining = packet.payloadLength() - ICMP6_HEADER_LEN - ICMP6_NA_HEADER_LEN;
-    uint8_t *ptr = _buffer + ICMP6_NA_HEADER_OFFSET + ICMP6_NA_HEADER_LEN;
-
     if (packet.na.target != expected) {
         return NULL;
     }
 
-    // Iterate through options
-    while(remaining > 0) {
-        switch(ptr[0]) {
-        case ICMP6_OPTION_TARGET_LINK_ADDRESS:
-            return (MACAddress*)&ptr[2];
-        }
-
-        remaining -= (8 * ptr[1]);
-        ptr += (8 * ptr[1]);
+    // Check for option
+    if (packet.na.option1.type == ICMP6_OPTION_TARGET_LINK_ADDRESS) {
+        return &(packet.na.option1.mac);
+    } else {
+        return &(packet.etherSource());
     }
-
-    return &(packet.etherSource());
 }
 
 boolean EtherSia::icmp6ProcessPacket()
@@ -239,12 +273,20 @@ MACAddress* EtherSia::discoverNeighbour(const char* addrstr)
 MACAddress* EtherSia::discoverNeighbour(IPv6Address& address, uint8_t attempts)
 {
     ICMPv6Packet& packet = (ICMPv6Packet&)_ptr;
+    IPv6Address *sourceAddress = NULL;
     unsigned long nextNeighbourSolicitation = millis();
     uint8_t count = 0;
 
+    // Work out the source address to send the Neighbour Solicitation from
+    if (address.isLinkLocal()) {
+        sourceAddress = &_linkLocalAddress;
+    } else {
+        sourceAddress = &_globalAddress;
+    }
+
     while (count < attempts) {
         if ((long)(millis() - nextNeighbourSolicitation) >= 0) {
-            icmp6SendNS(address);
+            icmp6SendNS(address, *sourceAddress);
             nextNeighbourSolicitation = millis() + NEIGHBOUR_SOLICITATION_TIMEOUT;
             count++;
         }

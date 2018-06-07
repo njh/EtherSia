@@ -37,6 +37,8 @@
 #ifndef ENC28J60_H
 #define ENC28J60_H
 
+#include <SPI.h>
+
 #include "EtherSia.h"
 
 /**
@@ -47,18 +49,9 @@ class EtherSia_ENC28J60 : public EtherSia {
 public:
     /**
      * Constructor that uses the default hardware SPI pins
-     * @param cs the Arduino Chip Select / Slave Select pin (default 10)
+     * @param cs the Arduino Chip Select / Slave Select pin (default 10 on Uno)
      */
-    EtherSia_ENC28J60(int8_t cs=10);
-
-    /**
-     * Constructor for using software SPI, with custom set of pins
-     * @param clk the SPI Clock pin
-     * @param miso the SPI Master In / Slave Out pin
-     * @param mosi the SPI Master Out / Slave In pin
-     * @param cs the Arduino Chip Select / Slave Select pin
-     */
-    EtherSia_ENC28J60(int8_t clk, int8_t miso, int8_t mosi, int8_t cs);
+    EtherSia_ENC28J60(int8_t cs=SS);
 
     // Tell the compiler we want to use begin() from the base class
     using EtherSia::begin;
@@ -114,9 +107,8 @@ private:
     // Previously defined in contiki/core/sys/clock.h
     void clock_delay_usec(uint16_t dt);
 
-    uint8_t bank;
-
-    int8_t _cs, _clk, _mosi, _miso;
+    uint8_t _bank;
+    int8_t _cs;
 
 };
 

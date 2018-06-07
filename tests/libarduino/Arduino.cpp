@@ -1,7 +1,7 @@
 #include "Arduino.h"
 
 uint32_t millis( void ) {return 0;}
-uint32_t micros( void ) {return 0;}
+uint32_t micros( void ) {return 100;}
 void delay(uint32_t /* msec */) {}
 void delayMicroseconds(uint32_t /* us */) {}
 

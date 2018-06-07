@@ -85,12 +85,32 @@ boolean result = addr.fromString("2001*4860*4860*0000*0000*0000*0000*8888");
 ck_assert(result == false);
 
 
+#test fromString_flash
+uint8_t expect[16] = {
+    0x20, 0x01, 0x48, 0x60, 0x48, 0x60, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x88, 0x88
+};
+IPv6Address addr;
+boolean result = addr.fromString(F("2001:4860:4860::8888"));
+ck_assert(result == true);
+ck_assert_mem_eq(expect, addr, 16);
+
+
 #test new_string_googlePublicDNS
 uint8_t expect[16] = {
     0x20, 0x01, 0x48, 0x60, 0x48, 0x60, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x88, 0x88
 };
 IPv6Address addr("2001:4860:4860:0000:0000:0000:0000:8888");
+ck_assert_mem_eq(expect, addr, 16);
+
+
+#test new_flash_string_googlePublicDNS
+uint8_t expect[16] = {
+    0x20, 0x01, 0x48, 0x60, 0x48, 0x60, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x88, 0x88
+};
+IPv6Address addr(F("2001:4860:4860:0000:0000:0000:0000:8888"));
 ck_assert_mem_eq(expect, addr, 16);
 
 

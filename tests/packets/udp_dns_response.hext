@@ -1,0 +1,44 @@
+00:04:a3:2c:2b:b9        # Ethernet Destination
+ca:2f:6d:70:f9:5f        # Ethernet Source
+86dd                     # EtherType (IPv6)
+
+60 00 00 00              # IPv6 header
+0045                     # Length (69 bytes)
+11                       # Protocol
+40                       # Hop Limit
+
+2001:4860:4860:0000:0000:0000:0000:8888  # IPv6 Source Address
+2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9  # IPv6 Destination Address
+
+0035                     # UDP Source Port
+61a8                     # UDP Destination Port
+0045                     # Length (69 bytes)
+5221                     # Checksum
+
+
+7fff      # Request ID
+8180      # Flags
+0001      # QD: Question Count
+0001      # AN: Answer Count
+0000      # NS: Name Server Count
+0000      # AR: Additional Record Count
+
+# Question Section
+04 "ipv6"
+06 "aelius"
+03 "com"
+00
+
+001c      # Type 28 - IP6 Address
+0001      # Class 1 - Internet
+
+# Answer Section
+c0 0c     # Pointer to name in the question section
+
+001c      # Type 28 - IP6 Address
+0001      # Class 1 - Internet
+00000371  # Time to Live
+0010      # Record Length (16 bytes)
+
+2001:41c8:0051:07cf:0000:0000:0000:0006
+

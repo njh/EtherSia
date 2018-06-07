@@ -1,0 +1,20 @@
+00:04:a3:2c:2b:b9        # Ethernet Destination
+a4:5e:60:da:58:9d        # Ethernet Source
+86dd                     # EtherType (IPv6)
+
+60 03 b1 b7              # IPv6 header
+001b                     # Length (27 bytes)
+11                       # Protocol
+40                       # Hop Limit
+
+2001:08b0:ffd5:0003:a65e:60ff:feda:589d  # IPv6 Source Address
+2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9  # IPv6 Destination Address
+
+fa06                     # UDP Source Port
+0045                     # UDP Destination Port (69)
+001b                     # Length (27 bytes)
+de12                     # Checksum
+
+0001                     # TFTP Read operation
+"foobar.txt" 00          # TFTP Filename
+"octet" 00               # TFTP Type

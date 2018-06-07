@@ -100,5 +100,9 @@ void loop() {
             Serial.println("Invalid Message");
             udp.sendReply("err");
         }
+    } else {
+        // Send back a ICMPv6 Destination Unreachable response
+        // to any other connection attempts
+        ether.rejectPacket();
     }
 }

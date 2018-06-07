@@ -27,6 +27,11 @@ MACAddress::MACAddress(const char *macstr)
     fromString(macstr);
 }
 
+MACAddress::MACAddress(const __FlashStringHelper *macstr)
+{
+    fromString(macstr);
+}
+
 MACAddress::operator uint8_t*()
 {
     return _address;
@@ -87,6 +92,14 @@ boolean MACAddress::fromString(const char *macstr)
 
     // Success
     return 1;
+}
+
+boolean MACAddress::fromString(const __FlashStringHelper *macstr)
+{
+    char ramStr[18];
+    // Copy the string from flash program memory into RAM
+    strcpy_P(ramStr, (const char*)macstr);
+    return fromString(ramStr);
 }
 
 uint8_t MACAddress::operator[](int index) const

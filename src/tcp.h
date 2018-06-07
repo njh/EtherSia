@@ -44,10 +44,16 @@ enum TCP_FLAGS {
 };
 
 /**
+ * The minimum length of a TCP response packet without any extra options
+ * @private
+ */
+#define TCP_MINIMUM_HEADER_LEN             (20)
+
+/**
  * The length of a TCP response packet header, used when sending packets
  * @private
  */
-#define TCP_TRANSMIT_HEADER_LEN            (24)
+#define TCP_TRANSMIT_HEADER_LEN            (TCP_MINIMUM_HEADER_LEN + 4)
 
 /* Verify that compiler gets the structure size correct */
 static_assert(sizeof(struct tcp_header) == TCP_TRANSMIT_HEADER_LEN, "Size is not correct");

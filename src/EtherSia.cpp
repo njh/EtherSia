@@ -1,4 +1,5 @@
 #include "EtherSia.h"
+#include "ICMPv6Packet.h"
 #include "util.h"
 
 // https://developers.google.com/speed/public-dns/
@@ -32,7 +33,8 @@ boolean EtherSia::begin()
     delay(500);
 
     // Send link local Neighbour Solicitation for Duplicate Address Detection
-    icmp6SendNS(_linkLocalAddress);
+    IPv6Address zero;
+    icmp6SendNS(_linkLocalAddress, zero);
 
     // Perform stateless auto-configuration if enabled
     if (_autoConfigurationEnabled) {
@@ -134,6 +136,32 @@ uint16_t EtherSia::receivePacket()
     return len;
 }
 
+void EtherSia::rejectPacket()
+{
+    IPv6Packet& packet = (IPv6Packet&)_ptr;
+
+    // Ignore packets we have already replied to
+    if (!_bufferContainsReceived)
+        return;
+
+    // Ignore multicast packets
+    if (packet.destination().isMulticast())
+        return;
+
+    if (packet.protocol() == IP6_PROTO_TCP) {
+        // Reply with TCP RST packet
+        tcpSendRSTReply();
+    } else if (packet.protocol() == IP6_PROTO_UDP) {
+        // Reply with ICMPv6 Port Unreachable
+        icmp6ErrorReply(ICMP6_TYPE_UNREACHABLE, ICMP6_CODE_PORT_UNREACHABLE);
+    } else if (packet.protocol() == IP6_PROTO_ICMP6) {
+        // Ignore ICMPv6 packets
+    } else {
+        // Reply with Unrecognised Next Header
+        icmp6ErrorReply(ICMP6_TYPE_PARAM_PROB, ICMP6_CODE_UNRECOGNIZED_NH);
+    }
+}
+
 void EtherSia::prepareSend()
 {
     IPv6Packet& packet = (IPv6Packet&)_ptr;
@@ -141,7 +169,7 @@ void EtherSia::prepareSend()
     _bufferContainsReceived = false;
 
     packet.init();
-    if (packet.destination().isLinkLocal()) {
+    if (packet.destination().isLinkLocal() || _globalAddress.isZero()) {
         packet.setSource(_linkLocalAddress);
     } else {
         packet.setSource(_globalAddress);
@@ -154,23 +182,13 @@ void EtherSia::prepareSend()
 void EtherSia::prepareReply()
 {
     IPv6Packet& packet = (IPv6Packet&)_ptr;
-    IPv6Address *replySourceAddress;
+    IPv6Address destination = packet.source();
+    MACAddress etherDestination = packet.etherSource();
 
-    _bufferContainsReceived = false;
+    prepareSend();
 
-    if (isOurAddress(packet.destination()) == ADDRESS_TYPE_GLOBAL) {
-        replySourceAddress = &_globalAddress;
-    } else {
-        replySourceAddress = &_linkLocalAddress;
-    }
-
-    packet.setHopLimit(IP6_DEFAULT_HOP_LIMIT);
-
-    packet.setDestination(packet.source());
-    packet.setSource(*replySourceAddress);
-
-    packet.setEtherDestination(packet.etherSource());
-    packet.setEtherSource(_localMac);
+    packet.setDestination(destination);
+    packet.setEtherDestination(etherDestination);
 }
 
 void EtherSia::send()
@@ -180,4 +198,29 @@ void EtherSia::send()
     _bufferContainsReceived = false;
 
     sendFrame(_buffer, packet.length());
+}
+
+void EtherSia::tcpSendRSTReply()
+{
+    IPv6Packet& packet = (IPv6Packet&)_ptr;
+    struct tcp_header *tcpHeader = TCP_HEADER_PTR;
+    uint32_t seqNum = htonl(tcpHeader->sequenceNum);
+    uint16_t sourcePort = tcpHeader->sourcePort;
+
+    prepareReply();
+    tcpHeader->sourcePort = tcpHeader->destinationPort;
+    tcpHeader->destinationPort = sourcePort;
+    tcpHeader->sequenceNum = 0;
+    tcpHeader->acknowledgementNum = htonl(seqNum + 1);
+    tcpHeader->dataOffset = (TCP_MINIMUM_HEADER_LEN / 4) << 4;
+    tcpHeader->flags = TCP_FLAG_ACK | TCP_FLAG_RST;
+    tcpHeader->window = 0;
+    tcpHeader->urgentPointer = 0;
+
+    packet.setPayloadLength(TCP_MINIMUM_HEADER_LEN);
+
+    tcpHeader->checksum = 0;
+    tcpHeader->checksum = htons(packet.calculateChecksum());
+
+    send();
 }

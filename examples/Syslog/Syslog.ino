@@ -42,5 +42,7 @@ void loop() {
         syslog.println(millis() / 1000, DEC);
         nextMessage = millis() + 5000;
     }
-}
 
+    // Reject any incoming connections
+    ether.rejectPacket();
+}

@@ -73,6 +73,7 @@ void loop() {
             needNewServer = false;
         } else {
             // Something went wrong, sleep for a minute, then try again
+            Serial.println("Error looking up remote host");
             delay(60000);
             return;
         }
@@ -110,6 +111,9 @@ void loop() {
             pollingInterval = DEFAULT_POLLING_INTERVAL;
             nextRequest = millis() + (pollingInterval * 1000);
         }
+    } else {
+        // Reject any other incoming packets
+        ether.rejectPacket();
     }
 
     if ((long)(millis() - nextRequest) >= 0) {

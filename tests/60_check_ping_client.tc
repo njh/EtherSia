@@ -1,0 +1,179 @@
+#include "EtherSia.h"
+#include "util.h"
+#include "hext.hh"
+#suite PingClient
+
+
+#test construct_client
+EtherSia_Dummy ether;
+PingClient ping(ether);
+ck_assert(ping.remoteAddress().isZero());
+ck_assert_int_eq(ping.identifier(), 21845);
+ck_assert_int_eq(ping.sequenceNumber(), 0);
+ck_assert_int_eq(ping.timeLastSent(), 0);
+ck_assert_int_eq(ping.timeLastRecieved(), 0);
+
+#test setRemoteAddress_ip
+EtherSia_Dummy ether;
+PingClient ping(ether);
+ping.setRemoteAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
+IPv6Address expect("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
+ck_assert(ping.remoteAddress() == expect);
+
+
+#test send
+MACAddress routerMac = MACAddress("ca:2f:6d:70:f9:5f");
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
+ether.setRouter(routerMac);
+ether.begin("00:04:a3:2c:2b:b9");
+ether.clearSent();
+
+PingClient ping(ether);
+ping.setRemoteAddress("2001:41c8:51:7cf::6");
+ping.send();
+
+HextFile expect("packets/icmp6_echo_request2.hext");
+frame_t &sent = ether.getLastSent();
+ck_assert_int_eq(sent.length, expect.length);
+ck_assert_mem_eq(sent.packet, expect.buffer, expect.length);
+ck_assert(ping.gotReply() == false);
+ck_assert(ping.havePacket() == false);
+ck_assert_int_eq(ping.timeLastSent(), 100);
+ck_assert_int_eq(ping.lastSequenceNumber(), 0);
+ether.end();
+
+
+#test havePacket
+MACAddress routerMac = MACAddress("ca:2f:6d:70:f9:5f");
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
+ether.setRouter(routerMac);
+ether.begin("00:04:a3:2c:2b:b9");
+ether.clearSent();
+
+PingClient ping(ether);
+ping.setSequenceNumber(1);
+ping.setRemoteAddress("2001:41c8:51:7cf::6");
+HextFile echo_reply("packets/icmp6_echo_response2.hext");
+ether.injectRecievedPacket(echo_reply.buffer, echo_reply.length);
+ck_assert_int_eq(ether.receivePacket(), 70);
+ck_assert(ping.havePacket() == true);
+ck_assert(ping.gotReply() == true);
+ck_assert_int_eq(ping.payloadLength(), 8);
+ck_assert_int_eq(ping.timeLastRecieved(), 100);
+ck_assert_int_eq(ping.lastSequenceNumber(), 0);
+ether.end();
+
+
+#test havePacket_not_icmp
+MACAddress routerMac = MACAddress("ca:2f:6d:70:f9:5f");
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
+ether.setRouter(routerMac);
+ether.begin("00:04:a3:2c:2b:b9");
+ether.clearSent();
+
+PingClient ping(ether);
+ping.setRemoteAddress("2001:41c8:51:7cf::6");
+HextFile udp("packets/udp_valid_hello.hext");
+ether.injectRecievedPacket(udp.buffer, udp.length);
+ck_assert_int_eq(ether.receivePacket(), udp.length);
+ck_assert(ping.havePacket() == false);
+ck_assert(ping.gotReply() == false);
+ether.end();
+
+
+#test havePacket_unknown_icmp_type
+MACAddress routerMac = MACAddress("ca:2f:6d:70:f9:5f");
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
+ether.setRouter(routerMac);
+ether.begin("00:04:a3:2c:2b:b9");
+ether.clearSent();
+
+PingClient ping(ether);
+ping.setRemoteAddress("2001:41c8:51:7cf::6");
+HextFile unknown_icmp("packets/icmp6_unknown_type.hext");
+ether.injectRecievedPacket(unknown_icmp.buffer, unknown_icmp.length);
+ck_assert_int_eq(ether.receivePacket(), unknown_icmp.length);
+ck_assert(ping.havePacket() == false);
+ck_assert(ping.gotReply() == false);
+ether.end();
+
+
+#test havePacket_wrong_identifier
+MACAddress routerMac = MACAddress("ca:2f:6d:70:f9:5f");
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
+ether.setRouter(routerMac);
+ether.begin("00:04:a3:2c:2b:b9");
+ether.clearSent();
+
+PingClient ping(ether);
+ping.setIdentifier(99);
+ping.setRemoteAddress("2001:41c8:51:7cf::6");
+HextFile echo_reply("packets/icmp6_echo_response2.hext");
+ether.injectRecievedPacket(echo_reply.buffer, echo_reply.length);
+ck_assert_int_eq(ether.receivePacket(), echo_reply.length);
+ck_assert(ping.havePacket() == false);
+ck_assert(ping.gotReply() == false);
+ether.end();
+
+
+#test havePacket_wrong_sequence
+MACAddress routerMac = MACAddress("ca:2f:6d:70:f9:5f");
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
+ether.setRouter(routerMac);
+ether.begin("00:04:a3:2c:2b:b9");
+ether.clearSent();
+
+PingClient ping(ether);
+ping.setSequenceNumber(99);
+ping.setRemoteAddress("2001:41c8:51:7cf::6");
+HextFile echo_reply("packets/icmp6_echo_response2.hext");
+ether.injectRecievedPacket(echo_reply.buffer, echo_reply.length);
+ck_assert_int_eq(ether.receivePacket(), echo_reply.length);
+ck_assert(ping.havePacket() == false);
+ck_assert(ping.gotReply() == false);
+ether.end();
+
+
+#test havePacket_wrong_source
+MACAddress routerMac = MACAddress("ca:2f:6d:70:f9:5f");
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb9");
+ether.setRouter(routerMac);
+ether.begin("00:04:a3:2c:2b:b9");
+ether.clearSent();
+
+PingClient ping(ether);
+ping.setSequenceNumber(1);
+ping.setRemoteAddress("2001:41c8:51:7cf::7");
+HextFile echo_reply("packets/icmp6_echo_response2.hext");
+ether.injectRecievedPacket(echo_reply.buffer, echo_reply.length);
+ck_assert_int_eq(ether.receivePacket(), echo_reply.length);
+ck_assert(ping.havePacket() == false);
+ck_assert(ping.gotReply() == false);
+ether.end();
+
+
+#test havePacket_wrong_destination
+MACAddress routerMac = MACAddress("ca:2f:6d:70:f9:5f");
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:08b0:ffd5:0003:0204:a3ff:fe2c:2bb0");
+ether.setRouter(routerMac);
+ether.begin("00:04:a3:2c:2b:b9");
+ether.clearSent();
+
+PingClient ping(ether);
+ping.setSequenceNumber(1);
+ping.setRemoteAddress("2001:41c8:51:7cf::7");
+HextFile echo_reply("packets/icmp6_echo_response2.hext");
+ether.injectRecievedPacket(echo_reply.buffer, echo_reply.length);
+ck_assert_int_eq(ether.receivePacket(), echo_reply.length);
+ck_assert(ping.havePacket() == false);
+ck_assert(ping.gotReply() == false);
+ether.end();
+

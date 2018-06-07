@@ -32,6 +32,8 @@
 
 #include "w5100.h"
 
+// The W5100 SPI Interface has minimum SCLK time of 70 ns (14.29 Mhz)
+static const SPISettings spiSettings(14000000, MSBFIRST, SPI_MODE0);
 
 uint8_t EtherSia_W5100::wizchip_read(uint16_t address)
 {
@@ -216,9 +218,6 @@ boolean EtherSia_W5100::begin(const MACAddress &address)
     wizchip_cs_deselect();
 
     SPI.begin();
-    SPI.setClockDivider(SPI_CLOCK_DIV4); // 4 MHz?
-    SPI.setBitOrder(MSBFIRST);
-    SPI.setDataMode(SPI_MODE0);
 
     wizchip_sw_reset();
 
@@ -317,4 +316,16 @@ uint16_t EtherSia_W5100::sendFrame(const uint8_t *buf, uint16_t len)
     }
 
     return len;
+}
+
+void EtherSia_W5100::wizchip_cs_select()
+{
+    SPI.beginTransaction(spiSettings);
+    digitalWrite(_cs, LOW);
+}
+
+void EtherSia_W5100::wizchip_cs_deselect()
+{
+    digitalWrite(_cs, HIGH);
+    SPI.endTransaction();
 }
