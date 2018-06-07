@@ -15,6 +15,20 @@ int8_t asciiToHex(char c)
     }
 }
 
+void hexToAscii(uint8_t byte, char *str)
+{
+    str[0] = (byte >> 4) & 0x0f;
+    str[1] = byte & 0x0f;
+
+    for (uint8_t i=0; i<2; i++) {
+        if (str[i] > 9) {
+            str[i] += 'a' - 10;
+        } else {
+            str[i] += '0';
+        }
+    }
+}
+
 boolean containsColon(const char *str)
 {
     for (const char *ptr = str; *ptr; ptr++) {
@@ -28,16 +42,9 @@ boolean containsColon(const char *str)
 void printPaddedHex(uint8_t byte, Print &p)
 {
     char str[2];
-    str[0] = (byte >> 4) & 0x0f;
-    str[1] = byte & 0x0f;
-
-    for (int i=0; i<2; i++) {
-        // base for converting single digit numbers to ASCII is 48
-        // base for 10-16 to become lower-case characters a-f is 87
-        if (str[i] > 9) str[i] += 39;
-        str[i] += 48;
-        p.print(str[i]);
-    }
+    hexToAscii(byte, str);
+    p.write(str[0]);
+    p.write(str[1]);
 }
 
 void printPaddedHex16(uint16_t word, Print &p)
