@@ -25,6 +25,30 @@ ck_assert(asciiToHex('_') == -1);
 #test asciiToHex_colon
 ck_assert(asciiToHex(':') == -1);
 
+#test hexToAscii_0
+char str[2];
+hexToAscii(0x00, str);
+ck_assert_str_eq((const char*)str, "00");
+
+#test hexToAscii_1
+char str[2];
+hexToAscii(0x01, str);
+ck_assert_str_eq((const char*)str, "01");
+
+#test hexToAscii_10
+char str[2];
+hexToAscii(0x10, str);
+ck_assert_str_eq((const char*)str, "10");
+
+#test hexToAscii_ab
+char str[2];
+hexToAscii(0xab, str);
+ck_assert_str_eq((const char*)str, "ab");
+
+#test hexToAscii_ff
+char str[2];
+hexToAscii(0xff, str);
+ck_assert_str_eq((const char*)str, "ff");
 
 #test containsColon_true
 ck_assert(containsColon("2001:4860:4860::8888") == true);

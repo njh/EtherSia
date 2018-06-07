@@ -17,6 +17,14 @@
 int8_t asciiToHex(char c);
 
 /**
+ * Convert integer value into an ASCII hex string
+ *
+ * @param byte The integer value
+ * @param str The string output - must be space for 2 bytes
+ */
+void hexToAscii(uint8_t byte, char *str);
+
+/**
  * Check if a string contains one or more colons
  *
  * @param str The string to check
