@@ -27,7 +27,8 @@ Limitations
 - Ethernet only
 - No DHCPv6
 - No Routing or RPL
-- Stateless TCP (single packet request/response)
+- No TCP Client
+- Stateless TCP in HTTP Server (single packet request/response)
 - No fragmentation support
 - A single local router on the network is assumed
 - The network prefix length is assumed to be /64
