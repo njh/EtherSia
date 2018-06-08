@@ -8,6 +8,13 @@ IPv6Address ourLinkLocal("fe80::c82f:6dff:fe70:f95f");
 IPv6Address googleDns("2001:4860:4860::8888");
 
 
+#test get_local_mac
+EtherSia_Dummy ether;
+ether.disableAutoconfiguration();
+ether.begin(local_mac);
+ck_assert(ether.localMac() == local_mac);
+
+
 #test default_dns_server
 EtherSia_Dummy ether;
 ether.disableAutoconfiguration();
