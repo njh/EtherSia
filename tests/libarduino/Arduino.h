@@ -41,6 +41,8 @@ void randomSeed(unsigned long);
 
 boolean isWhitespace(int c);
 
+#define lowByte(w) ((uint8_t) ((w) & 0xff))
+#define highByte(w) ((uint8_t) ((w) >> 8))
 
 #include "Progmem.h"
 
