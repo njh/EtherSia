@@ -1,10 +1,10 @@
 /**
  * Header file for the MQTT-SN Client
- * @file MQTTSN.h
+ * @file MQTTSNClient.h
  */
 
-#ifndef MQTTSN_H
-#define MQTTSN_H
+#ifndef MQTTSNClient_H
+#define MQTTSNClient_H
 
 #include "UDPSocket.h"
 
@@ -18,7 +18,7 @@ enum {
 /**
  * Class for connecting to a MQTT-SN server over UDP.
  */
-class MQTTSN_Client : public UDPSocket {
+class MQTTSNClient : public UDPSocket {
 
 
 public:
@@ -43,7 +43,7 @@ public:
      *
      * @param ether The Ethernet interface to attach the socket to
      */
-    MQTTSN_Client(EtherSia &ether);
+    MQTTSNClient(EtherSia &ether);
 
     /**
      * Set the remote address to connect to
@@ -56,7 +56,7 @@ public:
     /**
      * Check if there is an open connection to te MQTT-SN server
      *
-     * This function must be called regularly to keep 
+     * This function must be called regularly to keep
      * the connection to the MQTT-SN server active.
      *
      * @return true if the there is an open connection to the server

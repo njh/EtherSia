@@ -482,7 +482,7 @@ protected:
 #include "PingClient.h"
 #include "TCPServer.h"
 #include "HTTPServer.h"
-#include "MQTTSN.h"
+#include "MQTTSNClient.h"
 #include "TFTPServer.h"
 #include "Syslog.h"
 

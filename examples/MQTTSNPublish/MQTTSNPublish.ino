@@ -16,7 +16,7 @@
 EtherSia_ENC28J60 ether(10);
 
 /** Define MQTT-SN client */
-MQTTSN_Client client(ether);
+MQTTSNClient client(ether);
 
 
 

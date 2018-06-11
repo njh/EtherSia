@@ -1,17 +1,17 @@
 #include "EtherSia.h"
 #include "util.h"
 
-MQTTSN_Client::MQTTSN_Client(EtherSia &ether) : UDPSocket(ether)
+MQTTSNClient::MQTTSNClient(EtherSia &ether) : UDPSocket(ether)
 {
     _state = MQTT_SN_STATE_DISCONNECTED;
 }
 
-boolean MQTTSN_Client::setRemoteAddress(const char *remoteAddress)
+boolean MQTTSNClient::setRemoteAddress(const char *remoteAddress)
 {
     return UDPSocket::setRemoteAddress(remoteAddress, MQTT_SN_DEFAULT_PORT);
 }
 
-void MQTTSN_Client::connect()
+void MQTTSNClient::connect()
 {
     char clientId[22];
     const MACAddress& mac = _ether.localMac();
@@ -26,12 +26,12 @@ void MQTTSN_Client::connect()
     connect(clientId);
 }
 
-void MQTTSN_Client::connect(const char* clientId)
+void MQTTSNClient::connect(const char* clientId)
 {
     uint8_t *headerPtr = this->transmitPayload();
     const uint8_t headerLen = 6;
     uint8_t clientIdLen = strlen(clientId);
-    
+
     headerPtr[0] = headerLen + clientIdLen;
     headerPtr[1] = MQTT_SN_TYPE_CONNECT;
     headerPtr[2] = MQTT_SN_FLAG_CLEAN;
@@ -43,16 +43,16 @@ void MQTTSN_Client::connect(const char* clientId)
     send(headerPtr[0], false);
 }
 
-bool MQTTSN_Client::checkConnected()
+bool MQTTSNClient::checkConnected()
 {
     if (havePacket()) {
         uint8_t *headerPtr = this->payload();
-    
+
         if (headerPtr[1] == MQTT_SN_TYPE_CONNACK) {
             uint8_t returnCode = headerPtr[2];
             Serial.print("CONNACK=");
-            Serial.println(returnCode, DEC);  
-            
+            Serial.println(returnCode, DEC);
+
             if (returnCode == MQTT_SN_ACCEPTED) {
                 _state = MQTT_SN_STATE_CONNECTED;
             } else {
@@ -60,7 +60,7 @@ bool MQTTSN_Client::checkConnected()
             }
         } else {
             Serial.print(F("Received unknown MQTT-SN packet type=0x"));
-            Serial.println(headerPtr[1], HEX);  
+            Serial.println(headerPtr[1], HEX);
         }
     }
 
@@ -70,13 +70,13 @@ bool MQTTSN_Client::checkConnected()
 }
 
 
-void MQTTSN_Client::publish(const char topic[2], const char *payload, int8_t qos, boolean retain)
+void MQTTSNClient::publish(const char topic[2], const char *payload, int8_t qos, boolean retain)
 {
     uint16_t payloadLen = strlen(payload);
     publish(topic, (const uint8_t*)payload, payloadLen, qos, retain);
 }
 
-void MQTTSN_Client::publish(const char topic[2], const uint8_t *payload, uint16_t payloadLen, int8_t qos, boolean retain)
+void MQTTSNClient::publish(const char topic[2], const uint8_t *payload, uint16_t payloadLen, int8_t qos, boolean retain)
 {
     uint8_t *headerPtr = this->transmitPayload();
     const uint8_t headerLen = 7;
@@ -102,7 +102,7 @@ void MQTTSN_Client::publish(const char topic[2], const uint8_t *payload, uint16_
     send(headerPtr[0], false);
 }
 
-void MQTTSN_Client::disconnect()
+void MQTTSNClient::disconnect()
 {
     // FIXME: implement disconnecting
     Serial.println("Disconnecting...");
