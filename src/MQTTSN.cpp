@@ -10,16 +10,27 @@ boolean MQTTSN_Client::setRemoteAddress(const char *remoteAddress)
     return UDPSocket::setRemoteAddress(remoteAddress, MQTT_SN_DEFAULT_PORT);
 }
 
-void MQTTSN_Client::publish(const char topic[2], const uint8_t *payload, uint16_t payloadLen, boolean retain)
+void MQTTSN_Client::publish(const char topic[2], const char *payload, int8_t qos, boolean retain)
+{
+    uint16_t payloadLen = strlen(payload);
+    publish(topic, (const uint8_t*)payload, payloadLen, qos, retain);
+}
+
+void MQTTSN_Client::publish(const char topic[2], const uint8_t *payload, uint16_t payloadLen, int8_t qos, boolean retain)
 {
     uint8_t *headerPtr = this->transmitPayload();
     const uint8_t headerLen = 7;
 
     headerPtr[0] = headerLen + payloadLen;
     headerPtr[1] = MQTT_SN_TYPE_PUBLISH;
-    headerPtr[2] = MQTT_SN_FLAG_QOS_N1 | MQTT_SN_TOPIC_TYPE_SHORT;
+    headerPtr[2] = MQTT_SN_TOPIC_TYPE_SHORT;
+    if (qos == -1) {
+        headerPtr[2] |= MQTT_SN_FLAG_QOS_N1;
+    } else {
+        headerPtr[2] |= MQTT_SN_FLAG_QOS_0;
+    }
     if (retain) {
-      headerPtr[2] |= MQTT_SN_FLAG_RETAIN;
+        headerPtr[2] |= MQTT_SN_FLAG_RETAIN;
     }
     headerPtr[3] = topic[0];
     headerPtr[4] = topic[1];

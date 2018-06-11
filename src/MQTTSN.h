@@ -9,6 +9,12 @@
 #include "UDPSocket.h"
 
 
+enum {
+    MQTT_SN_QOS_N1 = -1,
+    MQTT_SN_QOS_0 = 0
+};
+
+
 /**
  * Class for connecting to a MQTT-SN server over UDP.
  */
@@ -38,13 +44,27 @@ public:
 
     /**
      * Publish a message to the MQTT-SN Server
+    /**
+    /**
+     * Publish a message to the MQTT-SN Server
      *
      * @param topicId The ID of the topic to publish to
      * @param payload A buffer containing the payload/content to publish
      * @param payloadLen The length of the payload
+     * @param qos The QoS level to publish at
      * @param retain flag for if the the message should be retained
      */
-    void publish(const char topic[2], const uint8_t *payload, uint16_t payloadLen, boolean retain=false);
+    void publish(const char topic[2], const uint8_t *payload, uint16_t payloadLen, int8_t qos=-1, boolean retain=false);
+
+    /**
+     * Publish a string to the MQTT-SN Server
+     *
+     * @param topicId The ID of the topic to publish to
+     * @param payload A buffer containing the null-terminated string to publish
+     * @param qos The QoS level to publish at
+     * @param retain flag for if the the message should be retained
+     */
+    void publish(const char topic[2], const char *payload, int8_t qos=-1, boolean retain=false);
 
 protected:
 
