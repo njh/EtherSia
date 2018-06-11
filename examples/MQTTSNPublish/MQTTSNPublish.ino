@@ -18,6 +18,7 @@ EtherSia_ENC28J60 ether(10);
 /** Define MQTT-SN client */
 MQTTSNClient client(ether);
 
+MQTTSNTopic topic('S', 'N');
 
 
 /** Called once at the start */
@@ -61,7 +62,7 @@ void loop()
         static unsigned long nextMessage = millis();
         if ((long)(millis() - nextMessage) >= 0) {
             Serial.println(F("Publishing to MQTT-SN"));
-            client.publish("SN", "Hello World", MQTT_SN_QOS_0);
+            client.publish(topic, "Hello World", MQTT_SN_QOS_0);
             nextMessage = millis() + 5000;
         }
 

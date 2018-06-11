@@ -70,13 +70,13 @@ bool MQTTSNClient::checkConnected()
 }
 
 
-void MQTTSNClient::publish(const char topic[2], const char *payload, int8_t qos, boolean retain)
+void MQTTSNClient::publish(MQTTSNTopic &topic, const char *payload, int8_t qos, boolean retain)
 {
     uint16_t payloadLen = strlen(payload);
     publish(topic, (const uint8_t*)payload, payloadLen, qos, retain);
 }
 
-void MQTTSNClient::publish(const char topic[2], const uint8_t *payload, uint16_t payloadLen, int8_t qos, boolean retain)
+void MQTTSNClient::publish(MQTTSNTopic &topic, const uint8_t *payload, uint16_t payloadLen, int8_t qos, boolean retain)
 {
     uint8_t *headerPtr = this->transmitPayload();
     const uint8_t headerLen = 7;
@@ -92,8 +92,10 @@ void MQTTSNClient::publish(const char topic[2], const uint8_t *payload, uint16_t
     if (retain) {
         headerPtr[2] |= MQTT_SN_FLAG_RETAIN;
     }
-    headerPtr[3] = topic[0];
-    headerPtr[4] = topic[1];
+    
+    uint16_t topicId = topic.id();
+    headerPtr[3] = highByte(topicId);
+    headerPtr[4] = lowByte(topicId);
     headerPtr[5] = 0x00;  // Message ID High
     headerPtr[6] = 0x00;  // Message ID Low
 

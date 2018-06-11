@@ -6,6 +6,7 @@
 #ifndef MQTTSNClient_H
 #define MQTTSNClient_H
 
+#include "MQTTSNTopic.h"
 #include "UDPSocket.h"
 
 
@@ -84,7 +85,7 @@ public:
      * @param qos The QoS level to publish at
      * @param retain flag for if the the message should be retained
      */
-    void publish(const char topic[2], const uint8_t *payload, uint16_t payloadLen, int8_t qos=-1, boolean retain=false);
+    void publish(MQTTSNTopic &topic, const uint8_t *payload, uint16_t payloadLen, int8_t qos=-1, boolean retain=false);
 
     /**
      * Publish a string to the MQTT-SN Server
@@ -94,7 +95,7 @@ public:
      * @param qos The QoS level to publish at
      * @param retain flag for if the the message should be retained
      */
-    void publish(const char topic[2], const char *payload, int8_t qos=-1, boolean retain=false);
+    void publish(MQTTSNTopic &topic, const char *payload, int8_t qos=-1, boolean retain=false);
 
 
     void disconnect();
