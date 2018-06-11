@@ -23,7 +23,18 @@ class MQTTSN_Client : public UDPSocket {
 
 public:
     /** Default UDP port number to sent MQTT-SN messages to */
-    const uint16_t MQTT_SN_DEFAULT_PORT = 1883;
+    static const uint16_t MQTT_SN_DEFAULT_PORT = 1883;
+    static const uint16_t MQTT_SN_DEFAULT_KEEP_ALIVE = 60;
+    static const boolean MQTT_SN_DEFAULT_CLEAN_SESSION = true;
+    static const uint16_t MQTT_SN_MAX_PACKET_LENGTH = 255;
+    static const uint8_t  MQTT_SN_PROTOCOL_ID = 0x01;
+
+    enum {
+        MQTT_SN_STATE_DISCONNECTED = 0x00,
+        MQTT_SN_STATE_CONNECTED = 0x01,
+        MQTT_SN_STATE_REJECTED = 0x02,
+        MQTT_SN_TOPIC_LOST_CONNECTION = 0x03
+    };
 
     /**
      * Construct a MQTT-SN client socket
@@ -43,8 +54,27 @@ public:
     boolean setRemoteAddress(const char *remoteAddress);
 
     /**
-     * Publish a message to the MQTT-SN Server
+     * Check if there is an open connection to te MQTT-SN server
+     *
+     * This function must be called regularly to keep 
+     * the connection to the MQTT-SN server active.
+     *
+     * @return true if the there is an open connection to the server
+     */
+    bool checkConnected();
+
     /**
+     * Establish a connection to the MQTT-SN server
+     */
+    void connect();
+
+    /**
+     * Establish a connection to the MQTT-SN server
+     *
+     * @param clientId The remote address or hostname
+     */
+    void connect(const char *clientId);
+
     /**
      * Publish a message to the MQTT-SN Server
      *
@@ -66,8 +96,12 @@ public:
      */
     void publish(const char topic[2], const char *payload, int8_t qos=-1, boolean retain=false);
 
+
+    void disconnect();
+
 protected:
 
+    uint8_t _state;
 
     /** Enumeration of MQTT-SN packet types */
     enum {

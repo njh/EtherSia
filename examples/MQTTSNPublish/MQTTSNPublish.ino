@@ -43,12 +43,20 @@ void setup()
     }
 
     Serial.println(F("Ready."));
+
+
+    client.connect();
 }
 
 /** the loop function runs over and over again forever */
 void loop()
 {
     ether.receivePacket();
+  
+    if (client.checkConnected() == false) {
+        Serial.println(F("Not connected"));
+    } else {
+
         // We are connected to the MQTT-SN server: send a message every 5 seconds
         static unsigned long nextMessage = millis();
         if ((long)(millis() - nextMessage) >= 0) {
