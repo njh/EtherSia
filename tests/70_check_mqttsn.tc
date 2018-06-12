@@ -1,0 +1,55 @@
+#include "Arduino.h"
+#include "EtherSia.h"
+#include "hext.hh"
+#include "util.h"
+
+#suite MQTT-SN
+
+#test construct_from_string
+MQTTSNTopic topic("foo/bar");
+ck_assert_str_eq(topic.name(), "foo/bar");
+ck_assert_int_eq(topic.id(), 0x0000);
+
+#test construct_from_flash_string
+MQTTSNTopic topic(F("foo/bar"));
+ck_assert_int_eq(topic.id(), 0x0000);
+
+#test construct_short_topic_name
+MQTTSNTopic topic('S', 'N');
+ck_assert_int_eq(topic.id(), 0x534E);
+
+
+#test construct_client_defaults
+EtherSia_Dummy ether;
+MQTTSNClient client(ether);
+
+
+#test setRemoteAddress_ip
+EtherSia_Dummy ether;
+MQTTSNClient client(ether);
+client.setRemoteAddress("fdd7:338b:5691::1");
+ck_assert_int_eq(client.remotePort(), 1883);
+IPv6Address expect("fdd7:338b:5691::1");
+ck_assert(client.remoteAddress() == expect);
+
+// setRemoteAddress() should also assign a local port number
+ck_assert_int_gt(client.localPort(), 20000);
+ck_assert_int_lt(client.localPort(), 30000);
+
+
+#test connect_default_clientid
+MACAddress routerMac = MACAddress("ca:2f:6d:70:f9:5f");
+EtherSia_Dummy ether;
+ether.setGlobalAddress("2001:1234::1");
+ether.setRouter(routerMac);
+ether.begin("00:04:a3:2c:2b:b9");
+ether.clearSent();
+
+MQTTSNClient client(ether);
+client.setRemoteAddress("2001:4321::1883");
+client.connect();
+
+HextFile expect("packets/mqtt_sn_connect.hext");
+frame_t &sent = ether.getLastSent();
+ck_assert_int_eq(sent.length, expect.length);
+ck_assert_mem_eq(sent.packet, expect.buffer, expect.length);

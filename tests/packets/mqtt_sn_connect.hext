@@ -1,0 +1,23 @@
+ca 2f 6d 70 f9 5f        # Ethernet Destination
+00 04 a3 2c 2b b9        # Ethernet Source
+86dd                     # EtherType (IPv6)
+
+60 00 00 00              # IPv6 header
+0023                     # Length (35 bytes)
+11                       # Protocol (UDP)
+40                       # Hop Limit
+
+2001:1234:0000:0000:0000:0000:0000:0001  # IPv6 Source Address
+2001:4321:0000:0000:0000:0000:0000:1883  # IPv6 Destination Address
+
+61a8                     # UDP Source Port
+075b                     # UDP Destination Port
+0023                     # Length (35 bytes)
+
+7c71                     # Checksum
+1b                       # MQTT-SN Length (27 bytes)
+04                       # MQTT-SN Type: Connect
+04                       # MQTT-SN Flags
+01                       # MQTT-SN Protocol ID
+003c                     # MQTT-SN Keep Alive
+"EtherSia-0004a32c2bb9"  # Client ID
