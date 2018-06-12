@@ -12,7 +12,7 @@ MQTTSNTopic::MQTTSNTopic(const __FlashStringHelper* topicName)
 {
     _name = (const char*)topicName;
     _id = 0;
-    _flags = FLAG_FLASH_STRING;
+    _flags = TYPE_NORMAL | flagFlashString;
 }
 
 MQTTSNTopic::MQTTSNTopic(const uint16_t topicId)
@@ -28,4 +28,3 @@ MQTTSNTopic::MQTTSNTopic(const char char1, const char char2)
     _id = (char1 << 8) | char2;
     _flags = TYPE_SHORT;
 }
-
