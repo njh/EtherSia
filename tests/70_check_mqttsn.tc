@@ -5,36 +5,36 @@
 
 #suite MQTT-SN
 
-#test construct_from_string
+#test construct_topic_from_string
 MQTTSNTopic topic("foo/bar");
 ck_assert_str_eq(topic.name(), "foo/bar");
 ck_assert_int_eq(topic.id(), 0x0000);
 ck_assert_int_eq(topic.type(), MQTTSNTopic::TYPE_NORMAL);
 ck_assert(topic.isFlashString() == false);
 
-#test construct_from_flash_string
+#test construct_topic_from_flash_string
 MQTTSNTopic topic(F("foo/bar/flash"));
 ck_assert_str_eq(topic.name(), "foo/bar/flash");
 ck_assert_int_eq(topic.id(), 0x0000);
 ck_assert_int_eq(topic.type(), MQTTSNTopic::TYPE_NORMAL);
 ck_assert(topic.isFlashString() == true);
 
-#test construct_short_topic_name
+#test construct_topic_short_topic_name
 MQTTSNTopic topic('S', 'N');
 ck_assert_int_eq(topic.id(), 0x534E);
 ck_assert_int_eq(topic.type(), MQTTSNTopic::TYPE_SHORT);
 ck_assert(topic.isFlashString() == false);
 
-#test construct_predefined_id
+#test construct_topic_predefined_id
 MQTTSNTopic topic(0x1234);
 ck_assert_int_eq(topic.id(), 0x1234);
 ck_assert_int_eq(topic.type(), MQTTSNTopic::TYPE_PREDEFINED);
 ck_assert(topic.isFlashString() == false);
 
+
 #test construct_client_defaults
 EtherSia_Dummy ether;
 MQTTSNClient client(ether);
-
 
 #test setRemoteAddress_ip
 EtherSia_Dummy ether;
