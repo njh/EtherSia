@@ -31,6 +31,12 @@ ck_assert_int_eq(topic.id(), 0x1234);
 ck_assert_int_eq(topic.type(), MQTTSNTopic::TYPE_PREDEFINED);
 ck_assert(topic.isFlashString() == false);
 
+#test set_topic_id
+MQTTSNTopic topic("foo/bar");
+ck_assert_int_eq(topic.id(), 0);
+topic.setId(0x0001);
+ck_assert_int_eq(topic.id(), 0x0001);
+
 
 #test construct_client_defaults
 EtherSia_Dummy ether;

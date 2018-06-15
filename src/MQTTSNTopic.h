@@ -77,6 +77,15 @@ class MQTTSNTopic {
     }
 
     /**
+     * Set the ID of the topic
+     *
+     * @param the id number for this topic
+     */
+    void setId(uint16_t id) {
+        _id = id;
+    }
+
+    /**
      * Get the topic type
      *
      * Normal: 0
