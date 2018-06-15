@@ -1,6 +1,10 @@
 #include "EtherSia.h"
 #include "util.h"
 
+// Uncomment this line to enable debugging
+#define MQTTSN_DEBUG(str) Serial.println(F(str))
+//#define MQTTSN_DEBUG
+
 MQTTSNClient::MQTTSNClient(EtherSia &ether) : UDPSocket(ether)
 {
     _state = MQTT_SN_STATE_DISCONNECTED;
@@ -39,6 +43,7 @@ void MQTTSNClient::connect(const char* clientId)
     headerPtr[4] = highByte(MQTT_SN_DEFAULT_KEEP_ALIVE);
     headerPtr[5] = lowByte(MQTT_SN_DEFAULT_KEEP_ALIVE);
 
+    MQTTSN_DEBUG("MQTTSN: Sending CONNECT");
     memcpy(headerPtr + headerLen, clientId, clientIdLen);
     send(headerPtr[0], false);
 }
@@ -50,17 +55,17 @@ bool MQTTSNClient::checkConnected()
 
         if (headerPtr[1] == MQTT_SN_TYPE_CONNACK) {
             uint8_t returnCode = headerPtr[2];
-            Serial.print("CONNACK=");
-            Serial.println(returnCode, DEC);
+            MQTTSN_DEBUG("MQTTSN: received CONNACK");
 
             if (returnCode == MQTT_SN_ACCEPTED) {
                 _state = MQTT_SN_STATE_CONNECTED;
             } else {
                 _state = MQTT_SN_STATE_REJECTED;
             }
+        } else if (headerPtr[1] == MQTT_SN_TYPE_REGACK) {
+            MQTTSN_DEBUG("MQTTSN: received REGACK");
         } else {
-            Serial.print(F("Received unknown MQTT-SN packet type=0x"));
-            Serial.println(headerPtr[1], HEX);
+            MQTTSN_DEBUG("MQTTSN: received other");
         }
     }
 
@@ -107,5 +112,5 @@ void MQTTSNClient::publish(MQTTSNTopic &topic, const uint8_t *payload, uint16_t 
 void MQTTSNClient::disconnect()
 {
     // FIXME: implement disconnecting
-    Serial.println("Disconnecting...");
+   MQTTSN_DEBUG("MQTTSN: Sending DISCONNECT");
 }
