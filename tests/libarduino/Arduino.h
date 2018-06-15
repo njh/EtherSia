@@ -43,6 +43,7 @@ boolean isWhitespace(int c);
 
 #define lowByte(w) ((uint8_t) ((w) & 0xff))
 #define highByte(w) ((uint8_t) ((w) >> 8))
+#define word(b1, b2) ((((uint16_t)b1) << 8) | b2)
 
 #include "Progmem.h"
 
