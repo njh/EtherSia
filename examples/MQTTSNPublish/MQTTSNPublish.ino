@@ -18,7 +18,7 @@ EtherSia_ENC28J60 ether(10);
 /** Define MQTT-SN client */
 MQTTSNClient client(ether);
 
-MQTTSNTopic topic('S', 'N');
+MQTTSNTopic topic("my/test/topic");
 
 
 /** Called once at the start */

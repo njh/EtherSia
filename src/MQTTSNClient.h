@@ -15,6 +15,10 @@ enum {
     MQTT_SN_QOS_0 = 0
 };
 
+#ifndef MQTTSN_TRANSMIT_BUFFER_LENGTH
+#define MQTTSN_TRANSMIT_BUFFER_LENGTH  (127)
+#endif
+
 
 /**
  * Class for connecting to a MQTT-SN server over UDP.
@@ -31,11 +35,18 @@ public:
     static const uint8_t  MQTT_SN_PROTOCOL_ID = 0x01;
 
     enum {
+        // Disconnected / error states
         MQTT_SN_STATE_DISCONNECTED = 0x00,
-        MQTT_SN_STATE_CONNECTED = 0x01,
+        MQTT_SN_STATE_CONNECTING = 0x01,
         MQTT_SN_STATE_REJECTED = 0x02,
-        MQTT_SN_TOPIC_LOST_CONNECTION = 0x03
+        MQTT_SN_STATE_TIMEOUT = 0x03,
+
+        // Connected states
+        MQTT_SN_STATE_CONNECTED = 0x10,
+        MQTT_SN_STATE_PUBLISHING = 0x20,
+        MQTT_SN_STATE_SUBSCRIBING = 0x30,
     };
+
 
     /**
      * Construct a MQTT-SN client socket
@@ -103,6 +114,17 @@ public:
 protected:
 
     uint8_t _state;
+    uint16_t _messageId;
+
+    uint8_t _transmitLength;
+    uint8_t _transmitFlags;
+    uint8_t _transmitBuffer[MQTTSN_TRANSMIT_BUFFER_LENGTH];    
+    MQTTSNTopic *_transmitTopic;
+    
+    void handlePublishFlow();
+    void sendRegisterPacket();
+    void sendPublishPacket();
+    
 
     /** Enumeration of MQTT-SN packet types */
     enum {
@@ -141,13 +163,6 @@ protected:
         MQTT_SN_REJECTED_CONGESTION = 0x01,
         MQTT_SN_REJECTED_INVALID = 0x02,
         MQTT_SN_REJECTED_NOT_SUPPORTED = 0x03,
-    };
-
-    /** Enumeration of MQTT-SN topic types */
-    enum {
-        MQTT_SN_TOPIC_TYPE_NORMAL = 0x00,
-        MQTT_SN_TOPIC_TYPE_PREDEFINED = 0x01,
-        MQTT_SN_TOPIC_TYPE_SHORT = 0x02,
     };
 
     /** Enumeration of MQTT-SN flags */
