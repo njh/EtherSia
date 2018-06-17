@@ -84,6 +84,11 @@ void MQTTSNClient::publish(MQTTSNTopic &topic, const char *payload, int8_t qos, 
 
 void MQTTSNClient::publish(MQTTSNTopic &topic, const uint8_t *payload, uint16_t payloadLen, int8_t qos, boolean retain)
 {
+    if (_state != MQTT_SN_STATE_CONNECTED)
+        return;
+
+    setState(MQTT_SN_STATE_PUBLISHING);
+
     _transmitFlags = topic.type();
     if (qos == -1) {
         _transmitFlags |= MQTT_SN_FLAG_QOS_N1;
@@ -96,9 +101,8 @@ void MQTTSNClient::publish(MQTTSNTopic &topic, const uint8_t *payload, uint16_t 
 
     // Copy in the payload into the temporary buffer
     memcpy(_transmitBuffer, payload, payloadLen);
-    _transmitLength = payloadLen;
+    _transmitBufferLength = payloadLen;
     _transmitTopic = &topic;
-    _state = MQTT_SN_STATE_PUBLISHING;
 
     handlePublishFlow();
 }
@@ -126,12 +130,15 @@ void MQTTSNClient::handlePublishFlow()
 
     if (_transmitTopic->id() == 0) {
         // We need to register the topic first
-        // FIXME: have we already just sent a register packet?
-        sendRegisterPacket();
+        // FIXME: simplify this logic
+        if (_transmitTime == 0 || millis() - _transmitTime > 5000) {
+            sendRegisterPacket();
+        }
     } else {
         sendPublishPacket();
-        _state = MQTT_SN_STATE_CONNECTED;
-        _transmitTopic = NULL;
+
+        // Switch back to the connected / idle state
+        setState(MQTT_SN_STATE_CONNECTED);
     }
 }
 
@@ -143,17 +150,19 @@ void MQTTSNClient::sendPublishPacket()
     headerPtr[0] = headerLen + _transmitLength;
     headerPtr[1] = MQTT_SN_TYPE_PUBLISH;
     headerPtr[2] = _transmitFlags;
+    uint8_t *headerPtr = this->transmitPayload();
+    const uint8_t headerLen = 7;
 
     uint16_t topicId = _transmitTopic->id();
+    headerPtr[2] = _transmitFlags;
     headerPtr[3] = highByte(topicId);
     headerPtr[4] = lowByte(topicId);
     headerPtr[5] = 0x00;  // Message ID High
     headerPtr[6] = 0x00;  // Message ID Low
+    memcpy(headerPtr + headerLen, _transmitBuffer, _transmitBufferLength);
 
-    // Copy in the payload into the transmit buffer
     MQTTSN_DEBUG("MQTTSN: Sending PUBLISH");
-    memcpy(headerPtr + headerLen, _transmitBuffer, _transmitLength);
-    send(headerPtr[0], false);
+    sendMQTTSN(MQTT_SN_TYPE_PUBLISH, headerLen + _transmitBufferLength);
 }
 
 void MQTTSNClient::sendRegisterPacket()
@@ -170,16 +179,29 @@ void MQTTSNClient::sendRegisterPacket()
         memcpy(headerPtr + headerLen, _transmitTopic->name(), topicNameLen);
     }
 
-    headerPtr[0] = headerLen + topicNameLen;
-    headerPtr[1] = MQTT_SN_TYPE_REGISTER;
     headerPtr[2] = 0x00;  // Topic ID High
     headerPtr[3] = 0x00;  // Topic ID Low
     headerPtr[4] = 0x00;  // FIXME: Message ID High
     headerPtr[5] = 0x01;  // FIXME: Message ID Low
 
     MQTTSN_DEBUG("MQTTSN: Sending REGISTER");
-    send(headerPtr[0], false);
+    sendMQTTSN(MQTT_SN_TYPE_REGISTER, headerLen + topicNameLen);
 }
 
+void MQTTSNClient::setState(uint8_t state)
 {
+    _transmitTopic = NULL;
+    _transmitBufferLength = 0;
+    _transmitTime = 0;
+    _state = state;
+}
+
+void MQTTSNClient::sendMQTTSN(uint8_t type, uint8_t length)
+{
+    uint8_t *headerPtr = this->transmitPayload();
+    headerPtr[0] = length;
+    headerPtr[1] = type;
+
+    _transmitTime = millis();
+    send(length, false);
 }

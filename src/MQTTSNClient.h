@@ -27,14 +27,13 @@ class MQTTSNClient : public UDPSocket {
 
 
 public:
-    /** Default UDP port number to sent MQTT-SN messages to */
+    /** Default UDP port number to send MQTT-SN messages to */
     static const uint16_t MQTT_SN_DEFAULT_PORT = 1883;
     static const uint16_t MQTT_SN_DEFAULT_KEEP_ALIVE = 60;
     static const boolean MQTT_SN_DEFAULT_CLEAN_SESSION = true;
-    static const uint16_t MQTT_SN_MAX_PACKET_LENGTH = 255;
     static const uint8_t  MQTT_SN_PROTOCOL_ID = 0x01;
 
-    enum {
+    enum mqttsn_state {
         // Disconnected / error states
         MQTT_SN_STATE_DISCONNECTED = 0x00,
         MQTT_SN_STATE_CONNECTING = 0x01,
@@ -64,6 +63,13 @@ public:
      * @return true if the remote address was set successfully
      */
     boolean setRemoteAddress(const char *remoteAddress);
+
+    /**
+     * Get the current state of the MQTT-SN Client
+     *
+     * @return the current state
+     */
+    uint8_t getState();
 
     /**
      * Check if there is an open connection to te MQTT-SN server
@@ -116,15 +122,20 @@ protected:
     uint8_t _state;
     uint16_t _messageId;
 
-    uint8_t _transmitLength;
     uint8_t _transmitFlags;
-    uint8_t _transmitBuffer[MQTTSN_TRANSMIT_BUFFER_LENGTH];    
+    uint8_t _transmitBufferLength;
+    uint8_t _transmitBuffer[MQTTSN_TRANSMIT_BUFFER_LENGTH];
     MQTTSNTopic *_transmitTopic;
-    
+    unsigned long _transmitTime;
+
     void handlePublishFlow();
     void sendRegisterPacket();
     void sendPublishPacket();
     
+
+    void setState(uint8_t state);
+    void sendMQTTSN(uint8_t type, uint8_t length);
+
 
     /** Enumeration of MQTT-SN packet types */
     enum {
