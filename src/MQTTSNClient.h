@@ -129,9 +129,10 @@ protected:
     unsigned long _transmitTime;
 
     void handlePublishFlow();
+    void handleConnectFlow();
     void sendRegisterPacket();
     void sendPublishPacket();
-    
+    void sendConnectPacket();
 
     void setState(uint8_t state);
     void sendMQTTSN(uint8_t type, uint8_t length);

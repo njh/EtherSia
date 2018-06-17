@@ -7,8 +7,7 @@
 
 MQTTSNClient::MQTTSNClient(EtherSia &ether) : UDPSocket(ether)
 {
-    _state = MQTT_SN_STATE_DISCONNECTED;
-    _transmitTopic = NULL;
+    setState(MQTT_SN_STATE_DISCONNECTED);
 }
 
 boolean MQTTSNClient::setRemoteAddress(const char *remoteAddress)
@@ -33,41 +32,24 @@ void MQTTSNClient::connect()
 
 void MQTTSNClient::connect(const char* clientId)
 {
-    uint8_t *headerPtr = this->transmitPayload();
-    const uint8_t headerLen = 6;
-    uint8_t clientIdLen = strlen(clientId);
+    setState(MQTT_SN_STATE_CONNECTING);
 
-    headerPtr[0] = headerLen + clientIdLen;
-    headerPtr[1] = MQTT_SN_TYPE_CONNECT;
-    headerPtr[2] = MQTT_SN_FLAG_CLEAN;
-    headerPtr[3] = MQTT_SN_PROTOCOL_ID;
-    headerPtr[4] = highByte(MQTT_SN_DEFAULT_KEEP_ALIVE);
-    headerPtr[5] = lowByte(MQTT_SN_DEFAULT_KEEP_ALIVE);
+    _transmitFlags = MQTT_SN_FLAG_CLEAN;
+    _transmitBufferLength = strlen(clientId);
+    memcpy(_transmitBuffer, clientId, _transmitBufferLength);
 
-    MQTTSN_DEBUG("MQTTSN: Sending CONNECT");
-    memcpy(headerPtr + headerLen, clientId, clientIdLen);
-    send(headerPtr[0], false);
+    handleConnectFlow();
 }
 
 bool MQTTSNClient::checkConnected()
 {
-    if (havePacket()) {
-        uint8_t *headerPtr = this->payload();
-
-        if (headerPtr[1] == MQTT_SN_TYPE_CONNACK) {
-            uint8_t returnCode = headerPtr[2];
-            MQTTSN_DEBUG("MQTTSN: received CONNACK");
-
-            if (returnCode == MQTT_SN_ACCEPTED) {
-                _state = MQTT_SN_STATE_CONNECTED;
-            } else {
-                _state = MQTT_SN_STATE_REJECTED;
-            }
-        }
-    }
 
     if (_state == MQTT_SN_STATE_PUBLISHING) {
         handlePublishFlow();
+    }
+
+    if (_state == MQTT_SN_STATE_CONNECTING) {
+        handleConnectFlow();
     }
 
     // FIXME: perform pings
@@ -113,6 +95,30 @@ void MQTTSNClient::disconnect()
     MQTTSN_DEBUG("MQTTSN: Sending DISCONNECT");
 }
 
+void MQTTSNClient::handleConnectFlow()
+{
+    if (havePacket()) {
+        uint8_t *headerPtr = this->payload();
+
+        if (headerPtr[1] == MQTT_SN_TYPE_CONNACK) {
+            uint8_t returnCode = headerPtr[2];
+            MQTTSN_DEBUG("MQTTSN: received CONNACK");
+
+            if (returnCode == MQTT_SN_ACCEPTED) {
+                _state = MQTT_SN_STATE_CONNECTED;
+            } else {
+                _state = MQTT_SN_STATE_REJECTED;
+            }
+        }
+    }
+
+    // FIXME: simplify this logic
+    if (_transmitTime == 0 || millis() - _transmitTime > 5000) {
+        sendConnectPacket();
+    }
+
+}
+
 void MQTTSNClient::handlePublishFlow()
 {
     if (_transmitTopic == NULL)
@@ -142,14 +148,23 @@ void MQTTSNClient::handlePublishFlow()
     }
 }
 
-void MQTTSNClient::sendPublishPacket()
+void MQTTSNClient::sendConnectPacket()
 {
     uint8_t *headerPtr = this->transmitPayload();
-    const uint8_t headerLen = 7;
+    const uint8_t headerLen = 6;
 
-    headerPtr[0] = headerLen + _transmitLength;
-    headerPtr[1] = MQTT_SN_TYPE_PUBLISH;
     headerPtr[2] = _transmitFlags;
+    headerPtr[3] = MQTT_SN_PROTOCOL_ID;
+    headerPtr[4] = highByte(MQTT_SN_DEFAULT_KEEP_ALIVE);
+    headerPtr[5] = lowByte(MQTT_SN_DEFAULT_KEEP_ALIVE);
+    memcpy(headerPtr + headerLen, _transmitBuffer, _transmitBufferLength);
+
+    MQTTSN_DEBUG("MQTTSN: Sending CONNECT");
+    sendMQTTSN(MQTT_SN_TYPE_CONNECT, headerLen + _transmitBufferLength);
+}
+
+void MQTTSNClient::sendPublishPacket()
+{
     uint8_t *headerPtr = this->transmitPayload();
     const uint8_t headerLen = 7;
 
