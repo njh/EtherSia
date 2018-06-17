@@ -103,6 +103,12 @@ void MQTTSNClient::publish(MQTTSNTopic &topic, const uint8_t *payload, uint16_t 
     handlePublishFlow();
 }
 
+void MQTTSNClient::disconnect()
+{
+    // FIXME: implement disconnecting
+    MQTTSN_DEBUG("MQTTSN: Sending DISCONNECT");
+}
+
 void MQTTSNClient::handlePublishFlow()
 {
     if (_transmitTopic == NULL)
@@ -175,8 +181,5 @@ void MQTTSNClient::sendRegisterPacket()
     send(headerPtr[0], false);
 }
 
-void MQTTSNClient::disconnect()
 {
-    // FIXME: implement disconnecting
-   MQTTSN_DEBUG("MQTTSN: Sending DISCONNECT");
 }
