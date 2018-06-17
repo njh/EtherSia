@@ -12,7 +12,7 @@
  */
 class MQTTSNTopic {
 
-    public:
+public:
 
     enum {
         TYPE_NORMAL = 0x00,
@@ -98,7 +98,7 @@ class MQTTSNTopic {
         return _flags & typeMask;
     }
 
-    protected:
+protected:
 
     const uint8_t typeMask = 0x03;
     const uint8_t flagFlashString = 0x10;
