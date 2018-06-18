@@ -205,6 +205,7 @@ void MQTTSNClient::sendRegisterPacket()
 
 void MQTTSNClient::setState(uint8_t state)
 {
+    _transmitFlags = 0;
     _transmitTopic = NULL;
     _transmitBufferLength = 0;
     _transmitTime = 0;
