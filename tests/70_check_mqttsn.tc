@@ -64,10 +64,19 @@ ether.begin("00:04:a3:2c:2b:b9");
 ether.clearSent();
 
 MQTTSNClient client(ether);
+ck_assert_int_eq(client.getState(), MQTTSNClient::MQTT_SN_STATE_DISCONNECTED);
 client.setRemoteAddress("2001:4321::1883");
 client.connect();
+ck_assert_int_eq(client.getState(), MQTTSNClient::MQTT_SN_STATE_CONNECTING);
+ck_assert(client.checkConnected() == false);
 
 HextFile expect("packets/mqtt_sn_connect.hext");
 frame_t &sent = ether.getLastSent();
 ck_assert_int_eq(sent.length, expect.length);
 ck_assert_mem_eq(sent.packet, expect.buffer, expect.length);
+
+HextFile connack("packets/mqtt_sn_connack_accepted.hext");
+ether.injectRecievedPacket(connack.buffer, connack.length);
+ck_assert_int_eq(ether.receivePacket(), 65);
+ck_assert(client.checkConnected() == true);
+ck_assert_int_eq(client.getState(), MQTTSNClient::MQTT_SN_STATE_CONNECTED);

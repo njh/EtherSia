@@ -69,7 +69,9 @@ public:
      *
      * @return the current state
      */
-    uint8_t getState();
+    uint8_t getState() {
+        return _state;
+    }
 
     /**
      * Check if there is an open connection to te MQTT-SN server

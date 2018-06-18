@@ -1,0 +1,20 @@
+00 04 a3 2c 2b b9        # Ethernet Destination
+ca 2f 6d 70 f9 5f        # Ethernet Source
+86dd                     # EtherType (IPv6)
+
+60 00 00 00              # IPv6 header
+000b                     # Length (11 bytes)
+11                       # Protocol (UDP)
+40                       # Hop Limit
+
+2001:4321:0000:0000:0000:0000:0000:1883  # IPv6 Source Address
+2001:1234:0000:0000:0000:0000:0000:0001  # IPv6 Destination Address
+
+075b                     # UDP Source Port
+61a8                     # UDP Destination Port
+000b                     # Length (11 bytes)
+
+e5f4                     # Checksum
+03                       # MQTT-SN Length (3 bytes)
+05                       # MQTT-SN Type: CONNACK
+00                       # MQTT-SN Return Code: Accepted
