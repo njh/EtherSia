@@ -1,6 +1,7 @@
 *.o
 *.a
 *.dSYM
+*.bak
 
 coverage.info
 coverage/*
