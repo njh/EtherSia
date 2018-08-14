@@ -67,7 +67,7 @@ License: [3-clause BSD license]
 [ENC28J60]:                http://www.microchip.com/ENC28J60
 [W5500]:                   http://www.wiznet.io/product-item/w5500/
 [W5100]:                   http://www.wiznet.io/product-item/w5100/
-[EtherCard]:               http://github.com/jcw/ethercard
+[EtherCard]:               http://github.com/njh/EtherCard
 [3-clause BSD license]:    http://opensource.org/licenses/BSD-3-Clause
 
 [EtherSia_ENC28J60]:       http://www.aelius.com/njh/ethersia/class_ether_sia___e_n_c28_j60.html
