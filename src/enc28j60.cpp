@@ -139,6 +139,28 @@ void serial_printf(const char *fmt, ...) {
 #define ERXFCON_MCEN  0x02
 #define ERXFCON_BCEN  0x01
 
+// The ENC28J60 SPI Interface supports clock speeds up to 20 MHz
+static const SPISettings spiSettings(20000000, MSBFIRST, SPI_MODE0);
+
+EtherSia_ENC28J60::EtherSia_ENC28J60(int8_t cs)
+{
+    _cs = cs;
+    _bank = ERXTX_BANK;
+}
+
+void
+EtherSia_ENC28J60::enc28j60_arch_spi_select(void)
+{
+    SPI.beginTransaction(spiSettings);
+    digitalWrite(_cs, LOW);
+}
+
+void
+EtherSia_ENC28J60::enc28j60_arch_spi_deselect(void)
+{
+    digitalWrite(_cs, HIGH);
+    SPI.endTransaction();
+}
 
 
 /*---------------------------------------------------------------------------*/
@@ -163,12 +185,12 @@ EtherSia_ENC28J60::readreg(uint8_t reg)
 {
     uint8_t r;
     enc28j60_arch_spi_select();
-    enc28j60_arch_spi_write(0x00 | (reg & 0x1f));
+    SPI.transfer(0x00 | (reg & 0x1f));
     if(is_mac_mii_reg(reg)) {
         /* MAC and MII registers require that a dummy byte be read first. */
-        enc28j60_arch_spi_read();
+        SPI.transfer(0);
     }
-    r = enc28j60_arch_spi_read();
+    r = SPI.transfer(0);
     enc28j60_arch_spi_deselect();
     return r;
 }
@@ -177,8 +199,8 @@ void
 EtherSia_ENC28J60::writereg(uint8_t reg, uint8_t data)
 {
     enc28j60_arch_spi_select();
-    enc28j60_arch_spi_write(0x40 | (reg & 0x1f));
-    enc28j60_arch_spi_write(data);
+    SPI.transfer(0x40 | (reg & 0x1f));
+    SPI.transfer(data);
     enc28j60_arch_spi_deselect();
 }
 /*---------------------------------------------------------------------------*/
@@ -189,8 +211,8 @@ EtherSia_ENC28J60::setregbitfield(uint8_t reg, uint8_t mask)
         writereg(reg, readreg(reg) | mask);
     } else {
         enc28j60_arch_spi_select();
-        enc28j60_arch_spi_write(0x80 | (reg & 0x1f));
-        enc28j60_arch_spi_write(mask);
+        SPI.transfer(0x80 | (reg & 0x1f));
+        SPI.transfer(mask);
         enc28j60_arch_spi_deselect();
     }
 }
@@ -202,8 +224,8 @@ EtherSia_ENC28J60::clearregbitfield(uint8_t reg, uint8_t mask)
         writereg(reg, readreg(reg) & ~mask);
     } else {
         enc28j60_arch_spi_select();
-        enc28j60_arch_spi_write(0xa0 | (reg & 0x1f));
-        enc28j60_arch_spi_write(mask);
+        SPI.transfer(0xa0 | (reg & 0x1f));
+        SPI.transfer(mask);
         enc28j60_arch_spi_deselect();
     }
 }
@@ -221,9 +243,9 @@ EtherSia_ENC28J60::writedata(const uint8_t *data, int datalen)
     int i;
     enc28j60_arch_spi_select();
     /* The Write Buffer Memory (WBM) command is 0 1 1 1 1 0 1 0  */
-    enc28j60_arch_spi_write(0x7a);
+    SPI.transfer(0x7a);
     for(i = 0; i < datalen; i++) {
-        enc28j60_arch_spi_write(data[i]);
+        SPI.transfer(data[i]);
     }
     enc28j60_arch_spi_deselect();
 }
@@ -240,9 +262,9 @@ EtherSia_ENC28J60::readdata(uint8_t *buf, int len)
     int i;
     enc28j60_arch_spi_select();
     /* THe Read Buffer Memory (RBM) command is 0 0 1 1 1 0 1 0 */
-    enc28j60_arch_spi_write(0x3a);
+    SPI.transfer(0x3a);
     for(i = 0; i < len; i++) {
-        buf[i] = enc28j60_arch_spi_read();
+        buf[i] = SPI.transfer(0);
     }
     enc28j60_arch_spi_deselect();
     return i;
@@ -262,7 +284,7 @@ EtherSia_ENC28J60::softreset(void)
 {
     enc28j60_arch_spi_select();
     /* The System Command (soft reset) is 1 1 1 1 1 1 1 1 */
-    enc28j60_arch_spi_write(0xff);
+    SPI.transfer(0xff);
     enc28j60_arch_spi_deselect();
     _bank = ERXTX_BANK;
 }
@@ -293,7 +315,9 @@ EtherSia_ENC28J60::reset(void)
 {
     PRINTF("enc28j60: resetting chip\n");
 
-    enc28j60_arch_spi_init();
+    pinMode(_cs, OUTPUT);
+    digitalWrite(_cs, HIGH);
+    SPI.begin();
 
     /*
       6.0 INITIALIZATION
@@ -356,7 +380,7 @@ EtherSia_ENC28J60::reset(void)
     softreset();
 
     /* Workaround for erratum #2. */
-    clock_delay_usec(1000);
+    delayMicroseconds(1000);
 
     /* Wait for OST */
     PRINTF("waiting for ESTAT_CLKRDY\n");
@@ -671,63 +695,4 @@ EtherSia_ENC28J60::readFrame(uint8_t *buffer, uint16_t bufsize)
     //PRINTF("enc28j60: received_packets %d\n", received_packets);
 
     return len;
-}
-
-
-/* ----------------------------------------
-     Arduino Specific Code
-   ----------------------------------------
-*/
-
-// The ENC28J60 SPI Interface supports clock speeds up to 20 MHz
-static const SPISettings spiSettings(20000000, MSBFIRST, SPI_MODE0);
-
-
-EtherSia_ENC28J60::EtherSia_ENC28J60(int8_t cs)
-{
-    _cs = cs;
-
-    _bank = ERXTX_BANK;
-}
-
-
-void
-EtherSia_ENC28J60::enc28j60_arch_spi_init(void)
-{
-    pinMode(_cs, OUTPUT);
-    digitalWrite(_cs, HIGH);
-
-    SPI.begin();
-}
-
-uint8_t
-EtherSia_ENC28J60::enc28j60_arch_spi_write(uint8_t data)
-{
-    return SPI.transfer(data);
-}
-
-uint8_t
-EtherSia_ENC28J60::enc28j60_arch_spi_read(void)
-{
-    return SPI.transfer(0);
-}
-
-void
-EtherSia_ENC28J60::enc28j60_arch_spi_select(void)
-{
-    SPI.beginTransaction(spiSettings);
-    digitalWrite(_cs, LOW);
-}
-
-void
-EtherSia_ENC28J60::enc28j60_arch_spi_deselect(void)
-{
-    digitalWrite(_cs, HIGH);
-    SPI.endTransaction();
-}
-
-void
-EtherSia_ENC28J60::clock_delay_usec(uint16_t dt)
-{
-    delayMicroseconds(dt);
 }
