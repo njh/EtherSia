@@ -1,7 +1,7 @@
 EtherSia
 ========
 
-A minimal IPv6 library for an [Arduino] with an [ENC28J60], [W5500] or [W5100] Ethernet controller.
+A minimal IPv6 library for an [Arduino] with an [ENC28J60], [W5500], [W5100] or [W5100S] Ethernet controller.
 
 
 Features
