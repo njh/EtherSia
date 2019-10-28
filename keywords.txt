@@ -1,0 +1,161 @@
+#######################################
+# Syntax Coloring Map                  
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)                 
+#######################################
+EtherSia	KEYWORD1
+EtherSia_ENC28J60	KEYWORD1
+EtherSia_LinuxSocket	KEYWORD1
+EtherSia_W5100	KEYWORD1
+EtherSia_W5500	KEYWORD1
+HTTPServer	KEYWORD1
+IPv6Address	KEYWORD1
+IPv6Packet	KEYWORD1
+MACAddress	KEYWORD1
+PingClient	KEYWORD1
+Socket	KEYWORD1
+Syslog	KEYWORD1
+TCPServer	KEYWORD1
+TFTPServer	KEYWORD1
+UDPSocket	KEYWORD1
+
+
+#######################################
+# Methods and Functions (KEYWORD2)     
+#######################################
+begin	KEYWORD2
+body	KEYWORD2
+bodyEquals	KEYWORD2
+bodyLength	KEYWORD2
+bufferContainsReceived	KEYWORD2
+calculateChecksum	KEYWORD2
+destination	KEYWORD2
+disableAutoconfiguration	KEYWORD2
+discoverNeighbour	KEYWORD2
+dnsServerAddress	KEYWORD2
+enableAutoconfiguration	KEYWORD2
+end	KEYWORD2
+etherDestination	KEYWORD2
+etherSource	KEYWORD2
+etherType	KEYWORD2
+facility	KEYWORD2
+fromString	KEYWORD2
+globalAddress	KEYWORD2
+gotReply	KEYWORD2
+handleRequest	KEYWORD2
+havePacket	KEYWORD2
+hopLimit	KEYWORD2
+identifier	KEYWORD2
+inOurSubnet	KEYWORD2
+inSameSubnet	KEYWORD2
+init	KEYWORD2
+invalidate	KEYWORD2
+isDelete	KEYWORD2
+isGet	KEYWORD2
+isIPv6Multicast	KEYWORD2
+isLinkLocal	KEYWORD2
+isLinkLocalAllNodes	KEYWORD2
+isLinkLocalAllRouters	KEYWORD2
+isMulticast	KEYWORD2
+isOurAddress	KEYWORD2
+isPost	KEYWORD2
+isPut	KEYWORD2
+isSolicitedNodeMulticastAddress	KEYWORD2
+isValid	KEYWORD2
+isZero	KEYWORD2
+lastRoundTripTime	KEYWORD2
+lastSequenceNumber	KEYWORD2
+length	KEYWORD2
+linkLocalAddress	KEYWORD2
+localMac	KEYWORD2
+localPort	KEYWORD2
+lookupHostname	KEYWORD2
+notFound	KEYWORD2
+packet	KEYWORD2
+packetDestination	KEYWORD2
+packetDestinationPort	KEYWORD2
+packetSource	KEYWORD2
+packetSourcePort	KEYWORD2
+path	KEYWORD2
+payload	KEYWORD2
+payloadEquals	KEYWORD2
+payloadLength	KEYWORD2
+prepareReply	KEYWORD2
+prepareSend	KEYWORD2
+print	KEYWORD2
+printHeaders	KEYWORD2
+printStatus	KEYWORD2
+println	KEYWORD2
+priority	KEYWORD2
+protocol	KEYWORD2
+readFrame	KEYWORD2
+receivePacket	KEYWORD2
+redirect	KEYWORD2
+rejectPacket	KEYWORD2
+remoteAddress	KEYWORD2
+remotePort	KEYWORD2
+routerMac	KEYWORD2
+send	KEYWORD2
+sendFrame	KEYWORD2
+sendReply	KEYWORD2
+sequenceNumber	KEYWORD2
+setDestination	KEYWORD2
+setDnsServerAddress	KEYWORD2
+setEtherDestination	KEYWORD2
+setEtherSource	KEYWORD2
+setEui64	KEYWORD2
+setFacility	KEYWORD2
+setGlobalAddress	KEYWORD2
+setHopLimit	KEYWORD2
+setIPv6Multicast	KEYWORD2
+setIdentifier	KEYWORD2
+setLinkLocalAllNodes	KEYWORD2
+setLinkLocalAllRouters	KEYWORD2
+setLinkLocalPrefix	KEYWORD2
+setPayloadLength	KEYWORD2
+setPriority	KEYWORD2
+setProtocol	KEYWORD2
+setRemoteAddress	KEYWORD2
+setRouter	KEYWORD2
+setSequenceNumber	KEYWORD2
+setSolicitedNodeMulticastAddress	KEYWORD2
+setSource	KEYWORD2
+setZero	KEYWORD2
+source	KEYWORD2
+tcpSendRSTReply	KEYWORD2
+timeLastRecieved	KEYWORD2
+timeLastSent	KEYWORD2
+transmitPayload	KEYWORD2
+type	KEYWORD2
+version	KEYWORD2
+write	KEYWORD2
+
+
+#######################################
+# Constants (LITERAL1)                 
+#######################################
+ETHERSIA_MAX_PACKET_SIZE	LITERAL1
+ETHER_HEADER_LEN	LITERAL1
+FlashStringMaker	LITERAL1
+IP6_DEFAULT_HOP_LIMIT	LITERAL1
+IP6_HEADER_LEN	LITERAL1
+MAX_IPV6_ADDRESS_STR_LEN	LITERAL1
+NEIGHBOUR_SOLICITATION_ATTEMPTS	LITERAL1
+NEIGHBOUR_SOLICITATION_TIMEOUT	LITERAL1
+ROUTER_SOLICITATION_ATTEMPTS	LITERAL1
+ROUTER_SOLICITATION_TIMEOUT	LITERAL1
+SysLogPortNumber	LITERAL1
+TCP_HEADER_PTR	LITERAL1
+TCP_MINIMUM_HEADER_LEN	LITERAL1
+TCP_RECEIVE_HEADER_LEN	LITERAL1
+TCP_TRANSMIT_HEADER_LEN	LITERAL1
+TCP_WINDOW_SIZE	LITERAL1
+TFTP_ACK_TIMEOUT	LITERAL1
+TFTP_BLOCK_SIZE	LITERAL1
+TFTP_DATA_TIMEOUT	LITERAL1
+TFTP_RETRIES	LITERAL1
+UDP_HEADER_LEN	LITERAL1
+UDP_HEADER_PTR	LITERAL1
+

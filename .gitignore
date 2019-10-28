@@ -11,6 +11,7 @@ coverage/*
 docs/html
 docs/doxygen.log
 docs/examples.txt
+docs/tags.xml
 
 examples/LinuxPacketPrinter/LinuxPacketPrinter
 
