@@ -3,7 +3,7 @@
 
 /** Convert a 16-bit integer from host (little-endian) to network (big-endian) */
 #ifndef htons
-#define htons(x) ( (((x)<<8)&0xFF00) | (((x)>>8)&0x00FF) )
+#define htons(x) ( ((x&0x00FFU)<<8) | (((x&0xFF00U)>>8)) )
 #endif
 
 /** Convert a 16-bit integer from network (big-endian) to host (little-endian) */
@@ -13,17 +13,16 @@
 
 /** Convert a 32-bit integer from host (little-endian) to network (big-endian) */
 #ifndef htonl
-#define htonl(x) (           \
-    (((x)>>24) & 0x000000ff) | \
-    (((x)<<8)  & 0x00ff0000) | \
-    (((x)>>8)  & 0x0000ff00) | \
-    (((x)<<24) & 0xff000000)   \
+#define htonl(x) (            \
+    ((x & 0xff000000U)>>24) | \
+    ((x & 0x0000ff00U)<<8)  | \
+    ((x & 0x00ff0000U)>>8)  | \
+    ((x & 0x000000ffU)<<24)   \
 )
 #endif
 
 /** Convert a 32-bit integer from network (big-endian) to host (little-endian) */
 #ifndef ntohl
-#undef ntohl
 #define ntohl(x) htonl(x)
 #endif
 
