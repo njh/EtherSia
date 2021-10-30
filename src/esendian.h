@@ -23,11 +23,12 @@
 
 /** Convert a 32-bit integer from network (big-endian) to host (little-endian) */
 #ifndef ntohl
+#undef ntohl
 #define ntohl(x) htonl(x)
 #endif
 
 /** Convert two bytes to a 16-bit integer */
 #define bytesToWord(high, low) \
-    (((uint16_t)high << 8) + low);
+    (((uint16_t)high << 8) + low)
 
 #endif
