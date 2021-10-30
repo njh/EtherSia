@@ -1,0 +1,58 @@
+
+// Ensure we use the implementations in esendian.h when testing
+#ifdef htons
+#undef htons
+#endif
+#ifdef ntohs
+#undef ntohs
+#endif
+#ifdef htonl
+#undef htonl
+#endif
+#ifdef ntohl
+#undef ntohl
+#endif
+
+#include "esendian.h"
+#suite Endian
+
+
+// NOTE: these tests assume that the host running the tests is little-endian
+
+#test htons_0x1234
+ck_assert(htons(0x1234) == 0x3412);
+
+#test ntohs_0x1234
+ck_assert(ntohs(0x1234) == 0x3412);
+
+#test htons_0xFF00
+ck_assert(htons(0xFF00) == 0x00FF);
+
+#test htons_0xFFFF
+ck_assert(htons(0xFFFF) == 0xFFFF);
+
+
+
+#test htonl_0x12345678
+ck_assert(htonl(0x12345678) == 0x78563412);
+
+#test ntohl_0x12345678
+ck_assert(ntohl(0x12345678) == 0x78563412);
+
+#test htonl_0xFF000000
+ck_assert(htonl(0xFF000000) == 0x000000FF);
+
+#test htonl_0xFFFFFFFF
+ck_assert(htonl(0xFFFFFFFF) == 0xFFFFFFFF);
+
+
+
+#test bytesToWord_0x00_0x00
+ck_assert(bytesToWord(0x00, 0x00) == 0x0000);
+
+#test bytesToWord_0x12_0x34
+ck_assert(bytesToWord(0x12, 0x34) == 0x1234);
+
+#test bytesToWord_0xFF_0xFF
+ck_assert(bytesToWord(0xFF, 0xFF) == 0xFFFF);
+ 
