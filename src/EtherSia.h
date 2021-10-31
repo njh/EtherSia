@@ -16,6 +16,7 @@
 #include "IPv6Packet.h"
 #include "Socket.h"
 #include "UDPSocket.h"
+#include "util.h"
 
 /**
  * The maximum size (in bytes) of packet that can be received / sent

@@ -78,4 +78,14 @@ uint16_t chksum(uint16_t sum, const uint8_t *data, uint16_t len);
     static const char _fsm_##var[] PROGMEM = str; \
     const __FlashStringHelper* klass::var = reinterpret_cast<const __FlashStringHelper *>(_fsm_##var)
 
+
+/**
+ * Macro to cast a previously defined string with the PROGMEM attribute to FlashStringHelper
+ *
+ * @param pstr_pointer Pointer to string with PROGMEM attribute
+ */
+#ifndef FPSTR
+#define FPSTR(pstr_pointer) (reinterpret_cast<const __FlashStringHelper *>(pstr_pointer))
+#endif
+
 #endif
