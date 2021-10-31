@@ -143,6 +143,7 @@ public:
 
 
     static const __FlashStringHelper* typeHtml;      /**< String for 'text/html' content type */
+    static const __FlashStringHelper* typeCss;       /**< String for 'text/css' content type */
     static const __FlashStringHelper* typePlain;     /**< String for 'text/plain' content type */
     static const __FlashStringHelper* typeJson;      /**< String for 'application/json' content type */
 

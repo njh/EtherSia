@@ -2,6 +2,7 @@
 #include "util.h"
 
 FlashStringMaker(HTTPServer, typeHtml, "text/html");
+FlashStringMaker(HTTPServer, typeCss, "text/css");
 FlashStringMaker(HTTPServer, typePlain, "text/plain");
 FlashStringMaker(HTTPServer, typeJson, "application/json");
 
