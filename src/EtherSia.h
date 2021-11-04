@@ -14,6 +14,7 @@
 #include "MACAddress.h"
 #include "IPv6Address.h"
 #include "IPv6Packet.h"
+#include "IPv6Prefix.h"
 #include "Socket.h"
 #include "UDPSocket.h"
 #include "util.h"
@@ -89,6 +90,28 @@ public:
      */
     inline void enableAutoconfiguration() {
         _autoConfigurationEnabled = true;
+    }
+
+    /**
+     * Restricts autoconfiguration to a specified prefix,
+     * which Router Advertisements must be contained by.
+     *
+     * @note autoconfig restriction is disabled by default
+     * @param prefix the prefix to restrict to
+     */
+    inline void enablePrefixRestriction(IPv6Prefix *prefix) {
+        memcpy(_whitelistedPrefix, prefix, sizeof(IPv6Prefix));
+        _prefixRestrictionEnabled = true;
+    }
+
+    /**
+     * Disables autoconfiguration restriction.
+     *
+     * @note autoconfig restriction is disabled by default
+     */
+    inline void disablePrefixRestriction() {
+        memset(_whitelistedPrefix, 0, sizeof(IPv6Prefix));
+        _prefixRestrictionEnabled = false;
     }
 
     /**
@@ -383,6 +406,7 @@ protected:
     IPv6Address _linkLocalAddress;  /**< The IPv6 Link-local address of the Ethernet Interface */
     IPv6Address _globalAddress;     /**< The IPv6 Global address of the Ethernet Interface */
     IPv6Address _dnsServerAddress;  /**< The IPv6 address of the configured DNS server */
+    IPv6Prefix _whitelistedPrefix;	/**< The whitelisted IPv6 Prefix */
 
     /** The MAC address of this Ethernet controller */
     MACAddress _localMac;
@@ -401,6 +425,9 @@ protected:
 
     /** Flag indicating if the buffer contains a valid packet we received */
     boolean _autoConfigurationEnabled;
+
+    /** Flag indicating if a whitelisted Prefix is enabled */
+    boolean _prefixRestrictionEnabled;
 
     /**
      * Checks the Ethernet Layer 2 addresses

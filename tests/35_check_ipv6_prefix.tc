@@ -1,0 +1,96 @@
+#include "Arduino.h"
+
+#include "MACAddress.h"
+#include "IPv6Prefix.h"
+#suite IPv6Prefix
+
+const uint8_t zero[17] = {
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00
+};
+
+
+#test new_IPv6Prefix
+IPv6Prefix prefix;
+ck_assert_mem_eq(zero, prefix, 17);
+
+
+#test setZero
+uint8_t expect[17] = {
+    0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+    0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
+    0x0F
+};
+IPv6Prefix *prefix = (IPv6Prefix *)expect;
+prefix->setZero();
+ck_assert_mem_eq(zero, prefix, 17);
+
+#test constructorFromAddressLength
+uint8_t expect[17] = {
+    0x20, 0x01, 0x06, 0x7c, 0x2e, 0xd8, 0x61, 0x00,
+    0xf6, 0xf2, 0x6d, 0xff, 0xfe, 0x3e, 0x9c, 0xac,
+    0x40
+};
+IPv6Address address = IPv6Address("2001:67c:2ed8:6100:f6f2:6dff:fe3e:9cac");
+uint8_t length = 64;
+IPv6Prefix prefix = IPv6Prefix(&address, length);
+ck_assert_mem_eq(expect, prefix, 17);
+
+#test constructorFromString
+uint8_t expect[17] = {
+    0x20, 0x01, 0x06, 0x7c, 0x2e, 0xd8, 0x61, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x40
+};
+IPv6Prefix prefix = IPv6Prefix("2001:67c:2ed8:6100:f6f2:6dff:fe3e:9cac/64");
+ck_assert_mem_eq(expect, prefix, 17);
+
+#test fromString
+uint8_t expect[17] = {
+    0x20, 0x01, 0x06, 0x7c, 0x2e, 0xd8, 0x61, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x40
+};
+IPv6Prefix prefix;
+prefix.fromString("2001:67c:2ed8:6100:f6f2:6dff:fe3e:9cac/64");
+ck_assert_mem_eq(expect, prefix, 17);
+
+#test returnAddress
+uint8_t expect[16] = {
+    0x20, 0x01, 0x06, 0x7c, 0x2e, 0xd8, 0x61, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+};
+IPv6Prefix prefix;
+prefix.fromString("2001:67c:2ed8:6100:f6f2:6dff:fe3e:9cac/64");
+ck_assert_mem_eq(expect, prefix.address(), 16);
+
+#test getLength
+IPv6Prefix prefix;
+prefix.fromString("2001:67c:2ed8:6100:f6f2:6dff:fe3e:9cac/64");
+ck_assert(prefix.getLength() == 64);
+
+#test setLength
+uint8_t expect[17] = {
+    0x20, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x10
+};
+IPv6Prefix prefix = IPv6Prefix("2001:67c:2ed8:6100:f6f2:6dff:fe3e:9cac/128");
+prefix.setLength(16);
+ck_assert_mem_eq(expect, prefix, 17);
+
+#test contains
+IPv6Prefix containing = IPv6Prefix("2001:67c:2ed8:6100::/64");
+const IPv6Prefix contained = IPv6Prefix("2001:67c:2ed8:6100:f6f2:6dff:fe3e:9cac/128");
+ck_assert(containing.contains(&contained));
+
+#test containsNotPrefix
+IPv6Prefix containing = IPv6Prefix("2001:67c:2ed8:6100::/64");
+const IPv6Prefix contained = IPv6Prefix("2001:67c:2ed8:6101:f6f2:6dff:fe3e:9cac/128");
+ck_assert(!containing.contains(&contained));
+
+#test containsNotLength
+IPv6Prefix containing = IPv6Prefix("2001:67c:2ed8:6100::/64");
+const IPv6Prefix contained = IPv6Prefix("2001:67c:2ed8::/48");
+ck_assert(!containing.contains(&contained));
