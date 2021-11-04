@@ -18,7 +18,7 @@ boolean PingClient::setRemoteAddress(const char *remoteAddress)
 
 boolean PingClient::havePacket()
 {
-    ICMPv6Packet& packet = (ICMPv6Packet&)_ether.packet();
+    ICMPv6Packet<IPv6Packet>& packet = (ICMPv6Packet<IPv6Packet>&)_ether.packet();
 
     if (!_ether.bufferContainsReceived()) {
         return false;
@@ -75,7 +75,7 @@ void PingClient::send()
 
 void PingClient::sendInternal(uint16_t length, boolean /*isReply*/)
 {
-    ICMPv6Packet& packet = (ICMPv6Packet&)_ether.packet();
+    ICMPv6Packet<IPv6Packet>& packet = (ICMPv6Packet<IPv6Packet>&)_ether.packet();
     uint16_t totalLen = ICMP6_HEADER_LEN + ICMP6_ECHO_HEADER_LEN + length;
     
     packet.setProtocol(IP6_PROTO_ICMP6);
@@ -100,13 +100,13 @@ void PingClient::sendInternal(uint16_t length, boolean /*isReply*/)
 
 uint8_t* PingClient::payload()
 {
-    ICMPv6Packet& packet = (ICMPv6Packet&)_ether.packet();
+    ICMPv6Packet<IPv6Packet>& packet = (ICMPv6Packet<IPv6Packet>&)_ether.packet();
     return (uint8_t*)(packet.payload()) + ICMP6_HEADER_LEN + ICMP6_ECHO_HEADER_LEN;
 }
 
 uint16_t PingClient::payloadLength()
 {
-    ICMPv6Packet& packet = (ICMPv6Packet&)_ether.packet();
+    ICMPv6Packet<IPv6Packet>& packet = (ICMPv6Packet<IPv6Packet>&)_ether.packet();
     return packet.payloadLength() - ICMP6_HEADER_LEN - ICMP6_ECHO_HEADER_LEN;
 }
 

@@ -1,0 +1,24 @@
+33:33:ff:36:14:b9        # Ethernet Destination
+c8:5b:76:f4:21:34        # Ethernet Source
+86dd                     # EtherType (IPv6)
+
+60 00 00 00              # IPv6 header
+0020                     # Length (32 bytes)
+00                       # IPv6HbH Protocol
+01                       # Hop Limit
+
+fe80:0000:0000:0000:f697:307e:e636:14b9  # IPv6 Source Address
+ff02:0000:0000:0000:0000:0001:ff36:14b9  # IPv6 Destination Address
+
+3a                       # Next Header (ICMPv6)
+00                       # Length
+05 02 00 00              # Router Alert
+01 00                    # Padding
+
+83                       # ICMPv6 multicast listener report (131)
+00                       # ICMPv6 Code
+363e                     # Checksum
+0000                     # Maximum response delay (5000ms)
+0000                     # Reserved
+
+ff02:0000:0000:0000:0000:0001:ff36:14b9     # Multicast Address

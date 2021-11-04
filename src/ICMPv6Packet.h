@@ -10,6 +10,8 @@
 #define ICMP6_TYPE_PARAM_PROB     4
 #define ICMP6_TYPE_ECHO           128
 #define ICMP6_TYPE_ECHO_REPLY     129
+#define ICMP6_TYPE_MLQ            130
+#define ICMP6_TYPE_MLR            131
 #define ICMP6_TYPE_RS             133
 #define ICMP6_TYPE_RA             134
 #define ICMP6_TYPE_NS             135
@@ -168,13 +170,28 @@ struct icmp6_na_header {
 /* Verify that compiler gets the structure size correct */
 static_assert(sizeof(struct icmp6_na_header) == ICMP6_NA_HEADER_LEN, "Size is not correct");
 
+/**
+ * Structure for accessing the fields of a ICMP6 Multicast Listener Discovery packet
+ * @private
+ */
+struct icmp6_mld_header {
+    uint16_t max_response_delay;
+    uint8_t reserved[2];
+    IPv6Address target;
+} __attribute__((__packed__));
+#define ICMP6_MLD_HEADER_LEN       (20)
+#define ICMP6_MLD_HEADER_OFFSET    (ICMP6_HEADER_OFFSET + ICMP6_HEADER_LEN)
+
+/* Verify that compiler gets the structure size correct */
+static_assert(sizeof(struct icmp6_mld_header) == ICMP6_MLD_HEADER_LEN, "Size is not correct");
+
 
 
 /**
  * Class for accessing the fields of a ICMP6 packet
  * @private
  */
-class ICMPv6Packet : public IPv6Packet {
+template<class T> class ICMPv6Packet : public T {
 
 public:
     uint8_t type;
@@ -188,6 +205,7 @@ public:
         struct icmp6_rs_header rs;
         struct icmp6_na_header na;
         struct icmp6_ns_header ns;
+        struct icmp6_mld_header mld;
     } __attribute__((__packed__));
 
 } __attribute__((__packed__));

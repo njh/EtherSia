@@ -113,6 +113,24 @@ uint16_t EtherSia::receivePacket()
 
     if (len) {
         IPv6Packet& packet = (IPv6Packet&)_ptr;
+
+        if (packet.protocol() == IP6_PROTO_HBH) {
+            // Packet with Hop-by-Hop Extension
+            IPv6HopByHopPacket& packet = (IPv6HopByHopPacket&)_ptr;
+            if (!packet.isValid() || !checkEthernetAddresses(packet)) {
+                _bufferContainsReceived = false;
+            } else {
+                if(packet.nextHeader() == IP6_PROTO_ICMP6) {
+                    ICMPv6Packet<IPv6HopByHopPacket>& packet = (ICMPv6Packet<IPv6HopByHopPacket>&)_ptr;
+                    if(packet.type == ICMP6_TYPE_MLQ && (packet.mld.target.isZero() || packet.mld.target == _globalAddress)) {
+                        // Multiast Listener Query, answer with listener Report for Solicited Node address
+                        icmp6SendMLR();
+                    }
+                }
+            }
+            return 0;
+        }
+
         if (!packet.isValid() || !checkEthernetAddresses(packet)) {
             _bufferContainsReceived = false;
             return 0;
@@ -127,6 +145,7 @@ uint16_t EtherSia::receivePacket()
                 return 0;
             }
         }
+
     } else {
         // We didn't receive anything
         _bufferContainsReceived = false;

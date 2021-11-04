@@ -14,6 +14,7 @@
 #include "MACAddress.h"
 #include "IPv6Address.h"
 #include "IPv6Packet.h"
+#include "IPv6HopByHopPacket.h"
 #include "Socket.h"
 #include "UDPSocket.h"
 #include "util.h"
@@ -379,6 +380,11 @@ public:
      */
     virtual uint16_t readFrame(uint8_t *buffer, uint16_t bufsize) = 0;
 
+    /**
+     * Send a Multicast Listener Report for the Solicited Node address
+     */
+    void icmp6SendMLR();
+
 protected:
     IPv6Address _linkLocalAddress;  /**< The IPv6 Link-local address of the Ethernet Interface */
     IPv6Address _globalAddress;     /**< The IPv6 Global address of the Ethernet Interface */
@@ -478,6 +484,13 @@ protected:
      * Ensures the protocol and checksum are set before sending.
      */
     void icmp6PacketSend();
+
+    /**
+     * Send an ICMPv6 packet stored in the EtherSia packet buffer
+     * Ensures the protocol and checksum are set before sending.
+     * @param hbh true if the packet to send contains a Hop-by-Hop option
+     */
+    void icmp6PacketSend(bool hbh);
 };
 
 #include "PingClient.h"
